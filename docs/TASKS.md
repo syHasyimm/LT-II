@@ -19,7 +19,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   *Selesai jika:* `php artisan migrate` dan `npm run build` berhasil.
 - [ ] **T0.2 Konfigurasi & enum domain**
   `config/camp.php` (PRD §7), enum `UserRole`, `MemberRole`, `TeamGroup`, `GudepStatus`, `DocumentStatus`, `TemplateType`, zona waktu `Asia/Jakarta`, locale `id`.
-- [ ] **T0.3 Referensi desain**
+- [x] **T0.3 Referensi desain**
   Ekspor setiap frame FigCraft ke `docs/design/*.png`.
 - [ ] **T0.4 Design system di kode**
   Token warna merah-emas dan font (Playfair Display + Plus Jakarta Sans) di Tailwind `@theme`, tema shadcn, komponen dasar (Button primary/gold/outline, StatusBadge, QuotaIndicator), layout `public`, `pembina` (mobile-first + bottom nav), `admin` (sidebar).
