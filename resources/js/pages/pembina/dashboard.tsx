@@ -6,20 +6,15 @@ import {
     LogOut,
     MessageSquareWarning,
 } from 'lucide-react';
+import { stepIcon } from '@/components/pembina/step-timeline';
 import { GudepStatusBadge } from '@/components/status-badge';
 import type { GudepStatus } from '@/components/status-badge';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
+import type { PembinaStepData } from '@/types';
 
-type Step = {
-    key: string;
-    title: string;
-    subtitle: string;
-    value: string;
-    state: 'done' | 'current' | 'todo' | 'warning';
-    href: string;
-};
+type Step = PembinaStepData;
 
 type Props = {
     gudep: {
@@ -41,7 +36,7 @@ export default function PembinaDashboard({ gudep, percent, steps }: Props) {
         <>
             <Head title="Beranda" />
 
-            <div className="relative overflow-hidden rounded-b-[28px] bg-maroon-gradient px-6 pt-8 pb-24 text-white">
+            <div className="relative overflow-hidden rounded-b-[28px] bg-maroon-gradient px-6 pt-8 pb-24 text-white md:rounded-t-[28px]">
                 <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full border border-gold-300/15" />
                 <div className="relative flex items-center gap-4">
                     {auth.user.avatar ? (
@@ -212,6 +207,7 @@ function StepCard({
     number: number;
     disabled: boolean;
 }) {
+    const Icon = stepIcon[step.key];
     const content = (
         <>
             <span
@@ -223,11 +219,15 @@ function StepCard({
                     step.state === 'todo' && 'bg-maroon-100 text-maroon-600',
                 )}
             >
-                {step.state === 'done' ? <Check className="size-5" /> : number}
+                {step.state === 'done' ? (
+                    <Check className="size-5" aria-label="Selesai" />
+                ) : (
+                    <Icon className="size-5" aria-hidden />
+                )}
             </span>
             <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-bold text-ink">
-                    {step.title}
+                    {number}. {step.title}
                 </span>
                 <span className="block truncate text-sm text-ink-soft">
                     {step.subtitle}

@@ -26,7 +26,7 @@ export default function Submitted({ status, submitted_at, stats }: Props) {
                         : 'Pendaftaran Terkirim'
                 }
             />
-            <div className="relative -mb-28 flex min-h-[calc(100svh-0px)] flex-col overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#7a1219_0%,#3e070b_55%,#2a0407_100%)] px-6 pt-16 pb-36 text-center text-white md:mb-0 md:min-h-0 md:rounded-b-[28px] md:pb-16">
+            <div className="relative -mb-12 flex min-h-[calc(100svh-0px)] flex-col overflow-hidden bg-[radial-gradient(circle_at_50%_30%,#7a1219_0%,#3e070b_55%,#2a0407_100%)] px-6 pt-16 pb-36 text-center text-white md:mb-0 md:min-h-0 md:rounded-[28px] md:pb-16">
                 <div
                     aria-hidden
                     className="pointer-events-none absolute top-24 left-1/2 size-[300px] -translate-x-1/2 rounded-full border border-gold-300/20"

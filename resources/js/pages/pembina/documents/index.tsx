@@ -5,6 +5,7 @@ import { cellState, DocCell } from '@/components/documents/doc-cell';
 import { UploadDialog } from '@/components/documents/upload-dialog';
 import { InfoNote } from '@/components/form/field';
 import { DocumentStatusBadge } from '@/components/status-badge';
+import { StepNav } from '@/components/pembina/step-nav';
 import { PembinaHeader } from '@/layouts/pembina-layout';
 import { cn } from '@/lib/utils';
 import { edit as editMember } from '@/routes/pembina/members';
@@ -240,6 +241,7 @@ export default function Documents({
                 maxUploadMb={maxUploadMb}
                 onClose={() => setSlot(null)}
             />
+            <StepNav />
         </>
     );
 }

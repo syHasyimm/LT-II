@@ -3,6 +3,7 @@ import { Check, ChevronRight, Lock, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { ImportPeserta } from '@/components/gudep/import-peserta';
+import { StepNav } from '@/components/pembina/step-nav';
 import { MemberAvatar } from '@/components/gudep/member-avatar';
 import { MemberFields } from '@/components/gudep/member-fields';
 import { PhotoUpload } from '@/components/gudep/photo-upload';
@@ -10,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { PembinaHeader } from '@/layouts/pembina-layout';
 import { cn } from '@/lib/utils';
-import { create, destroy, edit, index, store } from '@/routes/pembina/members';
+import { create, destroy, edit, store } from '@/routes/pembina/members';
 import type { MemberData, Regu } from '@/types';
 
 type Props = {
@@ -20,6 +21,12 @@ type Props = {
     editable: boolean;
     members: Record<Regu, MemberData[]>;
     maxUploadMb: number;
+};
+
+const stepTitle: Record<Regu, string> = {
+    pa: 'Peserta Putra',
+    pi: 'Peserta Putri',
+    pembina: 'Pembina Pendamping',
 };
 
 const label: Record<Regu, string> = {
@@ -39,34 +46,10 @@ export default function Members({
 }: Props) {
     return (
         <>
-            <Head title="Anggota Gudep" />
-            <PembinaHeader title="Anggota Gudep" subtitle={gudep.name} />
+            <Head title={stepTitle[tab]} />
+            <PembinaHeader title={stepTitle[tab]} subtitle={gudep.name} />
 
             <div className="relative -mt-10 px-6">
-                <nav
-                    aria-label="Kelompok anggota"
-                    className="grid grid-cols-3 gap-1 rounded-2xl bg-sand p-1.5 shadow-sm"
-                >
-                    {(['pa', 'pi', 'pembina'] as Regu[]).map((regu) => (
-                        <Link
-                            key={regu}
-                            href={index.url({ query: { tab: regu } })}
-                            preserveScroll
-                            replace
-                            className={cn(
-                                'rounded-xl py-3 text-center text-[15px] font-semibold text-ink-muted transition',
-                                tab === regu &&
-                                    'bg-white text-maroon-600 shadow-sm',
-                            )}
-                        >
-                            {label[regu]}{' '}
-                            {regu === 'pembina'
-                                ? members.pembina.length
-                                : `${members[regu].length}/${max}`}
-                        </Link>
-                    ))}
-                </nav>
-
                 {tab === 'pembina' ? (
                     <PembinaList
                         members={members.pembina}
@@ -85,6 +68,7 @@ export default function Members({
                     />
                 )}
             </div>
+            <StepNav />
         </>
     );
 }
@@ -106,7 +90,7 @@ function PesertaList({
     const percent = Math.round((members.length / max) * 100);
 
     return (
-        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
             <div className="rounded-2xl border border-line bg-white px-5 py-4">
                 <div className="flex items-baseline justify-between gap-3">
                     <p className="text-[15px] font-bold text-ink">
@@ -232,8 +216,8 @@ function PembinaList({
         setDrafts((current) => current.filter((draft) => draft !== key));
 
     return (
-        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
-            <div className="flex items-baseline justify-between">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
+            <div className="flex items-baseline justify-between rounded-2xl border border-line bg-white px-5 py-4">
                 <h2 className="text-[15px] font-bold text-ink">
                     Pembina pendamping
                 </h2>

@@ -14,6 +14,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Spinner } from '@/components/ui/spinner';
+import { StepNav } from '@/components/pembina/step-nav';
 import { PembinaHeader } from '@/layouts/pembina-layout';
 import { cn } from '@/lib/utils';
 import { store } from '@/routes/pembina/submission';
@@ -205,6 +206,7 @@ export default function Submit({
                     )}
                 </Form>
             </div>
+            <StepNav />
         </>
     );
 }
