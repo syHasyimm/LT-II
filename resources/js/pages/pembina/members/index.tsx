@@ -2,6 +2,7 @@ import { Form, Head, Link, router } from '@inertiajs/react';
 import { Check, ChevronRight, Lock, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { ImportPeserta } from '@/components/gudep/import-peserta';
 import { MemberAvatar } from '@/components/gudep/member-avatar';
 import { MemberFields } from '@/components/gudep/member-fields';
 import { PhotoUpload } from '@/components/gudep/photo-upload';
@@ -78,6 +79,9 @@ export default function Members({
                         members={members[tab]}
                         max={max}
                         editable={editable}
+                        importSlots={
+                            max * 2 - members.pa.length - members.pi.length
+                        }
                     />
                 )}
             </div>
@@ -90,11 +94,13 @@ function PesertaList({
     members,
     max,
     editable,
+    importSlots,
 }: {
     regu: 'pa' | 'pi';
     members: MemberData[];
     max: number;
     editable: boolean;
+    importSlots: number;
 }) {
     const remaining = Math.max(0, max - members.length);
     const percent = Math.round((members.length / max) * 100);
@@ -178,6 +184,10 @@ function PesertaList({
                     <Plus className="size-5" />
                     Tambah peserta {label[regu]} · {remaining} slot tersisa
                 </Link>
+            )}
+
+            {editable && importSlots > 0 && (
+                <ImportPeserta remaining={importSlots} />
             )}
         </div>
     );

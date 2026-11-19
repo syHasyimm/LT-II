@@ -107,7 +107,11 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Tombol **Ekspor Excel** di Admin → Gudep, mengikuti filter status dan pencarian yang aktif.
   - Workbook berisi sheet *Gudep* (status, jumlah anggota, rekap dokumen, tanggal kirim/verifikasi) dan *Anggota* (nama, peran, regu, gudep, status tiap dokumen, nomor seri ID Card/Sertifikat).
   - Dibuat dengan `shuchkin/simplexlsxgen` (tanpa ekstensi `zip`). Isi dari pengguna ditulis sebagai teks, jadi tidak bisa menjadi rumus. Setiap ekspor tercatat di audit log.
-- [ ] T7.2 Import peserta dari Excel/CSV — FR-GDP-06
+- [x] **T7.2 Import peserta dari Excel/CSV** — FR-GDP-06
+  - Tombol **Impor banyak peserta dari Excel** di halaman Anggota. Dialog berisi unduh template `.xlsx` (sheet Peserta + Petunjuk), pilih file `.xlsx`/`.csv`, lalu laporan hasil.
+  - Kolom dikenali dari judulnya, urutannya bebas. Tanggal diterima dari sel tanggal Excel, `15/03/2013`, `15-03-2013`, atau `2013-03-15`. CSV dengan titik koma atau koma, termasuk BOM dari Excel.
+  - Validasinya sama dengan form anggota. Baris yang tidak valid, ganda (nama + tanggal lahir sama), atau melebihi kuota 8/8 dilewati dan dilaporkan per nomor baris.
+  - Hanya bisa saat data boleh diubah dan jadwal buka. File tidak disimpan di server.
 - [ ] T7.3 2FA admin — FR-AUTH-05
 - [ ] T7.4 Perapian UI mobile dan aksesibilitas
 

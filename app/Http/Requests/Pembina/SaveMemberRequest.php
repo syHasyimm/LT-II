@@ -35,9 +35,7 @@ class SaveMemberRequest extends FormRequest
 
         return [
             'regu' => [Rule::requiredIf($this->member() === null), Rule::in(['pa', 'pi', 'pembina'])],
-            'name' => ['required', 'string', 'max:150'],
-            'birth_date' => ['required', 'date', 'before:today', 'after:1940-01-01'],
-            'kta_number' => ['required', 'string', 'max:50', 'regex:/^[0-9A-Za-z.\-\/ ]+$/'],
+            ...self::identityRules(),
             'photo' => [
                 'nullable',
                 'image',
@@ -50,8 +48,29 @@ class SaveMemberRequest extends FormRequest
         ];
     }
 
+    /**
+     * Aturan nama, tanggal lahir, dan nomor KTA. Dipakai juga impor peserta
+     * (FR-GDP-06) agar validasinya sama dengan form.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function identityRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:150'],
+            'birth_date' => ['required', 'date', 'before:today', 'after:1940-01-01'],
+            'kta_number' => ['required', 'string', 'max:50', 'regex:/^[0-9A-Za-z.\-\/ ]+$/'],
+        ];
+    }
+
     /** @return array<string, string> */
     public function attributes(): array
+    {
+        return self::attributeNames();
+    }
+
+    /** @return array<string, string> */
+    public static function attributeNames(): array
     {
         return [
             'name' => 'nama lengkap',
