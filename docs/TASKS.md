@@ -147,3 +147,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Footer **Kembali / Lanjut** di halaman langkah. Tab di halaman Anggota diganti langkah Putra/Putri/Pembina.
   - Server membagikan `pembinaSteps` dan `pembinaStep` (khusus pembina). Ada tes untuk setiap halaman, edit anggota, pembina tanpa gudep, dan admin.
 
+- [x] **T9.2 Bilah langkah ponsel ringkas**: spec [`superpowers/specs/2026-11-19-strip-ponsel-ringkas-design.md`](superpowers/specs/2026-11-19-strip-ponsel-ringkas-design.md)
+  - Strip ikon di ponsel diganti bilah "Langkah n/6 · Judul" dengan 6 garis progres (emas = selesai, putih = sedang dibuka); di Beranda: "Ringkasan · x dari 6 selesai".
+  - Tombol **Semua langkah** membuka panel bawah berisi timeline lengkap (sama dengan desktop) dan tombol Keluar; panel tertutup setelah memilih langkah.
+  - Timeline desktop tidak berubah (daftar dipakai bersama lewat `TimelineList`).

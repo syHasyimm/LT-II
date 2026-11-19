@@ -43,3 +43,6 @@ yarn-error.log
 /boost.json
 /opencode.json
 /opencode.jsonc
+
+# Ruang kerja skill (mockup brainstorming, ledger eksekusi rencana)
+/.superpowers/

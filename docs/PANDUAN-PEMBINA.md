@@ -22,7 +22,7 @@ Foto dokumen langsung dari kamera ponsel juga bisa, asal tulisannya terbaca jela
 
 Pendaftaran dibagi menjadi **6 langkah**: Data gudep → Peserta Putra → Peserta Putri → Pembina pendamping → Foto & dokumen → Kirim pendaftaran.
 
-- Di laptop, daftar langkah tampil sebagai **timeline di sebelah kanan**. Di ponsel, tampil sebagai **deretan ikon di bagian atas** yang bisa digeser.
+- Di laptop, daftar langkah tampil sebagai **timeline di sebelah kanan**. Di ponsel, bilah di bagian atas menampilkan langkah yang sedang dibuka dan garis progres; ketuk **Semua langkah** untuk melihat dan membuka langkah lain.
 - Langkah yang sudah lengkap bertanda centang hijau, langkah yang sedang dibuka berwarna marun, dan langkah yang perlu dikerjakan berikutnya bertanda *Lanjutkan di sini*.
 - Semua langkah bisa dibuka kapan saja. Tombol **Lanjut** di bawah halaman membawa Anda ke langkah berikutnya, dan **Kembali** ke langkah sebelumnya.
 
