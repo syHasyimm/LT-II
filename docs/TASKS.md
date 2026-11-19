@@ -23,8 +23,8 @@ Legenda: `[ ]` belum · `[x]` selesai
   Ekspor setiap frame FigCraft ke `docs/design/*.png`.
 - [x] **T0.4 Design system di kode**
   Token warna merah-emas dan font (Playfair Display + Plus Jakarta Sans) di Tailwind `@theme`, tema shadcn, komponen dasar (Button primary/gold/outline, StatusBadge, QuotaIndicator), layout `public`, `pembina` (mobile-first + bottom nav), `admin` (sidebar).
-- [ ] **T0.5 Tooling kualitas**
-  Pint, Larastan, Pest. Script `composer test` dan `npm run types` berjalan hijau.
+- [x] **T0.5 Tooling kualitas**
+  Pint, Larastan, Pest. Script `composer test` (Pint + Larastan + Pest) dan `npm run check` + `npm run types:check` berjalan hijau.
 
 ## Fase 1 · Auth & role
 
