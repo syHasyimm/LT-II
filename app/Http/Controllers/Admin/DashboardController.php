@@ -31,6 +31,8 @@ class DashboardController extends Controller
                 'pembina' => Member::query()->where('role', MemberRole::Pembina)->count(),
                 'extensions' => Gudep::query()->where('deadline_extended_until', '>', now())->count(),
             ],
+            // FR-AUTH-05: 2FA opsional, tetapi dashboard mengingatkan admin yang belum mengaktifkannya.
+            'twoFactorEnabled' => (bool) $request->user()?->hasEnabledTwoFactorAuthentication(),
             ...GudepTable::fromRequest($request, 8),
         ]);
     }

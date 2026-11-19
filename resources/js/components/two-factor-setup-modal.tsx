@@ -95,7 +95,7 @@ function TwoFactorSetupStep({
 
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
-                        <span className="relative bg-card px-2 py-1">
+                        <span className="relative bg-ivory px-2 py-1 text-sm text-ink-muted">
                             atau masukkan kode secara manual
                         </span>
                     </div>
@@ -315,10 +315,12 @@ export default function TwoFactorSetupModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="rounded-3xl border-line bg-ivory sm:max-w-md">
                 <DialogHeader className="flex items-center justify-center">
                     <GridScanIcon />
-                    <DialogTitle>{modalConfig.title}</DialogTitle>
+                    <DialogTitle className="font-display text-2xl text-ink">
+                        {modalConfig.title}
+                    </DialogTitle>
                     <DialogDescription className="text-center">
                         {modalConfig.description}
                     </DialogDescription>

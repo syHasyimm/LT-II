@@ -1,72 +1,53 @@
 import { Link } from '@inertiajs/react';
+import { KeyRound, UserRound } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
-import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
+import { AdminPageHeader } from '@/layouts/admin-layout';
 import { cn, toUrl } from '@/lib/utils';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
-import type { NavItem } from '@/types';
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profil',
-        href: edit(),
-        icon: null,
-    },
-    {
-        title: 'Keamanan',
-        href: editSecurity(),
-        icon: null,
-    },
+const items = [
+    { title: 'Profil', href: edit(), icon: UserRound },
+    { title: 'Keamanan', href: editSecurity(), icon: KeyRound },
 ];
 
+/** Pengaturan akun admin: profil, kata sandi, 2FA, dan passkey (FR-AUTH-05). */
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
 
     return (
-        <div className="px-4 py-6">
-            <Heading
-                title="Pengaturan akun"
-                description="Kelola profil, kata sandi, dan autentikasi dua langkah"
+        <>
+            <AdminPageHeader
+                title="Akun"
+                description="Kelola profil, kata sandi, dan autentikasi dua langkah akun admin Anda."
             />
 
-            <div className="flex flex-col lg:flex-row lg:space-x-12">
-                <aside className="w-full max-w-xl lg:w-48">
-                    <nav
-                        className="flex flex-col space-y-1 space-x-0"
-                        aria-label="Settings"
-                    >
-                        {sidebarNavItems.map((item, index) => (
-                            <Button
-                                key={`${toUrl(item.href)}-${index}`}
-                                size="sm"
-                                variant="ghost"
-                                asChild
-                                className={cn('w-full justify-start', {
-                                    'bg-muted': isCurrentOrParentUrl(item.href),
-                                })}
-                            >
-                                <Link href={item.href}>
-                                    {item.icon && (
-                                        <item.icon className="h-4 w-4" />
-                                    )}
-                                    {item.title}
-                                </Link>
-                            </Button>
-                        ))}
-                    </nav>
-                </aside>
+            <nav
+                aria-label="Pengaturan akun"
+                className="mb-6 inline-flex gap-1 rounded-2xl bg-sand p-1.5"
+            >
+                {items.map((item) => {
+                    const active = isCurrentOrParentUrl(item.href);
 
-                <Separator className="my-6 lg:hidden" />
+                    return (
+                        <Link
+                            key={toUrl(item.href)}
+                            href={item.href}
+                            aria-current={active ? 'page' : undefined}
+                            className={cn(
+                                'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-ink-muted transition hover:text-maroon-700',
+                                active && 'bg-white text-maroon-600 shadow-sm',
+                            )}
+                        >
+                            <item.icon className="size-4" aria-hidden />
+                            {item.title}
+                        </Link>
+                    );
+                })}
+            </nav>
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-12">
-                        {children}
-                    </section>
-                </div>
-            </div>
-        </div>
+            <section className="grid max-w-3xl gap-6">{children}</section>
+        </>
     );
 }

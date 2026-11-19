@@ -112,7 +112,11 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Kolom dikenali dari judulnya, urutannya bebas. Tanggal diterima dari sel tanggal Excel, `15/03/2013`, `15-03-2013`, atau `2013-03-15`. CSV dengan titik koma atau koma, termasuk BOM dari Excel.
   - Validasinya sama dengan form anggota. Baris yang tidak valid, ganda (nama + tanggal lahir sama), atau melebihi kuota 8/8 dilewati dan dilaporkan per nomor baris.
   - Hanya bisa saat data boleh diubah dan jadwal buka. File tidak disimpan di server.
-- [ ] T7.3 2FA admin — FR-AUTH-05
+- [x] **T7.3 2FA admin** — FR-AUTH-05
+  - 2FA TOTP + kode cadangan dari Fortify, diaktifkan admin di **Akun → Keamanan** (konfirmasi kata sandi dulu). Login admin lalu meminta kode sebelum masuk dashboard.
+  - Halaman Akun (profil, kata sandi, 2FA, passkey) dan dialog setup 2FA memakai tema merah-emas panel admin.
+  - Dashboard menampilkan pengingat **Aktifkan 2FA** selama admin belum mengaktifkannya (2FA tetap opsional sesuai PRD).
+  - Tes: login → tantangan 2FA → dashboard, kode cadangan sekali pakai, kode salah ditolak.
 - [ ] T7.4 Perapian UI mobile dan aksesibilitas
 
 ## Fase 8 · Pengujian & rilis *(menyusul)*

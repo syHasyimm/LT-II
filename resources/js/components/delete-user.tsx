@@ -20,7 +20,7 @@ export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 rounded-3xl border border-maroon-600/25 bg-white p-6 sm:p-8">
             <Heading
                 variant="small"
                 title="Hapus akun"

@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Check, Clock, UserRound, Users } from 'lucide-react';
+import { Check, Clock, ShieldAlert, UserRound, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { GudepTable } from '@/components/admin/gudep-table';
 import type {
@@ -10,6 +10,7 @@ import type {
 import { RegistrationPill } from '@/components/registration-pill';
 import { AdminPageHeader } from '@/layouts/admin-layout';
 import { cn } from '@/lib/utils';
+import { edit as editSecurity } from '@/routes/security';
 
 type Props = {
     today: string;
@@ -23,6 +24,7 @@ type Props = {
     };
     filters: { status: string | null; q: string | null };
     rows: Paginated<GudepRow>;
+    twoFactorEnabled: boolean;
 };
 
 /** Dashboard admin (desain D1). */
@@ -32,6 +34,7 @@ export default function AdminDashboard({
     summary,
     filters,
     rows,
+    twoFactorEnabled,
 }: Props) {
     const { registration } = usePage().props;
     const verifiedPercent = counts.all
@@ -51,6 +54,31 @@ export default function AdminDashboard({
                     />
                 }
             />
+
+            {!twoFactorEnabled && (
+                <div className="mb-6 flex flex-wrap items-center gap-4 rounded-3xl border border-gold-500/50 bg-gold-100/60 px-5 py-4">
+                    <ShieldAlert
+                        className="size-6 shrink-0 text-gold-800"
+                        aria-hidden
+                    />
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[15px] font-bold text-ink">
+                            Amankan akun admin dengan autentikasi dua langkah
+                        </p>
+                        <p className="text-sm text-ink-muted">
+                            Akun ini bisa melihat data dan dokumen semua
+                            peserta. Dengan 2FA, masuk butuh kode dari aplikasi
+                            autentikator di ponsel.
+                        </p>
+                    </div>
+                    <Link
+                        href={editSecurity()}
+                        className="rounded-xl bg-maroon-gradient px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+                    >
+                        Aktifkan 2FA
+                    </Link>
+                </div>
+            )}
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <StatCard
