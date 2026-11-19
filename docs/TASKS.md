@@ -101,9 +101,12 @@ Legenda: `[ ]` belum · `[x]` selesai
 - [x] T6.4 Unduh PDF satuan dan ZIP; mode cetak 1 kartu atau A4 3 × 3 — FR-GEN-04, FR-GEN-06
 - [x] T6.5 Halaman verifikasi publik `/verify/{serial}` (desain V1–V3) — FR-GEN-05
 
-## Fase 7 · Penyempurnaan *(menyusul)*
+## Fase 7 · Penyempurnaan
 
-- [ ] T7.1 Ekspor Excel daftar gudep dan anggota — FR-DSH-02
+- [x] **T7.1 Ekspor Excel daftar gudep dan anggota** — FR-DSH-02
+  - Tombol **Ekspor Excel** di Admin → Gudep, mengikuti filter status dan pencarian yang aktif.
+  - Workbook berisi sheet *Gudep* (status, jumlah anggota, rekap dokumen, tanggal kirim/verifikasi) dan *Anggota* (nama, peran, regu, gudep, status tiap dokumen, nomor seri ID Card/Sertifikat).
+  - Dibuat dengan `shuchkin/simplexlsxgen` (tanpa ekstensi `zip`). Isi dari pengguna ditulis sebagai teks, jadi tidak bisa menjadi rumus. Setiap ekspor tercatat di audit log.
 - [ ] T7.2 Import peserta dari Excel/CSV — FR-GDP-06
 - [ ] T7.3 2FA admin — FR-AUTH-05
 - [ ] T7.4 Perapian UI mobile dan aksesibilitas

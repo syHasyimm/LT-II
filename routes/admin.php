@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\GenerateController;
 use App\Http\Controllers\Admin\GudepController;
 use App\Http\Controllers\Admin\ScheduleController;
@@ -24,6 +25,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('gudep', [GudepController::class, 'index'])->name('gudeps.index');
+        Route::get('gudep-ekspor', ExportController::class)->name('gudeps.excel');
         Route::get('gudep/{gudep}', [VerificationController::class, 'show'])->name('gudeps.show');
         Route::post('gudep/{gudep}/verifikasi', [VerificationController::class, 'approve'])->name('gudeps.approve');
         Route::post('gudep/{gudep}/revisi', [VerificationController::class, 'reject'])->name('gudeps.reject');

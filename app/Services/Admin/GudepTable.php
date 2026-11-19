@@ -30,15 +30,28 @@ class GudepTable
         ];
     }
 
-    /**
-     * @return array{filters: array{status: string|null, q: string|null}, rows: LengthAwarePaginator<int, mixed>}
-     */
-    public static function fromRequest(Request $request, int $perPage = 15): array
+    /** @return array{status: string|null, q: string|null} */
+    public static function filters(Request $request): array
     {
-        $status = GudepStatus::tryFrom((string) $request->query('status'))?->value;
-        $search = trim((string) $request->query('q')) ?: null;
+        return [
+            'status' => GudepStatus::tryFrom((string) $request->query('status'))?->value,
+            'q' => trim((string) $request->query('q')) ?: null,
+        ];
+    }
 
-        $paginator = Gudep::query()
+    /**
+     * Query gudep sesuai filter status dan pencarian, urut seperti tabel admin.
+     * Dipakai tabel dan ekspor Excel agar isinya sama.
+     *
+     * @param  array{status: string|null, q: string|null}  $filters
+     * @return Builder<Gudep>
+     */
+    public static function query(array $filters): Builder
+    {
+        $status = $filters['status'];
+        $search = $filters['q'];
+
+        return Gudep::query()
             ->withCount([
                 'members as peserta_count' => fn (Builder $query) => $query->where('role', MemberRole::Peserta),
                 'members as pembina_count' => fn (Builder $query) => $query->where('role', MemberRole::Pembina),
@@ -50,7 +63,17 @@ class GudepTable
                 ->orWhere('gudep_number', 'like', "%{$search}%")))
             ->orderByRaw("case status when 'submitted' then 0 when 'revision' then 1 when 'draft' then 2 else 3 end")
             ->orderByDesc('submitted_at')
-            ->orderByDesc('id')
+            ->orderByDesc('id');
+    }
+
+    /**
+     * @return array{filters: array{status: string|null, q: string|null}, rows: LengthAwarePaginator<int, mixed>}
+     */
+    public static function fromRequest(Request $request, int $perPage = 15): array
+    {
+        $filters = self::filters($request);
+
+        $paginator = self::query($filters)
             ->paginate($perPage)
             ->withQueryString()
             ->through(function (Gudep $gudep) {
@@ -70,7 +93,7 @@ class GudepTable
             });
 
         return [
-            'filters' => ['status' => $status, 'q' => $search],
+            'filters' => $filters,
             'rows' => $paginator,
         ];
     }
