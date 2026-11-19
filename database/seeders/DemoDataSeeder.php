@@ -43,8 +43,8 @@ class DemoDataSeeder extends Seeder
                 'admin_note' => $status === GudepStatus::Revision ? 'Surat kesehatan dua peserta putri belum terbaca jelas.' : null,
             ]);
 
-            if ($status === GudepStatus::Draft) {
-                continue;
+            if ($gudep->submitted_at === null) {
+                continue; // gudep draft: belum ada foto dan dokumen
             }
 
             $documentStatus = match ($status) {
