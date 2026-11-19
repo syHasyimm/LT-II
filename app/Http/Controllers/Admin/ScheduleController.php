@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateScheduleRequest;
+use App\Models\ActivityLog;
 use App\Models\Gudep;
 use App\Models\Setting;
 use App\Models\User;
@@ -40,10 +41,15 @@ class ScheduleController extends Controller
         $user = $request->user();
         $timezone = (string) config('camp.timezone');
 
+        $values = [];
+
         foreach ([RegistrationWindow::OPEN_KEY => 'opens_at', RegistrationWindow::CLOSE_KEY => 'closes_at'] as $key => $field) {
             $value = CarbonImmutable::parse($request->string($field)->toString(), $timezone);
             Setting::set($key, $value->toIso8601String(), $user);
+            $values[$key] = $value->toIso8601String();
         }
+
+        ActivityLog::record('settings.schedule_updated', Setting::query()->where('key', RegistrationWindow::CLOSE_KEY)->sole(), $values, $user);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Jadwal pendaftaran disimpan.']);
 

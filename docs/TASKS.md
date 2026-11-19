@@ -80,7 +80,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Ringkasan per status, filter, pencarian, paginasi.
 - [x] **T4.5 Panel verifikasi** — FR-VER-03, FR-VER-04 (desain D2)
   Setuju/tolak per dokumen dengan catatan, status `verified` hanya jika semua dokumen disetujui, tolak pendaftaran membuat status `revision` beserta catatan.
-- [ ] **T4.6 Audit log & notifikasi email** — FR-VER-05, FR-VER-06
+- [x] **T4.6 Audit log & notifikasi email** — FR-VER-05, FR-VER-06
   `activity_logs`, email perubahan status lewat queue `database`.
 - [ ] **T4.7 Uji alur MVP & README**
   Uji end-to-end dari pembina daftar sampai admin verifikasi. README berisi cara instalasi, konfigurasi Google OAuth, dan membuat admin.

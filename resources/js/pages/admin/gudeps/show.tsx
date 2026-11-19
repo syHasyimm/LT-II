@@ -52,6 +52,13 @@ type Props = {
     canReview: boolean;
     canVerify: boolean;
     registrationOpen: boolean;
+    activity: {
+        id: number;
+        text: string;
+        note: string | null;
+        by: string;
+        at: string | null;
+    }[];
     columns: DocumentColumn[];
     rows: DocumentRow[];
     gudepDocuments: GudepDocument[];
@@ -83,6 +90,7 @@ export default function GudepVerification({
     canReview,
     canVerify,
     registrationOpen,
+    activity,
     columns,
     rows,
     gudepDocuments,
@@ -602,6 +610,36 @@ export default function GudepVerification({
                     )}
                 </section>
             </div>
+
+            <section className="mt-6 rounded-3xl border border-line bg-white p-6">
+                <h2 className="font-display text-2xl font-bold text-ink">
+                    Riwayat aktivitas
+                </h2>
+                {activity.length === 0 ? (
+                    <p className="mt-3 text-sm text-ink-soft">
+                        Belum ada aktivitas verifikasi.
+                    </p>
+                ) : (
+                    <ol className="mt-4 grid gap-3 border-l-2 border-line pl-5">
+                        {activity.map((item) => (
+                            <li key={item.id} className="relative">
+                                <span className="absolute top-1.5 -left-[27px] size-3 rounded-full border-2 border-white bg-gold-500" />
+                                <p className="text-sm font-semibold text-ink">
+                                    {item.text}
+                                </p>
+                                {item.note && (
+                                    <p className="text-sm text-ink-muted">
+                                        “{item.note}”
+                                    </p>
+                                )}
+                                <p className="text-xs text-ink-soft">
+                                    {item.by} · {item.at}
+                                </p>
+                            </li>
+                        ))}
+                    </ol>
+                )}
+            </section>
         </>
     );
 }

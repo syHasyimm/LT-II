@@ -9,6 +9,7 @@ use App\Enums\DocumentStatus;
 use App\Enums\GudepStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pembina\DocumentController;
+use App\Models\ActivityLog;
 use App\Models\Document;
 use App\Models\Gudep;
 use App\Models\User;
@@ -58,6 +59,20 @@ class VerificationController extends Controller
             'canReview' => $gudep->status === GudepStatus::Submitted,
             'canVerify' => $gudep->status === GudepStatus::Submitted && $checklist->allApproved(),
             'registrationOpen' => $window->isOpen(),
+            'activity' => ActivityLog::query()
+                ->where('subject_type', $gudep->getMorphClass())
+                ->where('subject_id', $gudep->id)
+                ->with('user:id,name')
+                ->latest('id')
+                ->limit(30)
+                ->get()
+                ->map(fn (ActivityLog $log) => [
+                    'id' => $log->id,
+                    'text' => self::describe($log),
+                    'note' => $log->meta['note'] ?? null,
+                    'by' => $log->user->name ?? 'Sistem',
+                    'at' => $local($log->created_at)?->translatedFormat('j M Y, H.i'),
+                ]),
             ...DocumentController::matrix($gudep),
         ]);
     }
@@ -114,6 +129,22 @@ class VerificationController extends Controller
         return to_route('admin.gudeps.show', $gudep);
     }
 
+    /** Kalimat ringkas untuk riwayat aktivitas (FR-VER-06). */
+    private static function describe(ActivityLog $log): string
+    {
+        $meta = $log->meta ?? [];
+        $status = fn (?string $value) => $value ? (GudepStatus::tryFrom($value)?->label() ?? $value) : '-';
+
+        return match ($log->action) {
+            'gudep.status_changed' => 'Status: '.$status($meta['from'] ?? null).' → '.$status($meta['to'] ?? null),
+            'document.reviewed' => (($meta['status'] ?? '') === 'approved' ? 'Menyetujui ' : 'Menolak ').($meta['type'] ?? 'dokumen').(isset($meta['member']) ? " · {$meta['member']}" : ''),
+            'gudep.extension_updated' => isset($meta['until'])
+                ? 'Perpanjangan sampai '.RegistrationWindow::label(CarbonImmutable::parse($meta['until'])->setTimezone((string) config('camp.timezone')))
+                : 'Perpanjangan dihapus',
+            default => $log->action,
+        };
+    }
+
     /** FR-PRD-04: perpanjangan batas pendaftaran per gudep. */
     public function extend(Request $request, Gudep $gudep): RedirectResponse
     {
@@ -126,6 +157,8 @@ class VerificationController extends Controller
             : null;
 
         $gudep->forceFill(['deadline_extended_until' => $until])->save();
+
+        ActivityLog::record('gudep.extension_updated', $gudep, ['until' => $until?->toIso8601String()], $request->user());
 
         Inertia::flash('toast', [
             'type' => 'success',
