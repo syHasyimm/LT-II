@@ -56,3 +56,12 @@ it('tidak membagikan langkah ke admin', function () {
             ->where('pembinaSteps', null)
             ->where('pembinaStep', null));
 });
+
+it('tidak error saat parameter tab berupa array', function () {
+    $gudep = Gudep::factory()->withOwner()->create();
+
+    $this->actingAs($gudep->user)
+        ->get('/pembina/anggota?tab[]=pi')
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->where('pembinaStep', 'peserta_pa'));
+});

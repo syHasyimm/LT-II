@@ -26,7 +26,10 @@ export function StepNav() {
             <Button asChild variant="outline" size="xl" className="flex-1">
                 <Link href={previous?.href ?? '/pembina'}>
                     <ArrowLeft className="size-4" aria-hidden />
-                    {previous ? previous.title : 'Ringkasan'}
+                    Kembali
+                    <span className="sr-only">
+                        {`: ${previous ? previous.title : 'Ringkasan'}`}
+                    </span>
                 </Link>
             </Button>
             {next && (
