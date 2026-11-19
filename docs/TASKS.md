@@ -44,7 +44,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 - [x] **T2.1 Model gudep & anggota** — BR-01, FR-AUTH-04
   Migrasi `gudeps`, `members`, model, factory, `GudepPolicy`.
   *Tes:* akses lintas gudep ditolak.
-- [ ] **T2.2 Form data gudep** — FR-GDP-01
+- [x] **T2.2 Form data gudep** — FR-GDP-01
   Nama, nomor gudep, asal sekolah/lembaga, kwartir/wilayah. Tersimpan sebagai draft.
 - [ ] **T2.3 Peserta Putra & Putri** — FR-GDP-02, BR-02 (desain M3, M3b)
   Tab Pa/Pi, indikator `x/8`, form peserta dalam sheet.
