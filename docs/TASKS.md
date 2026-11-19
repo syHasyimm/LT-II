@@ -35,8 +35,9 @@ Legenda: `[ ]` belum · `[x]` selesai
   `/admin/login` (email + password lewat Fortify), registrasi publik dimatikan, command `app:create-admin`, seeder admin. Akun Google tidak bisa menjadi admin.
 - [x] **T1.3 Pembatasan peran** — FR-AUTH-03
   Middleware `EnsureRole`. Pembina ke `/admin/*` mendapat 403, admin ke area pembina dialihkan ke dashboard admin.
-- [ ] **T1.4 Beranda publik & halaman masuk** — desain P1/P2, M1
+- [x] **T1.4 Beranda publik & halaman masuk** — desain P1/P2, M1
   `welcome.tsx` dengan jadwal, hitung mundur, dan statistik dari data asli. Halaman masuk Pembina sesuai M1.
+  *Catatan:* tabel `settings`, model `Setting`, dan layanan `RegistrationWindow` dimajukan dari T4.1 karena dibutuhkan beranda. Statistik gudep/peserta disambungkan pada T2.1. Bagian "Verifikasi sertifikat" di beranda ditambahkan pada T6.5.
 
 ## Fase 2 · Gudep & anggota
 

@@ -1,3 +1,4 @@
+import type { RegistrationWindow } from '@/components/registration-pill';
 import type { Auth } from '@/types/auth';
 
 declare module 'react' {
@@ -12,6 +13,7 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            registration: RegistrationWindow & { now: string };
             [key: string]: unknown;
         };
     }

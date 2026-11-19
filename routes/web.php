@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\Auth\DevLoginController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Public\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', WelcomeController::class)->name('home');
 
 /*
 |--------------------------------------------------------------------------

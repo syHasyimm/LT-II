@@ -24,7 +24,7 @@ export function BrandMark({
             <span className="grid leading-tight">
                 <span
                     className={cn(
-                        'font-display font-bold',
+                        'font-display font-bold whitespace-nowrap',
                         size === 'sm' ? 'text-[17px]' : 'text-xl',
                         tone === 'dark' ? 'text-white' : 'text-ink',
                     )}
@@ -33,7 +33,7 @@ export function BrandMark({
                 </span>
                 <span
                     className={cn(
-                        'text-[10px] font-semibold tracking-[0.24em] uppercase',
+                        'text-[10px] font-semibold tracking-[0.24em] whitespace-nowrap uppercase',
                         tone === 'dark' ? 'text-gold-300' : 'text-gold-700',
                     )}
                 >
