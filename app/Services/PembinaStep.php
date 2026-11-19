@@ -18,7 +18,7 @@ class PembinaStep
         return match ($route?->getName()) {
             'pembina.gudep.edit' => 'gudep',
             'pembina.members.index' => self::fromRegu((string) $request->query('tab')),
-            'pembina.members.create' => self::fromRegu((string) $route->parameter('regu')),
+            'pembina.members.create' => self::fromRegu(is_string($regu = $route->parameter('regu')) ? $regu : ''),
             'pembina.members.edit' => self::fromMember($route->parameter('member')),
             'pembina.documents.index' => 'berkas',
             'pembina.submission.show' => 'kirim',
