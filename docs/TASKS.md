@@ -17,7 +17,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 - [x] **T0.1 Pasang starter kit & repo**
   Laravel 13 + React (Inertia) + Tailwind 4 + shadcn/ui dari starter kit resmi, `git init`, `.env` dengan MySQL `perkemahan_lt2` (Laragon).
   *Selesai jika:* `php artisan migrate` dan `npm run build` berhasil.
-- [ ] **T0.2 Konfigurasi & enum domain**
+- [x] **T0.2 Konfigurasi & enum domain**
   `config/camp.php` (PRD §7), enum `UserRole`, `MemberRole`, `TeamGroup`, `GudepStatus`, `DocumentStatus`, `TemplateType`, zona waktu `Asia/Jakarta`, locale `id`.
 - [x] **T0.3 Referensi desain**
   Ekspor setiap frame FigCraft ke `docs/design/*.png`.
