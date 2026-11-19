@@ -217,7 +217,8 @@ class RegistrationProgress
     }
 
     /**
-     * Langkah pendaftaran untuk Beranda Pembina.
+     * Langkah alur pendaftaran (Beranda dan timeline pembina): gudep, peserta_pa,
+     * peserta_pi, pembina, berkas, kirim.
      *
      * @return list<array{key: string, title: string, subtitle: string, value: string, state: 'done'|'current'|'todo'|'warning', href: string}>
      */
@@ -244,12 +245,20 @@ class RegistrationProgress
                 'href' => route('pembina.gudep.edit'),
             ],
             [
-                'key' => 'peserta',
-                'title' => 'Peserta Pa & Pi',
-                'subtitle' => "Pa {$pa}/{$max} · Pi {$pi}/{$max}",
-                'value' => ($pa + $pi).'/'.($max * 2),
-                'done' => $pa === $max && $pi === $max,
-                'href' => route('pembina.members.index', ['tab' => $pa < $max ? 'pa' : 'pi']),
+                'key' => 'peserta_pa',
+                'title' => 'Peserta Putra',
+                'subtitle' => "Regu Putra · {$pa}/{$max}",
+                'value' => "{$pa}/{$max}",
+                'done' => $pa === $max,
+                'href' => route('pembina.members.index', ['tab' => 'pa']),
+            ],
+            [
+                'key' => 'peserta_pi',
+                'title' => 'Peserta Putri',
+                'subtitle' => "Regu Putri · {$pi}/{$max}",
+                'value' => "{$pi}/{$max}",
+                'done' => $pi === $max,
+                'href' => route('pembina.members.index', ['tab' => 'pi']),
             ],
             [
                 'key' => 'pembina',

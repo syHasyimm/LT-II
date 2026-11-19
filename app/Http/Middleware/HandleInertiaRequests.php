@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use App\Enums\GudepStatus;
 use App\Models\Gudep;
+use App\Services\PembinaStep;
+use App\Services\RegistrationProgress;
 use App\Services\RegistrationWindow;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -48,6 +50,13 @@ class HandleInertiaRequests extends Middleware
             'registration' => fn () => app(RegistrationWindow::class)->toArray(),
             'adminCounters' => fn () => $request->user()?->isAdmin()
                 ? ['submitted' => Gudep::query()->where('status', GudepStatus::Submitted)->count()]
+                : null,
+            // Alur pembina per langkah: data timeline dan langkah halaman aktif.
+            'pembinaSteps' => fn () => $request->user()?->isPembina()
+                ? RegistrationProgress::for($request->user()->gudep)->steps()
+                : null,
+            'pembinaStep' => fn () => $request->user()?->isPembina()
+                ? PembinaStep::fromRequest($request)
                 : null,
         ];
     }

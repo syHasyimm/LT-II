@@ -13,7 +13,7 @@ it('menampilkan langkah awal untuk pembina tanpa gudep', function () {
             ->where('gudep', null)
             ->where('percent', 0)
             ->where('steps.0.state', 'current')
-            ->has('steps', 5));
+            ->has('steps', 6));
 });
 
 it('menandai langkah peserta sebagai langkah berikutnya setelah data gudep diisi', function () {
@@ -23,8 +23,11 @@ it('menandai langkah peserta sebagai langkah berikutnya setelah data gudep diisi
         ->get(route('pembina.dashboard'))
         ->assertInertia(fn ($page) => $page
             ->where('steps.0.state', 'done')
+            ->where('steps.1.key', 'peserta_pa')
             ->where('steps.1.state', 'current')
-            ->where('steps.1.value', '0/16'));
+            ->where('steps.1.value', '0/8')
+            ->where('steps.2.key', 'peserta_pi')
+            ->where('steps.2.value', '0/8'));
 });
 
 it('melaporkan kekurangan yang menghalangi pengiriman', function () {
