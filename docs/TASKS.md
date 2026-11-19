@@ -89,7 +89,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 5 · Template ID Card & Sertifikat *(menyusul)*
 
-- [ ] T5.1 Model `templates` (jenis, sasaran, ukuran mm, field JSON, aktif) — FR-TPL-01..03
+- [x] T5.1 Model `templates` (jenis, sasaran, ukuran mm, field JSON, aktif) — FR-TPL-01..03
 - [ ] T5.2 Unggah background dan daftar field — FR-TPL-05
 - [ ] T5.3 Editor visual dan pratinjau ukuran asli 55 × 85 mm (desain D3) — FR-TPL-04
 
