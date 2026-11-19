@@ -35,6 +35,21 @@ class PrivateFileService
         }
     }
 
+    public function get(string $path): string
+    {
+        return (string) $this->disk()->get($path);
+    }
+
+    public function put(string $path, string $contents): void
+    {
+        $this->disk()->put($path, $contents);
+    }
+
+    public function absolutePath(string $path): string
+    {
+        return $this->disk()->path($path);
+    }
+
     public function exists(?string $path): bool
     {
         return $path !== null && $path !== '' && $this->disk()->exists($path);

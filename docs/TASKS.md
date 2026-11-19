@@ -95,7 +95,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 6 · Generate ID Card & Sertifikat *(menyusul)*
 
-- [ ] T6.1 `TemplateRenderer` ke PDF (dompdf) dan `QrCodeService`
+- [x] T6.1 `TemplateRenderer` ke PDF (dompdf) dan `QrCodeService`
 - [ ] T6.2 Nomor seri `LT2-2026-ID/CERT-0001`, aman dari duplikasi, dipertahankan saat generate ulang — BR-14, FR-GEN-03
 - [ ] T6.3 Queue job dan indikator progres; pilih penerima orang/gudep/semua — FR-GEN-01, FR-GEN-02
 - [ ] T6.4 Unduh PDF satuan dan ZIP; mode cetak 1 kartu atau A4 3 × 3 — FR-GEN-04, FR-GEN-06
