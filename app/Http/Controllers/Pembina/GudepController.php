@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pembina;
 use App\Actions\Gudep\SaveGudep;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pembina\SaveGudepRequest;
+use App\Models\Gudep;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class GudepController extends Controller
 
         return Inertia::render('pembina/gudep/form', [
             'gudep' => $gudep?->only(['name', 'gudep_number', 'institution', 'region']),
-            'editable' => $gudep === null || $user->can('update', $gudep),
+            'editable' => $gudep === null ? $user->can('create', Gudep::class) : $user->can('update', $gudep),
         ]);
     }
 

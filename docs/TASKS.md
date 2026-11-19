@@ -71,7 +71,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 4 · Kirim & verifikasi (MVP)
 
-- [ ] **T4.1 Jadwal pendaftaran** — FR-PRD-01, FR-PRD-02, BR-12
+- [x] **T4.1 Jadwal pendaftaran** — FR-PRD-01, FR-PRD-02, BR-12
   Tabel `settings`, halaman admin jadwal buka/tutup, middleware `EnsureRegistrationOpen`, read-only di luar jadwal, pesan "pendaftaran belum dibuka".
 - [ ] **T4.2 Banner, perpanjangan, tenggat revisi** — FR-PRD-03, FR-PRD-04, FR-PRD-05
 - [ ] **T4.3 Kirim pendaftaran** — FR-VER-01, BR-07 (desain M5, M6)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureRegistrationOpen;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => EnsureRole::class,
+            'registration.open' => EnsureRegistrationOpen::class,
         ]);
 
         $middleware->web(append: [

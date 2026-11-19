@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Pembina;
 
+use App\Models\Gudep;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,7 +15,7 @@ class SaveGudepRequest extends FormRequest
         $user = $this->user();
         $gudep = $user->gudep;
 
-        return $gudep === null ? $user->isPembina() : $user->can('update', $gudep);
+        return $gudep === null ? $user->can('create', Gudep::class) : $user->can('update', $gudep);
     }
 
     /**

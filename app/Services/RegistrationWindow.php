@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\GudepStatus;
+use App\Models\Gudep;
 use App\Models\Setting;
 use Carbon\CarbonImmutable;
 
@@ -47,6 +49,41 @@ class RegistrationWindow
     public function isOpen(?CarbonImmutable $now = null): bool
     {
         return $this->state($now) === 'open';
+    }
+
+    /**
+     * Pembina boleh mengubah data gudep pada waktu ini (FR-PRD-02): saat
+     * pendaftaran dibuka, saat gudep mendapat perpanjangan (FR-PRD-04), atau
+     * saat gudep berstatus revisi dengan tenggat revisi (FR-PRD-05).
+     */
+    public function allowsChangesFor(?Gudep $gudep, ?CarbonImmutable $now = null): bool
+    {
+        $now ??= CarbonImmutable::now($this->timezone());
+
+        if ($this->isOpen($now)) {
+            return true;
+        }
+
+        if ($gudep === null) {
+            return false;
+        }
+
+        if ($gudep->deadline_extended_until !== null && $now->lt($gudep->deadline_extended_until)) {
+            return true;
+        }
+
+        return $gudep->status === GudepStatus::Revision
+            && $gudep->revision_deadline !== null
+            && $now->lt($gudep->revision_deadline);
+    }
+
+    /** Pesan untuk pembina saat perubahan ditolak karena jadwal. */
+    public function closedMessage(): string
+    {
+        return match ($this->state()) {
+            'not_open' => 'Pendaftaran belum dibuka'.($this->opensAt() ? '. Dibuka '.self::label($this->opensAt()).'.' : '.'),
+            default => 'Pendaftaran sudah ditutup. Data hanya dapat dilihat.',
+        };
     }
 
     /**

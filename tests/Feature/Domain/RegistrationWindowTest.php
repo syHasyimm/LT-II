@@ -11,6 +11,8 @@ function setSchedule(?string $open, ?string $close): void
 }
 
 it('berstatus belum dibuka bila jadwal belum diisi', function () {
+    setRegistrationWindow(null, null);
+
     expect(app(RegistrationWindow::class)->state())->toBe('not_open');
 });
 
