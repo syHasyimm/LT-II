@@ -113,7 +113,7 @@ export function PembinaHeader({
     actions?: ReactNode;
 }) {
     return (
-        <div className="relative overflow-hidden bg-maroon-gradient px-6 pt-8 pb-16 text-white md:rounded-b-[28px]">
+        <div className="relative overflow-hidden rounded-b-[28px] bg-maroon-gradient px-6 pt-8 pb-16 text-white">
             <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full border border-gold-300/15" />
             <div className="relative flex items-start gap-3">
                 {back && (

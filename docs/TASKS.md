@@ -46,12 +46,12 @@ Legenda: `[ ]` belum · `[x]` selesai
   *Tes:* akses lintas gudep ditolak.
 - [x] **T2.2 Form data gudep** — FR-GDP-01
   Nama, nomor gudep, asal sekolah/lembaga, kwartir/wilayah. Tersimpan sebagai draft.
-- [ ] **T2.3 Peserta Putra & Putri** — FR-GDP-02, BR-02 (desain M3, M3b)
+- [x] **T2.3 Peserta Putra & Putri** — FR-GDP-02, BR-02 (desain M3, M3b)
   Tab Pa/Pi, indikator `x/8`, form peserta dalam sheet.
   *Tes:* peserta ke-9 per regu ditolak.
-- [ ] **T2.4 Repeater pembina pendamping** — FR-GDP-03, BR-03 (desain M3c)
+- [x] **T2.4 Repeater pembina pendamping** — FR-GDP-03, BR-03 (desain M3c)
   Tambah tanpa batas, hapus per baris, pemilik akun otomatis menjadi pembina pertama dan tidak bisa dihapus.
-- [ ] **T2.5 Data anggota & pas foto** — FR-GDP-04, BR-06
+- [x] **T2.5 Data anggota & pas foto** — FR-GDP-04, BR-06
   Nama, jenis kelamin, tanggal lahir, KTA, pas foto (disk privat). Pembina juga punya nomor HP dan keterangan mendampingi Pa/Pi/keduanya.
 - [ ] **T2.6 Penguncian data** — FR-GDP-05, BR-08
   Form read-only saat status `submitted`/`verified`, bisa diedit saat `draft`/`revision`.

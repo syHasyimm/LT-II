@@ -61,4 +61,39 @@ class Member extends Model
     {
         return $this->role === MemberRole::Pembina;
     }
+
+    /**
+     * Data wajib anggota sudah terisi (FR-GDP-04, BR-06). Dokumen diperiksa
+     * terpisah lewat matriks kelengkapan.
+     *
+     * @return list<string> daftar data yang belum lengkap
+     */
+    public function missingData(): array
+    {
+        $missing = [];
+
+        if ($this->gender === null || $this->birth_date === null || blank($this->kta_number)) {
+            $missing[] = 'data diri';
+        }
+
+        if ($this->isPembina() && (blank($this->phone) || $this->accompanies === null)) {
+            $missing[] = 'kontak pembina';
+        }
+
+        if (blank($this->photo_path)) {
+            $missing[] = 'pas foto';
+        }
+
+        return $missing;
+    }
+
+    public function isComplete(): bool
+    {
+        return $this->missingData() === [];
+    }
+
+    public function age(): ?int
+    {
+        return $this->birth_date?->age;
+    }
 }
