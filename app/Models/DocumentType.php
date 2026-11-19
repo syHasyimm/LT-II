@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Enums\MemberRole;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * Jenis dokumen persyaratan (BR-05). `scope` member = per orang,
@@ -18,8 +18,8 @@ use Illuminate\Support\Carbon;
  * @property string $scope
  * @property list<string>|null $required_for
  * @property int $sort
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable(['code', 'label', 'short_label', 'scope', 'required_for', 'sort'])]
 class DocumentType extends Model

@@ -74,7 +74,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 - [x] **T4.1 Jadwal pendaftaran** — FR-PRD-01, FR-PRD-02, BR-12
   Tabel `settings`, halaman admin jadwal buka/tutup, middleware `EnsureRegistrationOpen`, read-only di luar jadwal, pesan "pendaftaran belum dibuka".
 - [ ] **T4.2 Banner, perpanjangan, tenggat revisi** — FR-PRD-03, FR-PRD-04, FR-PRD-05
-- [ ] **T4.3 Kirim pendaftaran** — FR-VER-01, BR-07 (desain M5, M6)
+- [x] **T4.3 Kirim pendaftaran** — FR-VER-01, BR-07 (desain M5, M6)
   Cek kelengkapan, tampilkan daftar kekurangan, status `submitted`, data terkunci.
 - [ ] **T4.4 Dashboard & daftar gudep admin** — FR-VER-02, FR-DSH-01 (desain D1)
   Ringkasan per status, filter, pencarian, paginasi.

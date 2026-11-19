@@ -5,13 +5,13 @@ namespace App\Models;
 use App\Enums\GudepStatus;
 use App\Enums\MemberRole;
 use App\Enums\TeamGroup;
+use Carbon\CarbonImmutable;
 use Database\Factories\GudepFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * Gugus depan, unit pendaftar. Satu akun pembina memiliki tepat satu gudep (BR-01).
@@ -24,12 +24,12 @@ use Illuminate\Support\Carbon;
  * @property string $region
  * @property GudepStatus $status
  * @property string|null $admin_note
- * @property Carbon|null $deadline_extended_until
- * @property Carbon|null $revision_deadline
- * @property Carbon|null $submitted_at
- * @property Carbon|null $verified_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $deadline_extended_until
+ * @property CarbonImmutable|null $revision_deadline
+ * @property CarbonImmutable|null $submitted_at
+ * @property CarbonImmutable|null $verified_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
 #[Fillable(['name', 'gudep_number', 'institution', 'region'])]

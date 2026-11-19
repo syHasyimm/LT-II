@@ -4,6 +4,7 @@ use App\Http\Controllers\Pembina\DashboardController;
 use App\Http\Controllers\Pembina\DocumentController;
 use App\Http\Controllers\Pembina\GudepController;
 use App\Http\Controllers\Pembina\MemberController;
+use App\Http\Controllers\Pembina\SubmissionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified', 'role:pembina'])
         Route::get('anggota/tambah/{regu}', [MemberController::class, 'create'])->name('members.create');
         Route::get('anggota/{member}', [MemberController::class, 'edit'])->name('members.edit');
         Route::get('dokumen', [DocumentController::class, 'index'])->name('documents.index');
+        Route::get('kirim', [SubmissionController::class, 'show'])->name('submission.show');
 
         // Aksi tulis hanya dalam jadwal pendaftaran (FR-PRD-02).
         Route::middleware('registration.open')->group(function () {
@@ -30,5 +32,6 @@ Route::middleware(['auth', 'verified', 'role:pembina'])
             Route::put('anggota/{member}', [MemberController::class, 'update'])->name('members.update');
             Route::delete('anggota/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
             Route::post('dokumen', [DocumentController::class, 'store'])->name('documents.store');
+            Route::post('kirim', [SubmissionController::class, 'store'])->name('submission.store');
         });
     });

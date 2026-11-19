@@ -6,13 +6,13 @@ use App\Enums\Accompanies;
 use App\Enums\Gender;
 use App\Enums\MemberRole;
 use App\Enums\TeamGroup;
+use Carbon\CarbonImmutable;
 use Database\Factories\MemberFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * Anggota gudep: peserta (regu Pa/Pi) atau pembina pendamping. Peserta bukan
@@ -24,14 +24,14 @@ use Illuminate\Support\Carbon;
  * @property TeamGroup|null $group
  * @property string $name
  * @property Gender|null $gender
- * @property Carbon|null $birth_date
+ * @property CarbonImmutable|null $birth_date
  * @property string|null $kta_number
  * @property string|null $phone
  * @property Accompanies|null $accompanies
  * @property string|null $photo_path
  * @property bool $is_owner
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property-read Gudep $gudep
  */
 #[Fillable(['role', 'group', 'name', 'gender', 'birth_date', 'kta_number', 'phone', 'accompanies', 'photo_path', 'is_owner'])]

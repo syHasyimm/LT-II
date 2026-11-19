@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DocumentStatus;
 use App\Enums\GudepStatus;
 use App\Enums\TeamGroup;
 use App\Models\Gudep;
@@ -83,6 +84,106 @@ class RegistrationProgress
         }
 
         return [...$issues, ...$this->checklist()->issues()];
+    }
+
+    /**
+     * Daftar periksa sebelum kirim (desain M5). Setiap butir punya tautan
+     * perbaikan bila belum terpenuhi.
+     *
+     * @return list<array{key: string, label: string, detail: string|null, ok: bool, action: string|null, href: string|null}>
+     */
+    public function checklistItems(): array
+    {
+        if ($this->gudep === null) {
+            return [[
+                'key' => 'gudep', 'label' => 'Data gudep belum diisi', 'detail' => null,
+                'ok' => false, 'action' => 'Isi', 'href' => route('pembina.gudep.edit'),
+            ]];
+        }
+
+        $max = $this->perRegu();
+        $items = [[
+            'key' => 'gudep', 'label' => 'Data gudep lengkap', 'detail' => null,
+            'ok' => true, 'action' => null, 'href' => null,
+        ]];
+
+        foreach (TeamGroup::cases() as $group) {
+            $count = $this->countPeserta($group);
+            $ok = $count === $max;
+            $items[] = [
+                'key' => "regu_{$group->value}",
+                'label' => "Regu {$group->label()} {$count}/{$max}",
+                'detail' => $ok ? null : ($count < $max ? 'Tambah '.($max - $count).' peserta lagi' : 'Kurangi '.($count - $max).' peserta'),
+                'ok' => $ok,
+                'action' => $ok ? null : 'Perbaiki',
+                'href' => $ok ? null : route('pembina.members.index', ['tab' => $group->value]),
+            ];
+        }
+
+        $pembinaCount = $this->pembina()->count();
+        $pembinaOk = $pembinaCount >= (int) config('camp.pembina_min');
+        $items[] = [
+            'key' => 'pembina',
+            'label' => $pembinaOk ? "{$pembinaCount} pembina pendamping" : 'Belum ada pembina pendamping',
+            'detail' => $pembinaOk ? null : 'Minimal '.config('camp.pembina_min').' pembina',
+            'ok' => $pembinaOk,
+            'action' => $pembinaOk ? null : 'Tambah',
+            'href' => $pembinaOk ? null : route('pembina.members.index', ['tab' => 'pembina']),
+        ];
+
+        $incomplete = $this->members->filter(fn (Member $member) => in_array('data diri', $member->missingData(), true) || in_array('kontak pembina', $member->missingData(), true));
+        $items[] = [
+            'key' => 'data',
+            'label' => $incomplete->isEmpty() ? 'Data diri anggota lengkap' : "{$incomplete->count()} anggota belum lengkap datanya",
+            'detail' => $incomplete->isEmpty() ? null : self::names($incomplete),
+            'ok' => $incomplete->isEmpty(),
+            'action' => $incomplete->isEmpty() ? null : 'Lengkapi',
+            'href' => $incomplete->isEmpty() ? null : route('pembina.members.edit', $incomplete->first()),
+        ];
+
+        $noPhoto = $this->members->filter(fn (Member $member) => blank($member->photo_path));
+        $items[] = [
+            'key' => 'foto',
+            'label' => $noPhoto->isEmpty() ? 'Semua pas foto diunggah' : "{$noPhoto->count()} pas foto belum diunggah",
+            'detail' => $noPhoto->isEmpty() ? null : self::names($noPhoto),
+            'ok' => $noPhoto->isEmpty(),
+            'action' => $noPhoto->isEmpty() ? null : 'Unggah',
+            'href' => $noPhoto->isEmpty() ? null : route('pembina.documents.index'),
+        ];
+
+        $memberSlots = collect($this->checklist()->requiredSlots())->filter(fn ($slot) => $slot['member'] !== null);
+        $pending = $memberSlots->filter(fn ($slot) => $slot['document'] === null || $slot['document']->status === DocumentStatus::Rejected);
+        $items[] = [
+            'key' => 'dokumen',
+            'label' => $pending->isEmpty() ? 'Semua dokumen anggota diunggah' : "{$pending->count()} dokumen belum diunggah atau ditolak",
+            'detail' => $pending->isEmpty() ? null : $pending->map(fn ($slot) => mb_strtolower($slot['type']->short_label))->unique()->implode(', '),
+            'ok' => $pending->isEmpty(),
+            'action' => $pending->isEmpty() ? null : 'Lengkapi',
+            'href' => $pending->isEmpty() ? null : route('pembina.documents.index'),
+        ];
+
+        foreach ($this->checklist()->gudepTypes() as $type) {
+            $document = $this->checklist()->documentFor(null, $type);
+            $ok = $document !== null && $document->status !== DocumentStatus::Rejected;
+            $items[] = [
+                'key' => "gudep_{$type->code}",
+                'label' => $type->label,
+                'detail' => $ok ? null : ($document ? 'Ditolak, unggah ulang' : 'Belum diunggah'),
+                'ok' => $ok,
+                'action' => $ok ? null : 'Unggah',
+                'href' => $ok ? null : route('pembina.documents.index'),
+            ];
+        }
+
+        return $items;
+    }
+
+    /** @param Collection<int, Member> $members */
+    private static function names(Collection $members): string
+    {
+        $names = $members->take(3)->pluck('name')->implode(', ');
+
+        return $members->count() > 3 ? $names.' dan '.($members->count() - 3).' lainnya' : $names;
     }
 
     private ?DocumentChecklist $checklist = null;
@@ -172,7 +273,7 @@ class RegistrationProgress
                 'subtitle' => 'Data terkunci setelah dikirim',
                 'value' => $status?->label() ?? 'Belum',
                 'done' => in_array($status, [GudepStatus::Submitted, GudepStatus::Verified], true),
-                'href' => route('pembina.dashboard'),
+                'href' => route('pembina.submission.show'),
             ],
         ];
 

@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\DocumentStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * Dokumen yang diunggah pembina (BR-04). Hanya satu dokumen aktif per
@@ -27,10 +27,10 @@ use Illuminate\Support\Carbon;
  * @property string|null $note
  * @property int|null $uploaded_by
  * @property int|null $reviewed_by
- * @property Carbon|null $reviewed_at
- * @property Carbon|null $archived_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $reviewed_at
+ * @property CarbonImmutable|null $archived_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property-read Gudep $gudep
  * @property-read Member|null $member
  * @property-read DocumentType $type

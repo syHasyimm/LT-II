@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Cache;
  * @property string $key
  * @property string|null $value
  * @property int|null $updated_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable(['key', 'value', 'updated_by'])]
 class Setting extends Model
