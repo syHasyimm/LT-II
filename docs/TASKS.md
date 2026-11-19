@@ -33,7 +33,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   *Tes:* Socialite di-mock, login kedua masuk ke akun yang sama.
 - [x] **T1.2 Login Admin terpisah** — FR-AUTH-02
   `/admin/login` (email + password lewat Fortify), registrasi publik dimatikan, command `app:create-admin`, seeder admin. Akun Google tidak bisa menjadi admin.
-- [ ] **T1.3 Pembatasan peran** — FR-AUTH-03
+- [x] **T1.3 Pembatasan peran** — FR-AUTH-03
   Middleware `EnsureRole`. Pembina ke `/admin/*` mendapat 403, admin ke area pembina dialihkan ke dashboard admin.
 - [ ] **T1.4 Beranda publik & halaman masuk** — desain P1/P2, M1
   `welcome.tsx` dengan jadwal, hitung mundur, dan statistik dari data asli. Halaman masuk Pembina sesuai M1.

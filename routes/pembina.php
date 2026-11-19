@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified'])
+Route::middleware(['auth', 'verified', 'role:pembina'])
     ->prefix('pembina')
     ->name('pembina.')
     ->group(function () {

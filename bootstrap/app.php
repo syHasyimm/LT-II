@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(
             fn (Request $request) => $request->is('pembina', 'pembina/*') ? route('pembina.login') : '/admin/login',
         );
+
+        $middleware->redirectUsersTo(
+            fn (Request $request) => $request->user()?->isAdmin() ? route('admin.dashboard') : route('pembina.dashboard'),
+        );
+
+        $middleware->alias([
+            'role' => EnsureRole::class,
+        ]);
 
         $middleware->web(append: [
             HandleInertiaRequests::class,
