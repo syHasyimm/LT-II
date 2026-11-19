@@ -55,7 +55,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Nama, jenis kelamin, tanggal lahir, KTA, pas foto (disk privat). Pembina juga punya nomor HP dan keterangan mendampingi Pa/Pi/keduanya.
 - [x] **T2.6 Penguncian data** — FR-GDP-05, BR-08
   Form read-only saat status `submitted`/`verified`, bisa diedit saat `draft`/`revision`.
-- [ ] **T2.7 Beranda Pembina** — desain M2
+- [x] **T2.7 Beranda Pembina** — desain M2
   Banner jadwal, kartu status, progres langkah 1–5 yang terhubung ke tiap halaman.
 
 ## Fase 3 · Dokumen

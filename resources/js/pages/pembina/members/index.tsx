@@ -100,7 +100,7 @@ function PesertaList({
     const percent = Math.round((members.length / max) * 100);
 
     return (
-        <div className="mt-4 grid gap-3 pb-6">
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
             <div className="rounded-2xl border border-line bg-white px-5 py-4">
                 <div className="flex items-baseline justify-between gap-3">
                     <p className="text-[15px] font-bold text-ink">
@@ -222,7 +222,7 @@ function PembinaList({
         setDrafts((current) => current.filter((draft) => draft !== key));
 
     return (
-        <div className="mt-6 grid gap-3 pb-6">
+        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-3 pb-6">
             <div className="flex items-baseline justify-between">
                 <h2 className="text-[15px] font-bold text-ink">
                     Pembina pendamping

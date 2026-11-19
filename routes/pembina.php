@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Pembina\DashboardController;
 use App\Http\Controllers\Pembina\GudepController;
 use App\Http\Controllers\Pembina\MemberController;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +15,7 @@ Route::middleware(['auth', 'verified', 'role:pembina'])
     ->prefix('pembina')
     ->name('pembina.')
     ->group(function () {
-        Route::inertia('/', 'pembina/dashboard')->name('dashboard');
+        Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('gudep', [GudepController::class, 'edit'])->name('gudep.edit');
         Route::put('gudep', [GudepController::class, 'update'])->name('gudep.update');
