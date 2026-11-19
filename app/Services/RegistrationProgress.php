@@ -82,7 +82,37 @@ class RegistrationProgress
             }
         }
 
-        return $issues;
+        return [...$issues, ...$this->checklist()->issues()];
+    }
+
+    private ?DocumentChecklist $checklist = null;
+
+    private function checklist(): DocumentChecklist
+    {
+        /** @var Gudep $gudep */
+        $gudep = $this->gudep;
+
+        return $this->checklist ??= DocumentChecklist::for($gudep);
+    }
+
+    /**
+     * Berkas wajib (pas foto + dokumen) yang sudah diunggah dan totalnya.
+     *
+     * @return array{done: int, total: int}
+     */
+    public function files(): array
+    {
+        if ($this->gudep === null) {
+            return ['done' => 0, 'total' => 0];
+        }
+
+        $counts = $this->checklist()->counts();
+        $photos = $this->members->filter(fn (Member $member) => filled($member->photo_path))->count();
+
+        return [
+            'done' => $photos + $counts['uploaded'],
+            'total' => $this->members->count() + $counts['total'],
+        ];
     }
 
     /**
@@ -99,6 +129,7 @@ class RegistrationProgress
         $pembinaComplete = $pembina->filter(fn (Member $member) => $member->isComplete())->count();
         $members = $this->members->count();
         $complete = $this->completeMembers();
+        $files = $this->files();
         $hasGudep = $this->gudep !== null;
         $status = $this->gudep?->status;
 
@@ -131,9 +162,9 @@ class RegistrationProgress
                 'key' => 'berkas',
                 'title' => 'Foto & dokumen',
                 'subtitle' => 'Pas foto, KTA, izin ortu, kesehatan',
-                'value' => "{$complete}/{$members}",
-                'done' => $members > 0 && $complete === $members,
-                'href' => route('pembina.members.index'),
+                'value' => "{$files['done']}/{$files['total']}",
+                'done' => $files['total'] > 0 && $files['done'] === $files['total'] && $complete === $members,
+                'href' => route('pembina.documents.index'),
             ],
             [
                 'key' => 'kirim',
@@ -172,14 +203,14 @@ class RegistrationProgress
 
         $max = $this->perRegu();
         $peserta = min($max, $this->countPeserta(TeamGroup::Pa)) + min($max, $this->countPeserta(TeamGroup::Pi));
-        $members = max(1, $this->members->count());
+        $files = $this->files();
         $pembinaOk = $this->pembina()->count() >= (int) config('camp.pembina_min') ? 1 : 0;
 
         $parts = [
             1.0,
             $peserta / ($max * 2),
             $pembinaOk,
-            $this->completeMembers() / $members,
+            $files['total'] > 0 ? $files['done'] / $files['total'] : 0,
         ];
 
         return (int) round(array_sum($parts) / count($parts) * 100);

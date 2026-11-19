@@ -60,11 +60,11 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 3 · Dokumen
 
-- [ ] **T3.1 Unggah dokumen privat** — FR-DOC-01, FR-DOC-04, BR-04, BR-05
+- [x] **T3.1 Unggah dokumen privat** — FR-DOC-01, FR-DOC-04, BR-04, BR-05
   `document_types` + seeder (KTA, Izin Orang Tua hanya untuk peserta, Kesehatan, Kesiapan Sekolah per gudep), tabel `documents`, `PrivateFileService` (cek MIME asli, maksimal 2 MB, nama file acak, disajikan lewat controller berotorisasi).
-- [ ] **T3.2 Matriks kelengkapan** — FR-DOC-02 (desain M4)
+- [x] **T3.2 Matriks kelengkapan** — FR-DOC-02 (desain M4)
   Tabel anggota × dokumen dengan status belum / diunggah / disetujui / ditolak.
-- [ ] **T3.3 Unggah ulang dokumen ditolak** — FR-DOC-03
+- [x] **T3.3 Unggah ulang dokumen ditolak** — FR-DOC-03
   File lama diarsipkan, status kembali `pending`.
 - [ ] **T3.4 Pratinjau dokumen** — FR-DOC-05
   PDF dan gambar tampil di dialog tanpa diunduh.

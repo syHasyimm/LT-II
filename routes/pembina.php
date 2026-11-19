@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Pembina\DashboardController;
+use App\Http\Controllers\Pembina\DocumentController;
 use App\Http\Controllers\Pembina\GudepController;
 use App\Http\Controllers\Pembina\MemberController;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,7 @@ Route::middleware(['auth', 'verified', 'role:pembina'])
         Route::get('anggota/{member}', [MemberController::class, 'edit'])->name('members.edit');
         Route::put('anggota/{member}', [MemberController::class, 'update'])->name('members.update');
         Route::delete('anggota/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
+
+        Route::get('dokumen', [DocumentController::class, 'index'])->name('documents.index');
+        Route::post('dokumen', [DocumentController::class, 'store'])->name('documents.store');
     });

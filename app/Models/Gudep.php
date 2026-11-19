@@ -73,6 +73,12 @@ class Gudep extends Model
             ->when($group, fn ($query) => $query->where('group', $group));
     }
 
+    /** @return HasMany<Document, $this> */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
     /** @return HasMany<Member, $this> */
     public function pembina(): HasMany
     {
