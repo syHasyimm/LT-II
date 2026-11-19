@@ -41,7 +41,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 2 · Gudep & anggota
 
-- [ ] **T2.1 Model gudep & anggota** — BR-01, FR-AUTH-04
+- [x] **T2.1 Model gudep & anggota** — BR-01, FR-AUTH-04
   Migrasi `gudeps`, `members`, model, factory, `GudepPolicy`.
   *Tes:* akses lintas gudep ditolak.
 - [ ] **T2.2 Form data gudep** — FR-GDP-01
