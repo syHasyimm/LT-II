@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -29,11 +30,34 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => UserRole::Pembina,
             'remember_token' => Str::random(10),
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    /**
+     * Admin panitia: login dengan email + password (FR-AUTH-02).
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Admin,
+        ]);
+    }
+
+    /**
+     * Pembina pendamping yang masuk lewat Google (FR-AUTH-01).
+     */
+    public function pembina(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Pembina,
+            'google_id' => (string) fake()->unique()->numberBetween(100000000, 999999999),
+            'password' => null,
+        ]);
     }
 
     /**

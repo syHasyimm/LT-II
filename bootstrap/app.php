@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['sidebar_state']);
 
+        $middleware->redirectGuestsTo(
+            fn (Request $request) => $request->is('pembina', 'pembina/*') ? route('pembina.login') : '/admin/login',
+        );
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

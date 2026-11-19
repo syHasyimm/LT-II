@@ -28,7 +28,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ## Fase 1 · Auth & role
 
-- [ ] **T1.1 Login Google untuk Pembina** — FR-AUTH-01
+- [x] **T1.1 Login Google untuk Pembina** — FR-AUTH-01
   Kolom `google_id`, `avatar`, `role` di `users`. Socialite Google. Login pertama membuat user `role=pembina`. Dev-login `/dev/login-pembina` hanya untuk `APP_ENV=local`.
   *Tes:* Socialite di-mock, login kedua masuk ke akun yang sama.
 - [ ] **T1.2 Login Admin terpisah** — FR-AUTH-02

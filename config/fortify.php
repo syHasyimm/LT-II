@@ -88,6 +88,14 @@ return [
 
     'prefix' => '',
 
+    /*
+    | Pembina masuk lewat Google di /login, sehingga halaman login Fortify
+    | (email + password, khusus admin) dipindah ke /admin/login.
+    */
+    'paths' => [
+        'login' => 'admin/login',
+    ],
+
     'domain' => null,
 
     /*
