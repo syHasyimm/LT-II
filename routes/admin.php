@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GudepController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('gudep', [GudepController::class, 'index'])->name('gudeps.index');
+        Route::get('gudep/{gudep}', [VerificationController::class, 'show'])->name('gudeps.show');
+        Route::post('gudep/{gudep}/verifikasi', [VerificationController::class, 'approve'])->name('gudeps.approve');
+        Route::post('gudep/{gudep}/revisi', [VerificationController::class, 'reject'])->name('gudeps.reject');
+        Route::put('gudep/{gudep}/perpanjangan', [VerificationController::class, 'extend'])->name('gudeps.extend');
+        Route::post('dokumen/{document}/review', [VerificationController::class, 'review'])->name('documents.review');
 
         Route::get('jadwal', [ScheduleController::class, 'edit'])->name('schedule.edit');
         Route::put('jadwal', [ScheduleController::class, 'update'])->name('schedule.update');

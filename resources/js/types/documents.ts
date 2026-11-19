@@ -28,6 +28,10 @@ export type DocumentRow = {
         short_name: string;
         role_label: string;
         is_pembina: boolean;
+        group: 'pa' | 'pi' | 'pembina';
+        kta_number: string | null;
+        birth_label: string | null;
+        is_owner: boolean;
         has_photo: boolean;
         photo_url: string | null;
     };
