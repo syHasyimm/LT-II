@@ -20,6 +20,12 @@ Foto dokumen langsung dari kamera ponsel juga bisa, asal tulisannya terbaca jela
 
 ## Langkah pendaftaran
 
+Pendaftaran dibagi menjadi **6 langkah**: Data gudep → Peserta Putra → Peserta Putri → Pembina pendamping → Foto & dokumen → Kirim pendaftaran.
+
+- Di laptop, daftar langkah tampil sebagai **timeline di sebelah kanan**. Di ponsel, tampil sebagai **deretan ikon di bagian atas** yang bisa digeser.
+- Langkah yang sudah lengkap bertanda centang hijau, langkah yang sedang dibuka berwarna marun, dan langkah yang perlu dikerjakan berikutnya bertanda *Lanjutkan di sini*.
+- Semua langkah bisa dibuka kapan saja. Tombol **Lanjut** di bawah halaman membawa Anda ke langkah berikutnya, dan **Kembali** ke langkah sebelumnya.
+
 ### 1. Masuk
 
 Buka alamat pendaftaran, ketuk **Daftarkan Gudep**, lalu **Masuk dengan Google**. Akun dibuat otomatis saat pertama kali masuk, dan Anda tercatat sebagai pembina pendamping pertama.
@@ -30,7 +36,7 @@ Isi nama gudep, nomor gudep, sekolah/pangkalan, dan kwartir ranting, lalu **Simp
 
 ### 3. Peserta Putra dan Putri
 
-Buka menu **Anggota**, pilih tab **Putra** atau **Putri**, lalu **Tambah peserta**. Setiap regu berisi tepat **8 peserta**; peserta ke-9 tidak bisa ditambahkan.
+Buka langkah **Peserta Putra** (lalu **Peserta Putri**) dan ketuk **Tambah peserta**. Setiap regu berisi tepat **8 peserta**; peserta ke-9 tidak bisa ditambahkan.
 
 **Banyak peserta sekaligus:** ketuk **Impor banyak peserta dari Excel**.
 
@@ -43,15 +49,15 @@ Pas foto tetap diunggah satu per satu: buka nama peserta → **Unggah pas foto**
 
 ### 4. Pembina pendamping
 
-Di tab **Pembina**, lengkapi data Anda sendiri (bertanda ★ Pemilik akun), lalu **Tambah pembina** untuk pembina lain. Jumlah pembina tidak dibatasi. Pemilik akun tidak bisa dihapus.
+Di langkah **Pembina pendamping**, lengkapi data Anda sendiri (bertanda ★ Pemilik akun), lalu **Tambah pembina** untuk pembina lain. Jumlah pembina tidak dibatasi. Pemilik akun tidak bisa dihapus.
 
 ### 5. Dokumen
 
-Menu **Dokumen** menampilkan tabel semua dokumen wajib. Ketuk kotak yang masih kosong untuk mengunggah. Ketuk dokumen yang sudah diunggah untuk melihat pratinjaunya.
+Langkah **Foto & dokumen** menampilkan tabel semua dokumen wajib. Ketuk kotak yang masih kosong untuk mengunggah. Ketuk dokumen yang sudah diunggah untuk melihat pratinjaunya.
 
 ### 6. Kirim pendaftaran
 
-Menu **Kirim** memeriksa kelengkapan. Bila masih ada yang kurang, daftar kekurangannya muncul dengan tautan **Lengkapi** atau **Unggah**. Setelah semua lengkap, centang pernyataan lalu **Kirim pendaftaran**.
+Langkah **Kirim pendaftaran** memeriksa kelengkapan. Bila masih ada yang kurang, daftar kekurangannya muncul dengan tautan **Lengkapi** atau **Unggah**. Setelah semua lengkap, centang pernyataan lalu **Kirim pendaftaran**.
 
 > Setelah dikirim, data **terkunci** dan tidak bisa diubah sampai panitia memeriksa.
 

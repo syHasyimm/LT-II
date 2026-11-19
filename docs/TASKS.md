@@ -137,3 +137,13 @@ Legenda: `[ ]` belum · `[x]` selesai
   - [x] Kit deploy: [`docs/DEPLOY.md`](DEPLOY.md), `.env.production.example`, `deploy/nginx.conf`, `deploy/supervisor-queue.conf`, `deploy/crontab`, `deploy/deploy.sh`.
   - [x] Panduan pengguna: [`PANDUAN-PEMBINA.md`](PANDUAN-PEMBINA.md) dan [`PANDUAN-ADMIN.md`](PANDUAN-ADMIN.md).
   - [ ] Deploy ke server produksi, isi kredensial Google OAuth dan SMTP, uji pemulihan backup.
+
+## Fase 9 · Penyempurnaan pascarilis
+
+- [x] **T9.1 Alur pembina per langkah + timeline vertikal**: spec [`superpowers/specs/2026-11-19-alur-pembina-timeline-design.md`](superpowers/specs/2026-11-19-alur-pembina-timeline-design.md)
+  - Area pembina menjadi 6 langkah: Data gudep → Peserta Putra → Peserta Putri → Pembina → Foto & dokumen → Kirim.
+  - Timeline vertikal berikon di kanan konten (layar lebar) dan strip langkah di atas konten (ponsel). Menu atas dan menu bawah dihapus.
+  - Status setiap langkah: selesai, sedang dibuka, atau "lanjutkan di sini". Semua langkah tetap bisa dibuka kapan saja.
+  - Footer **Kembali / Lanjut** di halaman langkah. Tab di halaman Anggota diganti langkah Putra/Putri/Pembina.
+  - Server membagikan `pembinaSteps` dan `pembinaStep` (khusus pembina). Ada tes untuk setiap halaman, edit anggota, pembina tanpa gudep, dan admin.
+

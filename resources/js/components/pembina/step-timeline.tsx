@@ -137,7 +137,7 @@ function VerticalTimeline() {
                                         <span className="flex items-baseline justify-between gap-2">
                                             <span
                                                 className={cn(
-                                                    'truncate text-sm font-semibold text-ink group-hover:text-maroon-700',
+                                                    'text-sm leading-snug font-semibold text-ink group-hover:text-maroon-700',
                                                     isActive &&
                                                         'font-bold text-maroon-700',
                                                     item.state === 'todo' &&
