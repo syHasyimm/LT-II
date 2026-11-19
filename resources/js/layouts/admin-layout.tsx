@@ -40,12 +40,7 @@ const adminNav: AdminNavItem[] = [
         icon: Users,
         badgeKey: 'submitted',
     },
-    {
-        href: '/admin/template',
-        label: 'Template',
-        icon: LayoutTemplate,
-        soon: true,
-    },
+    { href: '/admin/template', label: 'Template', icon: LayoutTemplate },
     { href: '/admin/id-card', label: 'ID Card', icon: IdCard, soon: true },
     {
         href: '/admin/sertifikat',
