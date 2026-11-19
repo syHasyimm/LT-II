@@ -34,6 +34,18 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin awal (dipakai AdminSeeder)
+    |--------------------------------------------------------------------------
+    */
+
+    'seed_admin' => [
+        'name' => env('ADMIN_NAME', 'Admin Panitia'),
+        'email' => env('ADMIN_EMAIL', 'admin@perkemahan-lt2.test'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
+
     'event_year' => 2026,
     'serial_prefix' => 'LT2',
     'timezone' => 'Asia/Jakarta',

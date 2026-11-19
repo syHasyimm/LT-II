@@ -31,7 +31,7 @@ Legenda: `[ ]` belum · `[x]` selesai
 - [x] **T1.1 Login Google untuk Pembina** — FR-AUTH-01
   Kolom `google_id`, `avatar`, `role` di `users`. Socialite Google. Login pertama membuat user `role=pembina`. Dev-login `/dev/login-pembina` hanya untuk `APP_ENV=local`.
   *Tes:* Socialite di-mock, login kedua masuk ke akun yang sama.
-- [ ] **T1.2 Login Admin terpisah** — FR-AUTH-02
+- [x] **T1.2 Login Admin terpisah** — FR-AUTH-02
   `/admin/login` (email + password lewat Fortify), registrasi publik dimatikan, command `app:create-admin`, seeder admin. Akun Google tidak bisa menjadi admin.
 - [ ] **T1.3 Pembatasan peran** — FR-AUTH-03
   Middleware `EnsureRole`. Pembina ke `/admin/*` mendapat 403, admin ke area pembina dialihkan ke dashboard admin.

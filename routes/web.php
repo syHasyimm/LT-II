@@ -25,9 +25,6 @@ Route::middleware('guest')->group(function () {
     }
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
-
 require __DIR__.'/pembina.php';
+require __DIR__.'/admin.php';
 require __DIR__.'/settings.php';
