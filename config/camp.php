@@ -52,4 +52,23 @@ return [
     'id_card_mm' => ['width' => 55, 'height' => 85],
     'certificate_mm' => ['width' => 297, 'height' => 210],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Backup terjadwal (BR-13, kebutuhan keandalan)
+    |--------------------------------------------------------------------------
+    |
+    | `php artisan app:backup` membuat ZIP berisi dump database dan folder
+    | dokumen privat di storage/app/backups. Jadwalnya ada di routes/console.php.
+    | Salin folder backup ke lokasi lain (server/penyimpanan cloud) secara rutin.
+    |
+    */
+
+    'backup' => [
+        'path' => env('BACKUP_PATH', storage_path('app/backups')),
+        'connection' => env('BACKUP_DB_CONNECTION'), // null = koneksi bawaan
+        'keep_daily' => (int) env('BACKUP_KEEP_DAILY', 14),
+        'keep_full' => (int) env('BACKUP_KEEP_FULL', 4),
+        'mysqldump' => env('BACKUP_MYSQLDUMP', 'mysqldump'),
+    ],
+
 ];

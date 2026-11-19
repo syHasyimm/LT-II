@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Trusted Proxies
+    |--------------------------------------------------------------------------
+    |
+    | Isi bila aplikasi berada di belakang reverse proxy / load balancer yang
+    | mengakhiri HTTPS, misalnya "*" atau "10.0.0.0/8,172.16.0.0/12".
+    |
+    */
+
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
 ];
