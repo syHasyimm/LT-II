@@ -13,8 +13,11 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
+                bunny('Plus Jakarta Sans', {
+                    weights: [400, 500, 600, 700, 800],
+                }),
+                bunny('Playfair Display', {
+                    weights: [600, 700],
                 }),
             ],
         }),
@@ -66,6 +69,9 @@ export default defineConfig({
         ignorePatterns: [
             '.github/**',
             'composer.json',
+            'PRD-*.md',
+            'docs/**',
+            'lang/**',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
         ],

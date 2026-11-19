@@ -21,7 +21,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   `config/camp.php` (PRD §7), enum `UserRole`, `MemberRole`, `TeamGroup`, `GudepStatus`, `DocumentStatus`, `TemplateType`, zona waktu `Asia/Jakarta`, locale `id`.
 - [x] **T0.3 Referensi desain**
   Ekspor setiap frame FigCraft ke `docs/design/*.png`.
-- [ ] **T0.4 Design system di kode**
+- [x] **T0.4 Design system di kode**
   Token warna merah-emas dan font (Playfair Display + Plus Jakarta Sans) di Tailwind `@theme`, tema shadcn, komponen dasar (Button primary/gold/outline, StatusBadge, QuotaIndicator), layout `public`, `pembina` (mobile-first + bottom nav), `admin` (sidebar).
 - [ ] **T0.5 Tooling kualitas**
   Pint, Larastan, Pest. Script `composer test` dan `npm run types` berjalan hijau.
