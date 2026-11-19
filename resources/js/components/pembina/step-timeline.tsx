@@ -2,6 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import {
     Camera,
     Check,
+    ChevronDown,
     Flag,
     Home,
     LogOut,
@@ -11,7 +12,13 @@ import {
     Users,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
+import {
+    Sheet,
+    SheetContent,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import type { PembinaStepData, StepKey } from '@/types';
 
@@ -25,16 +32,6 @@ export const stepIcon: Record<TimelineKey, LucideIcon> = {
     pembina: Users,
     berkas: Camera,
     kirim: Send,
-};
-
-const shortLabel: Record<TimelineKey, string> = {
-    ringkasan: 'Ringkasan',
-    gudep: 'Gudep',
-    peserta_pa: 'Putra',
-    peserta_pi: 'Putri',
-    pembina: 'Pembina',
-    berkas: 'Berkas',
-    kirim: 'Kirim',
 };
 
 type Item = {
@@ -83,21 +80,30 @@ function statusText(item: Item): string {
 
 /**
  * Timeline langkah pendaftaran pembina: panel vertikal berikon di kanan
- * konten (layar lebar) atau strip horizontal di atas konten (ponsel).
+ * konten (layar lebar) atau bilah ringkas dengan bar progres (ponsel).
  */
 export function StepTimeline({ variant }: { variant: 'vertical' | 'strip' }) {
     return variant === 'vertical' ? <VerticalTimeline /> : <StripTimeline />;
 }
 
 function VerticalTimeline() {
-    const { items, active } = useTimelineItems();
-    const { auth } = usePage().props;
-
     return (
         <div className="rounded-3xl border border-line bg-white p-5 shadow-[0_10px_30px_rgba(62,7,11,0.06)]">
             <p className="text-[11px] font-semibold tracking-[0.2em] text-gold-700 uppercase">
                 Langkah pendaftaran
             </p>
+            <TimelineList />
+        </div>
+    );
+}
+
+/** Daftar timeline + nama/Keluar, dipakai kartu desktop dan panel ponsel. */
+function TimelineList({ onNavigate }: { onNavigate?: () => void }) {
+    const { items, active } = useTimelineItems();
+    const { auth } = usePage().props;
+
+    return (
+        <>
             <nav aria-label="Langkah pendaftaran" className="mt-4">
                 <ol>
                     {items.map((item, index) => {
@@ -121,6 +127,7 @@ function VerticalTimeline() {
                                 <Link
                                     href={item.href}
                                     prefetch
+                                    onClick={onNavigate}
                                     aria-current={isActive ? 'step' : undefined}
                                     className={cn(
                                         'group relative flex items-start gap-3 rounded-2xl pb-5',
@@ -131,7 +138,6 @@ function VerticalTimeline() {
                                         item={item}
                                         isActive={isActive}
                                         Icon={Icon}
-                                        size="lg"
                                     />
                                     <span className="min-w-0 flex-1 pt-1">
                                         <span className="flex items-baseline justify-between gap-2">
@@ -188,61 +194,79 @@ function VerticalTimeline() {
                     Keluar
                 </Link>
             </div>
-        </div>
+        </>
     );
 }
 
+/**
+ * Bilah ringkas di ponsel: "Langkah n/6 · Judul" + 6 segmen progres, dan
+ * tombol "Semua langkah" yang membuka timeline lengkap di panel bawah.
+ */
 function StripTimeline() {
-    const { items, active } = useTimelineItems();
-    const activeRef = useRef<HTMLAnchorElement>(null);
-
-    useEffect(() => {
-        activeRef.current?.scrollIntoView({
-            inline: 'center',
-            block: 'nearest',
-        });
-    }, [active]);
+    const { pembinaSteps, pembinaStep } = usePage().props;
+    const [open, setOpen] = useState(false);
+    const steps = pembinaSteps ?? [];
+    const activeIndex = steps.findIndex((step) => step.key === pembinaStep);
+    const doneCount = steps.filter((step) => step.state === 'done').length;
 
     return (
         <nav
             aria-label="Langkah pendaftaran"
-            className="[scrollbar-width:none] overflow-x-auto border-b border-gold-300/15 bg-maroon-950"
+            className="border-b border-gold-300/15 bg-maroon-950 px-4 pt-2.5 pb-3"
         >
-            <ol className="flex w-max min-w-full gap-1 px-3 py-2.5">
-                {items.map((item) => {
-                    const Icon = stepIcon[item.key];
-                    const isActive = item.key === active;
-
-                    return (
-                        <li key={item.key}>
-                            <Link
-                                ref={isActive ? activeRef : undefined}
-                                href={item.href}
-                                prefetch
-                                aria-current={isActive ? 'step' : undefined}
-                                className={cn(
-                                    'flex w-16 flex-col items-center gap-1 rounded-xl py-1 text-[11px] font-semibold text-maroon-50/75',
-                                    isActive && 'bg-white/10 text-gold-300',
-                                )}
-                            >
-                                <StepBullet
-                                    item={item}
-                                    isActive={isActive}
-                                    Icon={Icon}
-                                    size="sm"
-                                    dark
-                                />
-                                <span>{shortLabel[item.key]}</span>
-                                {statusText(item) && (
-                                    <span className="sr-only">
-                                        {`${item.title}, ${statusText(item)}`}
-                                    </span>
-                                )}
-                            </Link>
-                        </li>
-                    );
-                })}
-            </ol>
+            <div className="flex items-center gap-3">
+                <p className="min-w-0 flex-1 truncate text-sm">
+                    {activeIndex >= 0 ? (
+                        <>
+                            <span className="text-xs font-semibold text-gold-300">
+                                Langkah {activeIndex + 1}/{steps.length}
+                            </span>{' '}
+                            <span className="font-bold text-white">
+                                {steps[activeIndex].title}
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="font-bold text-white">
+                                Ringkasan
+                            </span>{' '}
+                            <span className="text-xs font-semibold text-gold-300">
+                                · {doneCount} dari {steps.length} selesai
+                            </span>
+                        </>
+                    )}
+                </p>
+                <Sheet open={open} onOpenChange={setOpen}>
+                    <SheetTrigger className="-my-2 flex min-h-11 shrink-0 items-center gap-1 rounded-lg px-1 text-xs font-semibold text-gold-300">
+                        Semua langkah
+                        <ChevronDown className="size-3.5" aria-hidden />
+                    </SheetTrigger>
+                    <SheetContent
+                        side="bottom"
+                        className="max-h-[85dvh] overflow-y-auto rounded-t-3xl border-0 bg-ivory px-5 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+                    >
+                        <SheetTitle className="sr-only">
+                            Langkah pendaftaran
+                        </SheetTitle>
+                        <TimelineList onNavigate={() => setOpen(false)} />
+                    </SheetContent>
+                </Sheet>
+            </div>
+            <div aria-hidden className="mt-2 grid grid-cols-6 gap-1">
+                {steps.map((step, index) => (
+                    <span
+                        key={step.key}
+                        className={cn(
+                            'h-1 rounded-full',
+                            index === activeIndex
+                                ? 'bg-white'
+                                : step.state === 'done'
+                                  ? 'bg-gold-500'
+                                  : 'bg-white/15',
+                        )}
+                    />
+                ))}
+            </div>
         </nav>
     );
 }
@@ -251,14 +275,10 @@ function StepBullet({
     item,
     isActive,
     Icon,
-    size,
-    dark = false,
 }: {
     item: Item;
     isActive: boolean;
     Icon: LucideIcon;
-    size: 'sm' | 'lg';
-    dark?: boolean;
 }) {
     const done = item.state === 'done';
 
@@ -266,27 +286,18 @@ function StepBullet({
         <span
             aria-hidden
             className={cn(
-                'relative grid shrink-0 place-items-center rounded-full border transition',
-                size === 'lg' ? 'size-10' : 'size-9',
+                'relative grid size-10 shrink-0 place-items-center rounded-full border transition',
                 isActive
                     ? 'border-transparent bg-maroon-gradient text-white ring-4 ring-maroon-100'
                     : done
                       ? 'border-transparent bg-gold-gradient text-maroon-900'
-                      : dark
-                        ? 'border-gold-300/30 bg-white/5 text-maroon-50/80'
-                        : 'border-line bg-white text-ink-soft',
-                isActive && dark && 'ring-2 ring-gold-300/40',
+                      : 'border-line bg-white text-ink-soft',
             )}
         >
-            <Icon className={size === 'lg' ? 'size-[18px]' : 'size-4'} />
+            <Icon className="size-[18px]" />
             {done && !isActive && (
                 <span className="absolute -right-0.5 -bottom-0.5 grid size-4 place-items-center rounded-full bg-success text-white ring-2 ring-white">
                     <Check className="size-2.5" strokeWidth={3} />
-                </span>
-            )}
-            {item.number !== null && size === 'sm' && !done && (
-                <span className="absolute -top-1 -right-1 grid size-4 place-items-center rounded-full bg-maroon-600 text-[9px] font-bold text-white">
-                    {item.number}
                 </span>
             )}
         </span>
