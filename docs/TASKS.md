@@ -53,7 +53,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Tambah tanpa batas, hapus per baris, pemilik akun otomatis menjadi pembina pertama dan tidak bisa dihapus.
 - [x] **T2.5 Data anggota & pas foto** — FR-GDP-04, BR-06
   Nama, jenis kelamin, tanggal lahir, KTA, pas foto (disk privat). Pembina juga punya nomor HP dan keterangan mendampingi Pa/Pi/keduanya.
-- [ ] **T2.6 Penguncian data** — FR-GDP-05, BR-08
+- [x] **T2.6 Penguncian data** — FR-GDP-05, BR-08
   Form read-only saat status `submitted`/`verified`, bisa diedit saat `draft`/`revision`.
 - [ ] **T2.7 Beranda Pembina** — desain M2
   Banner jadwal, kartu status, progres langkah 1–5 yang terhubung ke tiap halaman.
