@@ -13,16 +13,16 @@ Laravel 13 · React 19 + Inertia 3 · Tailwind CSS 4 + shadcn/ui · MySQL 8 · F
 
 ## Status
 
-**MVP (Fase 0–4) selesai.** Fitur yang sudah bisa dipakai:
+**Fase 0–6 selesai** (MVP + template + ID Card & Sertifikat). Fitur yang sudah bisa dipakai:
 
-| Area    | Fitur                                                                                                                                                                                           |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Publik  | Beranda dengan jadwal, hitung mundur, dan statistik pendaftaran                                                                                                                                 |
-| Pembina | Login Google, data gudep, peserta Pa/Pi dengan kuota 8/8, repeater pembina, pas foto, matriks dokumen, unggah ulang dokumen ditolak, pratinjau dokumen, kirim pendaftaran dengan daftar periksa |
-| Admin   | Login email + kata sandi (2FA opsional), dashboard, daftar gudep (filter, cari, paginasi), panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup    |
-| Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue                                                                        |
+| Area    | Fitur                                                                                                                                                                                                                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Publik  | Beranda dengan jadwal, hitung mundur, statistik, dan cek nomor seri; halaman verifikasi `/verify/{serial}`                                                                                                                           |
+| Pembina | Login Google, data gudep, peserta Pa/Pi dengan kuota 8/8, repeater pembina, pas foto, matriks dokumen, unggah ulang dokumen ditolak, pratinjau dokumen, kirim pendaftaran dengan daftar periksa                                      |
+| Admin   | Login email + kata sandi (2FA opsional), dashboard, daftar gudep, panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup, editor template visual, generate dan unduh ID Card & Sertifikat |
+| Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue, nomor seri `LT2-2026-ID/CERT-0001` yang tetap saat generate ulang                                          |
 
-Template ID Card, generate ID Card & Sertifikat, dan halaman verifikasi publik `/verify/{serial}` adalah Fase 5–6 (lihat `docs/TASKS.md`).
+Ekspor/impor Excel, UAT, dan rilis produksi adalah Fase 7–8 (lihat `docs/TASKS.md`).
 
 ## Instalasi lokal (Laragon / Windows)
 
@@ -114,9 +114,18 @@ Jenis dokumen wajib ada di tabel `document_types`:
 | `kesehatan`        | Surat Keterangan Sehat | peserta, pembina |
 | `kesiapan_sekolah` | Surat Kesiapan Sekolah | satu per gudep   |
 
+## Template, ID Card, dan Sertifikat
+
+- **Template bawaan** (dipasang `TemplateSeeder`): ID Card Peserta, ID Card Pembina (55 × 85 mm), dan Sertifikat (A4 lanskap). Gambar latarnya diekspor dari desain FigCraft (`resources/templates/`).
+- **Editor template** di **Admin → Template**: unggah gambar latar, aktifkan atau nonaktifkan field, geser dan ubah ukuran di kanvas berskala mm, atur font/ukuran/warna, lalu **Pratinjau PDF**. Placeholder yang tersedia: `{nama}`, `{peran}`, `{peran_lengkap}`, `{gudep}`, `{sekolah}`, `{kwartir}`, `{nomor_seri}`, `{tahun}`.
+- **Generate** di **Admin → ID Card / Sertifikat**: pilih satu orang, satu gudep, atau semua gudep terverifikasi. Proses berjalan di queue dengan indikator progres, jadi **queue worker harus berjalan**.
+- **Unduh**: PDF satuan, PDF per gudep (satu kartu per halaman, atau lembar A4 berisi 9 kartu dengan tanda potong untuk ID Card), serta ZIP per gudep atau seluruhnya.
+- **Nomor seri** diberikan saat pertama kali dibuat dan tidak berubah saat generate ulang; file lama ditimpa. QR pada kartu/sertifikat mengarah ke `/verify/{nomor-seri}`.
+- PDF dibuat dengan dompdf memakai font TTF di `resources/fonts` (Playfair Display, Plus Jakarta Sans, lisensi OFL). ZIP dibuat dengan `zipstream-php`, sehingga ekstensi PHP `zip` tidak diperlukan.
+
 ## Email & queue
 
-Email notifikasi perubahan status dikirim lewat queue `database`. Jalankan `php artisan queue:work` (sudah termasuk di `composer dev`). Di lokal, `MAIL_MAILER=log` menulis email ke `storage/logs/laravel.log`.
+Email notifikasi perubahan status dan generate ID Card / Sertifikat berjalan lewat queue `database`. Jalankan `php artisan queue:work` (sudah termasuk di `composer dev`). Di lokal, `MAIL_MAILER=log` menulis email ke `storage/logs/laravel.log`.
 
 ## Pengujian
 
@@ -126,7 +135,7 @@ npm run check          # format & lint frontend
 npm run types:check    # TypeScript
 ```
 
-Tes Feature mencakup alur end-to-end dari login pembina sampai gudep terverifikasi (`tests/Feature/Domain/RegistrationFlowTest.php`).
+Tes Feature mencakup alur end-to-end dari login pembina sampai gudep terverifikasi, sertifikat dibuat, dan QR-nya terverifikasi di halaman publik (`tests/Feature/Domain/RegistrationFlowTest.php`).
 
 ## Keamanan dan privasi
 

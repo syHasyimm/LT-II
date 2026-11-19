@@ -6,7 +6,7 @@ Sumber desain: FigCraft `Perkemahan-LT2-Prototype.figcraft` (referensi PNG di [`
 **Aturan kerja**
 - Satu task = satu commit, pesan commit diawali kode task, misalnya `T2.3: ...`.
 - Task dicentang setelah tes, lint, dan build hijau.
-- Sesi ini menargetkan **MVP (Fase 0–4)**. Fase 5–8 menyusul.
+- Fase 0–4 (MVP) dan Fase 5–6 selesai. Fase 7–8 menyusul.
 
 Legenda: `[ ]` belum · `[x]` selesai
 
@@ -37,7 +37,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Middleware `EnsureRole`. Pembina ke `/admin/*` mendapat 403, admin ke area pembina dialihkan ke dashboard admin.
 - [x] **T1.4 Beranda publik & halaman masuk** — desain P1/P2, M1
   `welcome.tsx` dengan jadwal, hitung mundur, dan statistik dari data asli. Halaman masuk Pembina sesuai M1.
-  *Catatan:* tabel `settings`, model `Setting`, dan layanan `RegistrationWindow` dimajukan dari T4.1 karena dibutuhkan beranda. Statistik gudep/peserta disambungkan pada T2.1. Bagian "Verifikasi sertifikat" di beranda ditambahkan pada T6.5.
+  *Catatan:* tabel `settings`, model `Setting`, dan layanan `RegistrationWindow` dimajukan dari T4.1 karena dibutuhkan beranda. Statistik gudep/peserta disambungkan pada T2.1. Bagian "Verifikasi sertifikat" di beranda ditambahkan pada T6.5 (selesai).
 
 ## Fase 2 · Gudep & anggota
 
@@ -87,13 +87,13 @@ Legenda: `[ ]` belum · `[x]` selesai
 
 ---
 
-## Fase 5 · Template ID Card & Sertifikat *(menyusul)*
+## Fase 5 · Template ID Card & Sertifikat
 
 - [x] T5.1 Model `templates` (jenis, sasaran, ukuran mm, field JSON, aktif) — FR-TPL-01..03
 - [x] T5.2 Unggah background dan daftar field — FR-TPL-05
 - [x] T5.3 Editor visual dan pratinjau ukuran asli 55 × 85 mm (desain D3) — FR-TPL-04
 
-## Fase 6 · Generate ID Card & Sertifikat *(menyusul)*
+## Fase 6 · Generate ID Card & Sertifikat
 
 - [x] T6.1 `TemplateRenderer` ke PDF (dompdf) dan `QrCodeService`
 - [x] T6.2 Nomor seri `LT2-2026-ID/CERT-0001`, aman dari duplikasi, dipertahankan saat generate ulang — BR-14, FR-GEN-03

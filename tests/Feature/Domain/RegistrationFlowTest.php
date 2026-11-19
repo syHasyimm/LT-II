@@ -2,10 +2,13 @@
 
 use App\Enums\GudepStatus;
 use App\Enums\TeamGroup;
+use App\Enums\TemplateType;
 use App\Models\Document;
 use App\Models\DocumentType;
+use App\Models\GeneratedFile;
 use App\Models\User;
 use App\Notifications\RegistrationStatusChanged;
+use App\Services\Templates\DefaultTemplates;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -15,9 +18,10 @@ use Laravel\Socialite\Two\User as SocialiteUser;
 /**
  * Alur MVP end-to-end: pembina login Google → isi gudep, 16 peserta, pembina,
  * pas foto, dan dokumen → kirim → admin meninjau → minta revisi → pembina
- * memperbaiki → kirim ulang → admin menyetujui → terverifikasi.
+ * memperbaiki → kirim ulang → admin menyetujui → terverifikasi → sertifikat
+ * dibuat → QR membuka halaman verifikasi publik.
  */
-it('menjalankan alur pendaftaran dari login pembina sampai terverifikasi', function () {
+it('menjalankan alur dari login pembina sampai sertifikat terverifikasi publik', function () {
     Storage::fake('local');
     Notification::fake();
 
@@ -134,4 +138,20 @@ it('menjalankan alur pendaftaran dari login pembina sampai terverifikasi', funct
     // Data terkunci setelah terverifikasi.
     $this->actingAs($pembina);
     $this->get(route('pembina.submission.show'))->assertInertia(fn ($page) => $page->component('pembina/submitted')->where('status', 'verified'));
+
+    // 10. Admin membuat sertifikat untuk seluruh anggota gudep (queue sync di tes).
+    DefaultTemplates::install();
+    $this->actingAs($admin)
+        ->post(route('admin.generate.store', 'sertifikat'), ['scope' => 'gudep', 'gudep_id' => $gudep->id])
+        ->assertRedirect();
+
+    $certificates = GeneratedFile::query()->where('type', TemplateType::Certificate)->orderBy('sequence')->get();
+    expect($certificates)->toHaveCount(18)
+        ->and($certificates->first()->serial_number)->toBe('LT2-2026-CERT-0001');
+
+    // 11. QR sertifikat membuka halaman verifikasi publik yang menyatakan sah.
+    auth()->logout();
+    $this->get(route('verify.show', $certificates->last()->serial_number))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->where('result.type', 'certificate'));
 });
