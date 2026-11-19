@@ -20,7 +20,7 @@ export default function Login({ status, devLogin, registration }: Props) {
     return (
         <>
             <Head title="Masuk Pembina" />
-            <div className="relative flex min-h-screen flex-col overflow-hidden bg-maroon-gradient md:items-center md:justify-center md:py-12">
+            <main className="relative flex min-h-screen flex-col overflow-hidden bg-maroon-gradient md:items-center md:justify-center md:py-12">
                 <Rings />
 
                 <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col md:flex-none md:overflow-hidden md:rounded-[28px] md:shadow-[0_30px_80px_rgba(20,2,4,0.45)]">
@@ -106,7 +106,7 @@ export default function Login({ status, devLogin, registration }: Props) {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </main>
         </>
     );
 }

@@ -10,6 +10,8 @@ function Toaster({ ...props }: ToasterProps) {
             theme="light"
             className="toaster group"
             position="bottom-right"
+            // Di ponsel, notifikasi berada di atas navigasi bawah area pembina.
+            mobileOffset={{ bottom: 'calc(84px + env(safe-area-inset-bottom))' }}
             style={
                 {
                     '--normal-bg': 'var(--popover)',

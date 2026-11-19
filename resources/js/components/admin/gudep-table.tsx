@@ -103,9 +103,13 @@ export function GudepTable({
                     Daftar gudep
                 </h2>
                 <label className="relative w-full sm:w-80">
-                    <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ink-soft" />
+                    <Search
+                        aria-hidden
+                        className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ink-soft"
+                    />
                     <input
                         type="search"
+                        aria-label="Cari gudep"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Cari nama gudep atau sekolah…"

@@ -6,7 +6,7 @@ Sumber desain: FigCraft `Perkemahan-LT2-Prototype.figcraft` (referensi PNG di [`
 **Aturan kerja**
 - Satu task = satu commit, pesan commit diawali kode task, misalnya `T2.3: ...`.
 - Task dicentang setelah tes, lint, dan build hijau.
-- Fase 0–4 (MVP) dan Fase 5–6 selesai. Fase 7–8 menyusul.
+- Fase 0–4 (MVP), Fase 5–6, dan Fase 7 selesai. Fase 8 (UAT dan rilis) menyusul.
 
 Legenda: `[ ]` belum · `[x]` selesai
 
@@ -117,7 +117,13 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Halaman Akun (profil, kata sandi, 2FA, passkey) dan dialog setup 2FA memakai tema merah-emas panel admin.
   - Dashboard menampilkan pengingat **Aktifkan 2FA** selama admin belum mengaktifkannya (2FA tetap opsional sesuai PRD).
   - Tes: login → tantangan 2FA → dashboard, kode cadangan sekali pakai, kode salah ditolak.
-- [ ] T7.4 Perapian UI mobile dan aksesibilitas
+- [x] **T7.4 Perapian UI mobile dan aksesibilitas**
+  - Audit semua halaman publik, pembina (375 px), dan admin: label form, nama tombol, teks alt, kontras teks, ukuran area sentuh, dan geser horizontal.
+  - Teks emas kecil digelapkan (`gold-700` / `gold-800`) agar kontras ≥ 4.5:1 (WCAG AA).
+  - Tautan **Lewati ke konten utama**, landmark `main` di semua layout, cincin fokus keyboard emas, dan dukungan `prefers-reduced-motion`.
+  - Label untuk pencarian gudep, pilihan penerima generate, kontrol editor template, dan thumbnail template. Satu `h1` per halaman.
+  - Notifikasi di ponsel tidak lagi menutupi navigasi bawah pembina. Tautan aksi di halaman Kirim punya area sentuh 44 px.
+  - Tidak ada geser horizontal di 375 px pada halaman yang diperiksa.
 
 ## Fase 8 · Pengujian & rilis *(menyusul)*
 

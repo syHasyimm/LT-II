@@ -163,6 +163,7 @@ export default function Generate({
                             {scope === 'member' && (
                                 <select
                                     name="member_id"
+                                    aria-label="Anggota penerima"
                                     required
                                     className="h-12 rounded-xl border border-line bg-white px-4 text-[15px]"
                                 >
@@ -180,6 +181,7 @@ export default function Generate({
                             {scope === 'gudep' && (
                                 <select
                                     name="gudep_id"
+                                    aria-label="Gudep penerima"
                                     required
                                     className="h-12 rounded-xl border border-line bg-white px-4 text-[15px]"
                                 >

@@ -3,6 +3,7 @@ import { ChevronLeft, FileText, Home, LogOut, Send, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { BrandMark } from '@/components/brand/brand-mark';
+import { SkipLink } from '@/components/skip-link';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn } from '@/lib/utils';
 
@@ -32,6 +33,7 @@ export default function PembinaLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className="min-h-screen bg-ivory text-ink">
+            <SkipLink />
             <header className="sticky top-0 z-30 hidden bg-maroon-900 md:block">
                 <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
                     <Link href="/pembina">
@@ -67,7 +69,13 @@ export default function PembinaLayout({ children }: { children: ReactNode }) {
                 </div>
             </header>
 
-            <main className="mx-auto max-w-3xl pb-28 md:pb-12">{children}</main>
+            <main
+                id="konten"
+                tabIndex={-1}
+                className="mx-auto max-w-3xl pb-28 outline-none md:pb-12"
+            >
+                {children}
+            </main>
 
             <nav
                 aria-label="Navigasi pembina"

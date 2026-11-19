@@ -268,7 +268,11 @@ export default function TemplateEditor({ template, samples, targets }: Props) {
         <>
             <Head title={`Editor ${template.name}`} />
 
-            <nav className="text-sm font-medium text-gold-700">
+            <h1 className="sr-only">Editor {template.name}</h1>
+            <nav
+                aria-label="Breadcrumb"
+                className="text-sm font-medium text-gold-700"
+            >
                 <Link href="/admin/template" className="hover:underline">
                     Template
                 </Link>{' '}
@@ -552,6 +556,8 @@ function FieldPanel({
                 ref={fileRef}
                 type="file"
                 accept="image/png,image/jpeg"
+                aria-label="Unggah gambar latar"
+                tabIndex={-1}
                 className="sr-only"
                 onChange={(event) => {
                     const file = event.target.files?.[0];
@@ -951,6 +957,7 @@ function PropertyPanel({
                         </p>
                         <textarea
                             rows={3}
+                            aria-label="Isi teks field"
                             value={field.content ?? ''}
                             onChange={(event) =>
                                 onChange({ content: event.target.value })
@@ -980,6 +987,7 @@ function PropertyPanel({
                             Tipografi
                         </p>
                         <select
+                            aria-label="Jenis huruf"
                             value={field.font ?? 'sans'}
                             onChange={(event) =>
                                 onChange({
@@ -998,6 +1006,7 @@ function PropertyPanel({
                         </select>
                         <div className="grid grid-cols-2 gap-2">
                             <select
+                                aria-label="Ketebalan huruf"
                                 value={field.weight ?? 400}
                                 onChange={(event) =>
                                     onChange({

@@ -13,16 +13,16 @@ Laravel 13 · React 19 + Inertia 3 · Tailwind CSS 4 + shadcn/ui · MySQL 8 · F
 
 ## Status
 
-**Fase 0–6 selesai** (MVP + template + ID Card & Sertifikat). Fitur yang sudah bisa dipakai:
+**Fase 0–7 selesai** (MVP, template, ID Card & Sertifikat, serta penyempurnaan). Fitur yang sudah bisa dipakai:
 
-| Area    | Fitur                                                                                                                                                                                                                                |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Publik  | Beranda dengan jadwal, hitung mundur, statistik, dan cek nomor seri; halaman verifikasi `/verify/{serial}`                                                                                                                           |
-| Pembina | Login Google, data gudep, peserta Pa/Pi dengan kuota 8/8, repeater pembina, pas foto, matriks dokumen, unggah ulang dokumen ditolak, pratinjau dokumen, kirim pendaftaran dengan daftar periksa                                      |
-| Admin   | Login email + kata sandi (2FA opsional), dashboard, daftar gudep, panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup, editor template visual, generate dan unduh ID Card & Sertifikat |
-| Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue, nomor seri `LT2-2026-ID/CERT-0001` yang tetap saat generate ulang                                          |
+| Area    | Fitur                                                                                                                                                                                                                                                               |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Publik  | Beranda dengan jadwal, hitung mundur, statistik, dan cek nomor seri; halaman verifikasi `/verify/{serial}`                                                                                                                                                          |
+| Pembina | Login Google, data gudep, peserta Pa/Pi dengan kuota 8/8, impor peserta dari Excel/CSV, repeater pembina, pas foto, matriks dokumen, unggah ulang dokumen ditolak, pratinjau dokumen, kirim pendaftaran dengan daftar periksa                                       |
+| Admin   | Login email + kata sandi (2FA opsional dengan pengingat), dashboard, daftar gudep, ekspor Excel, panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup, editor template visual, generate dan unduh ID Card & Sertifikat |
+| Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue, nomor seri `LT2-2026-ID/CERT-0001` yang tetap saat generate ulang                                                                         |
 
-Ekspor/impor Excel, UAT, dan rilis produksi adalah Fase 7–8 (lihat `docs/TASKS.md`).
+UAT dan rilis produksi adalah Fase 8 (lihat `docs/TASKS.md`).
 
 ## Instalasi lokal (Laragon / Windows)
 
@@ -98,7 +98,7 @@ Untuk produksi, buat admin lewat perintah artisan agar kata sandi tidak tersimpa
 php artisan app:create-admin
 ```
 
-Registrasi akun publik dimatikan. Admin bisa mengaktifkan autentikasi dua langkah di menu **Akun → Keamanan**.
+Registrasi akun publik dimatikan. Admin bisa mengaktifkan autentikasi dua langkah (aplikasi autentikator + kode cadangan) di menu **Akun → Keamanan**. Selama belum aktif, dashboard admin menampilkan pengingat.
 
 ## Konfigurasi aturan
 
@@ -122,6 +122,12 @@ Jenis dokumen wajib ada di tabel `document_types`:
 - **Unduh**: PDF satuan, PDF per gudep (satu kartu per halaman, atau lembar A4 berisi 9 kartu dengan tanda potong untuk ID Card), serta ZIP per gudep atau seluruhnya.
 - **Nomor seri** diberikan saat pertama kali dibuat dan tidak berubah saat generate ulang; file lama ditimpa. QR pada kartu/sertifikat mengarah ke `/verify/{nomor-seri}`.
 - PDF dibuat dengan dompdf memakai font TTF di `resources/fonts` (Playfair Display, Plus Jakarta Sans, lisensi OFL). ZIP dibuat dengan `zipstream-php`, sehingga ekstensi PHP `zip` tidak diperlukan.
+
+## Ekspor dan impor Excel
+
+- **Ekspor** (Admin → Gudep & Verifikasi → **Ekspor Excel**): file `.xlsx` berisi sheet _Gudep_ dan _Anggota_ (nama, gudep, peran, status tiap dokumen, nomor seri). Ekspor mengikuti filter status dan pencarian yang sedang aktif, dan tercatat di audit log.
+- **Impor peserta** (Pembina → Anggota → **Impor banyak peserta dari Excel**): unduh template, isi kolom Regu, Nama lengkap, Tanggal lahir, dan Nomor KTA, lalu unggah `.xlsx` atau `.csv`. Baris yang tidak valid, ganda, atau melebihi kuota 8 per regu dilewati dan dilaporkan per nomor baris. Pas foto tetap diunggah satu per satu.
+- Keduanya memakai `shuchkin/simplexlsx(gen)`, jadi tidak butuh ekstensi PHP `zip`.
 
 ## Email & queue
 

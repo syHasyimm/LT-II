@@ -29,8 +29,9 @@
     --color-maroon-50: #f3d9d6;
 
     /* Emas */
-    --color-gold-800: #8a6a1f;
-    --color-gold-700: #9c7a2b;
+    /* 700/800 dipakai untuk teks kecil: digelapkan agar kontras ≥ 4.5:1 (WCAG AA). */
+    --color-gold-800: #6e5214;
+    --color-gold-700: #826219;
     --color-gold-500: #c9a24a;
     --color-gold-300: #e8cf8a;
     --color-gold-200: #f3e2ae;
@@ -141,6 +142,51 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    /* Cincin fokus keyboard yang jelas di latar terang maupun marun. */
+    :where(
+        a,
+        button,
+        [role='button'],
+        [role='tab'],
+        [role='checkbox'],
+        summary,
+        input[type='checkbox'],
+        input[type='radio']
+    ):focus-visible {
+        outline: 2px solid var(--color-gold-500);
+        outline-offset: 2px;
+        border-radius: 0.5rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* Tautan "Lewati ke konten utama" yang muncul saat difokus dengan Tab. */
+@utility skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    border-radius: 0.75rem;
+    background: var(--color-ink);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #ffffff;
+    &:focus {
+        transform: none;
     }
 }
 

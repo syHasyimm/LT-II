@@ -3,6 +3,7 @@ import { Menu } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { BrandMark } from '@/components/brand/brand-mark';
 import { Emblem } from '@/components/brand/emblem';
+import { SkipLink } from '@/components/skip-link';
 import {
     Sheet,
     SheetClose,
@@ -23,7 +24,10 @@ const sections = [
 export default function PublicLayout({ children }: { children: ReactNode }) {
     return (
         <div className="min-h-screen bg-ivory text-ink">
-            {children}
+            <SkipLink />
+            <main id="konten" tabIndex={-1} className="outline-none">
+                {children}
+            </main>
             <PublicFooter />
         </div>
     );

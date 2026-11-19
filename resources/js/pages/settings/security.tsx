@@ -26,8 +26,6 @@ export default function Security(props: Props) {
         <>
             <Head title="Pengaturan keamanan" />
 
-            <h1 className="sr-only">Pengaturan keamanan</h1>
-
             <div className="space-y-6 rounded-3xl border border-line bg-white p-6 shadow-[0_8px_24px_rgba(62,7,11,0.04)] sm:p-8">
                 <Heading
                     variant="small"

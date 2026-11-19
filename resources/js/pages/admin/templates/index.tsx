@@ -93,6 +93,7 @@ function TemplateCard({ template }: { template: TemplateSummary }) {
         >
             <Link
                 href={edit(template.id)}
+                aria-label={`Buka editor ${template.name}`}
                 className="grid h-56 place-items-center bg-sand/60 p-4"
             >
                 {template.background_url ? (

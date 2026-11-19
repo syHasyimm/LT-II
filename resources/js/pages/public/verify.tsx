@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Check, Lock, X } from 'lucide-react';
 import { BrandMark } from '@/components/brand/brand-mark';
 import { SerialForm } from '@/components/serial-form';
+import { SkipLink } from '@/components/skip-link';
 import { cn } from '@/lib/utils';
 
 type Result = {
@@ -35,6 +36,7 @@ export default function Verify({ serial, url, result }: Props) {
                 }
             />
             <div className="min-h-screen bg-ivory text-ink">
+                <SkipLink />
                 <div className="relative overflow-hidden bg-maroon-gradient pb-36 text-white">
                     <div
                         aria-hidden
@@ -63,7 +65,11 @@ export default function Verify({ serial, url, result }: Props) {
                     </p>
                 </div>
 
-                <main className="relative mx-auto -mt-28 max-w-[760px] px-4 pb-10 sm:px-6">
+                <main
+                    id="konten"
+                    tabIndex={-1}
+                    className="relative mx-auto -mt-28 max-w-[760px] px-4 pb-10 outline-none sm:px-6"
+                >
                     <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_30px_60px_rgba(62,7,11,0.18)]">
                         <div
                             className={cn(
@@ -175,10 +181,7 @@ export default function Verify({ serial, url, result }: Props) {
                                 ? 'Periksa nomor seri lain'
                                 : 'Coba nomor seri lain'}
                         </h2>
-                        <SerialForm
-                            defaultValue={valid ? '' : ''}
-                            className="mt-4"
-                        />
+                        <SerialForm defaultValue="" className="mt-4" />
                         <p className="mt-3 text-center text-xs text-ink-soft">
                             Format: LT2-2026-ID-0001 atau LT2-2026-CERT-0001
                         </p>

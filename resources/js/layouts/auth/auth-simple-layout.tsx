@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Emblem } from '@/components/brand/emblem';
+import { SkipLink } from '@/components/skip-link';
 import type { AuthLayoutProps } from '@/types';
 
 /**
@@ -13,6 +14,7 @@ export default function AuthSimpleLayout({
 }: AuthLayoutProps) {
     return (
         <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-maroon-gradient p-6 md:p-10">
+            <SkipLink />
             <div
                 aria-hidden
                 className="pointer-events-none absolute -top-40 -left-40 size-[520px] rounded-full border border-gold-300/15"
@@ -22,7 +24,11 @@ export default function AuthSimpleLayout({
                 className="pointer-events-none absolute -right-32 -bottom-32 size-[420px] rounded-full border border-gold-300/10"
             />
 
-            <div className="relative w-full max-w-md">
+            <main
+                id="konten"
+                tabIndex={-1}
+                className="relative w-full max-w-md outline-none"
+            >
                 <Link
                     href="/"
                     className="mx-auto mb-6 flex w-fit flex-col items-center gap-3 text-center"
@@ -46,7 +52,7 @@ export default function AuthSimpleLayout({
                     </div>
                     {children}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

@@ -13,6 +13,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { BrandMark } from '@/components/brand/brand-mark';
+import { SkipLink } from '@/components/skip-link';
 import {
     Sheet,
     SheetContent,
@@ -50,6 +51,7 @@ const adminNav: AdminNavItem[] = [
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (
         <div className="min-h-screen bg-ivory text-ink lg:pl-[264px]">
+            <SkipLink />
             <aside className="fixed inset-y-0 left-0 hidden w-[264px] lg:block">
                 <AdminSidebar />
             </aside>
@@ -73,7 +75,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 </Sheet>
             </div>
 
-            <main className="px-4 py-8 sm:px-8 lg:px-10 lg:py-10">
+            <main
+                id="konten"
+                tabIndex={-1}
+                className="px-4 py-8 outline-none sm:px-8 lg:px-10 lg:py-10"
+            >
                 {children}
             </main>
         </div>

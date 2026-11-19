@@ -140,7 +140,7 @@ export default function Submit({
                             {item.action && item.href && editable && (
                                 <Link
                                     href={item.href}
-                                    className="flex shrink-0 items-center gap-1 text-sm font-bold text-maroon-700 hover:underline"
+                                    className="-my-2 flex min-h-11 shrink-0 items-center gap-1 rounded-lg px-2 text-sm font-bold text-maroon-700 hover:underline"
                                 >
                                     {item.action}
                                     <ArrowRight className="size-3.5" />
