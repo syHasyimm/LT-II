@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\GudepStatus;
+use App\Models\Gudep;
 use App\Services\RegistrationWindow;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -44,6 +46,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'registration' => fn () => app(RegistrationWindow::class)->toArray(),
+            'adminCounters' => fn () => $request->user()?->isAdmin()
+                ? ['submitted' => Gudep::query()->where('status', GudepStatus::Submitted)->count()]
+                : null,
         ];
     }
 }
