@@ -6,7 +6,7 @@ Sumber desain: FigCraft `Perkemahan-LT2-Prototype.figcraft` (referensi PNG di [`
 **Aturan kerja**
 - Satu task = satu commit, pesan commit diawali kode task, misalnya `T2.3: ...`.
 - Task dicentang setelah tes, lint, dan build hijau.
-- Fase 0–4 (MVP), Fase 5–6, dan Fase 7 selesai. Fase 8 (UAT dan rilis) menyusul.
+- Fase 0–7 selesai. Fase 8: bahan UAT dan kit rilis siap; UAT bersama panitia dan deploy ke server menunggu panitia/server.
 
 Legenda: `[ ]` belum · `[x]` selesai
 
@@ -125,7 +125,15 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Notifikasi di ponsel tidak lagi menutupi navigasi bawah pembina. Tautan aksi di halaman Kirim punya area sentuh 44 px.
   - Tidak ada geser horizontal di 375 px pada halaman yang diperiksa.
 
-## Fase 8 · Pengujian & rilis *(menyusul)*
+## Fase 8 · Pengujian & rilis
 
-- [ ] T8.1 UAT bersama panitia (3–5 gudep nyata dari ponsel)
-- [ ] T8.2 Deploy produksi, backup terjadwal, panduan pengguna
+- [ ] **T8.1 UAT bersama panitia (3–5 gudep nyata dari ponsel)**: *bahan siap, pelaksanaan oleh panitia*
+  - [x] Rencana UAT [`docs/UAT.md`](UAT.md): 10 skenario pembina, 12 skenario admin, hal yang diamati, formulir temuan, kriteria lolos, cara mengosongkan data uji.
+  - [x] Tes otomatis alur utama: login Google sampai sertifikat terverifikasi publik, ditambah impor, ekspor, 2FA, dan backup.
+  - [ ] Pelaksanaan UAT dan perbaikan temuan.
+- [ ] **T8.2 Deploy produksi, backup terjadwal, panduan pengguna**: *kit siap, deploy menunggu server*
+  - [x] Backup terjadwal `php artisan app:backup` (harian: database; mingguan: database + dokumen privat), retensi bisa diatur, tanpa ekstensi `zip`. Dicoba dengan `mysqldump` sungguhan.
+  - [x] Header keamanan HTTP, dukungan reverse proxy (`TRUSTED_PROXIES`), health check `/up`, login demo hanya di lokal (dites).
+  - [x] Kit deploy: [`docs/DEPLOY.md`](DEPLOY.md), `.env.production.example`, `deploy/nginx.conf`, `deploy/supervisor-queue.conf`, `deploy/crontab`, `deploy/deploy.sh`.
+  - [x] Panduan pengguna: [`PANDUAN-PEMBINA.md`](PANDUAN-PEMBINA.md) dan [`PANDUAN-ADMIN.md`](PANDUAN-ADMIN.md).
+  - [ ] Deploy ke server produksi, isi kredensial Google OAuth dan SMTP, uji pemulihan backup.

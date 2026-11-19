@@ -6,6 +6,9 @@ Pembina Pendamping login dengan Google, mengisi data gudep, **8 peserta Putra**,
 - Kebutuhan lengkap: [`PRD-Pendaftaran-Perkemahan-LT2.md`](PRD-Pendaftaran-Perkemahan-LT2.md)
 - Daftar task dan progres: [`docs/TASKS.md`](docs/TASKS.md)
 - Referensi desain FigCraft (merah & emas): [`docs/design/`](docs/design/)
+- Deploy produksi, backup, dan pemulihan: [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- Panduan pengguna: [pembina](docs/PANDUAN-PEMBINA.md) · [admin](docs/PANDUAN-ADMIN.md)
+- Rencana uji coba bersama panitia: [`docs/UAT.md`](docs/UAT.md)
 
 ## Stack
 
@@ -22,7 +25,7 @@ Laravel 13 · React 19 + Inertia 3 · Tailwind CSS 4 + shadcn/ui · MySQL 8 · F
 | Admin   | Login email + kata sandi (2FA opsional dengan pengingat), dashboard, daftar gudep, ekspor Excel, panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup, editor template visual, generate dan unduh ID Card & Sertifikat |
 | Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue, nomor seri `LT2-2026-ID/CERT-0001` yang tetap saat generate ulang                                                                         |
 
-UAT dan rilis produksi adalah Fase 8 (lihat `docs/TASKS.md`).
+Fase 8 sudah menyiapkan backup terjadwal, kit deploy, panduan pengguna, dan rencana UAT. Yang tersisa adalah UAT bersama panitia dan deploy ke server (lihat `docs/TASKS.md`).
 
 ## Instalasi lokal (Laragon / Windows)
 
@@ -149,4 +152,5 @@ Tes Feature mencakup alur end-to-end dari login pembina sampai gudep terverifika
 - Tipe file diperiksa dari isi file, bukan hanya ekstensi.
 - Pembina hanya bisa melihat dan mengubah gudepnya sendiri. Pembina yang membuka `/admin/*` mendapat 403.
 - Perubahan status, peninjauan dokumen, jadwal, dan perpanjangan dicatat di `activity_logs`.
-- Cadangkan database **dan** folder `storage/app/private` secara berkala (data tidak dihapus otomatis, BR-13).
+- Header keamanan (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, HSTS di produksi) di semua respons.
+- Backup otomatis lewat `php artisan app:backup`: database setiap malam, database + `storage/app/private` setiap Minggu. Salin folder backup ke luar server (lihat `docs/DEPLOY.md`). Data tidak dihapus otomatis (BR-13).
