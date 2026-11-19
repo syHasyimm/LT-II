@@ -82,7 +82,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Setuju/tolak per dokumen dengan catatan, status `verified` hanya jika semua dokumen disetujui, tolak pendaftaran membuat status `revision` beserta catatan.
 - [x] **T4.6 Audit log & notifikasi email** — FR-VER-05, FR-VER-06
   `activity_logs`, email perubahan status lewat queue `database`.
-- [ ] **T4.7 Uji alur MVP & README**
+- [x] **T4.7 Uji alur MVP & README**
   Uji end-to-end dari pembina daftar sampai admin verifikasi. README berisi cara instalasi, konfigurasi Google OAuth, dan membuat admin.
 
 ---

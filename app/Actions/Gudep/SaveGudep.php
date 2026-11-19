@@ -32,6 +32,9 @@ class SaveGudep
                 ]);
             }
 
+            // Perbarui relasi yang mungkin sudah dimuat sebagai null.
+            $user->setRelation('gudep', $gudep);
+
             return $gudep;
         });
     }

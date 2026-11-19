@@ -1,0 +1,137 @@
+# Pendaftaran Perkemahan LT 2
+
+Aplikasi web pendaftaran gugus depan (gudep) untuk Perkemahan Lomba Tingkat 2.
+Pembina Pendamping login dengan Google, mengisi data gudep, **8 peserta Putra**, **8 peserta Putri**, dan pembina pendamping (tanpa batas jumlah), lalu mengunggah dokumen. Admin panitia memverifikasi pendaftaran.
+
+- Kebutuhan lengkap: [`PRD-Pendaftaran-Perkemahan-LT2.md`](PRD-Pendaftaran-Perkemahan-LT2.md)
+- Daftar task dan progres: [`docs/TASKS.md`](docs/TASKS.md)
+- Referensi desain FigCraft (merah & emas): [`docs/design/`](docs/design/)
+
+## Stack
+
+Laravel 13 · React 19 + Inertia 3 · Tailwind CSS 4 + shadcn/ui · MySQL 8 · Fortify (login admin) · Socialite (login Google) · Pest
+
+## Status
+
+**MVP (Fase 0–4) selesai.** Fitur yang sudah bisa dipakai:
+
+| Area    | Fitur                                                                                                                                                                                           |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Publik  | Beranda dengan jadwal, hitung mundur, dan statistik pendaftaran                                                                                                                                 |
+| Pembina | Login Google, data gudep, peserta Pa/Pi dengan kuota 8/8, repeater pembina, pas foto, matriks dokumen, unggah ulang dokumen ditolak, pratinjau dokumen, kirim pendaftaran dengan daftar periksa |
+| Admin   | Login email + kata sandi (2FA opsional), dashboard, daftar gudep (filter, cari, paginasi), panel verifikasi dokumen, verifikasi atau minta revisi, perpanjangan per gudep, jadwal buka/tutup    |
+| Sistem  | Data terkunci setelah dikirim, read-only di luar jadwal, dokumen di disk privat, audit log, email notifikasi lewat queue                                                                        |
+
+Template ID Card, generate ID Card & Sertifikat, dan halaman verifikasi publik `/verify/{serial}` adalah Fase 5–6 (lihat `docs/TASKS.md`).
+
+## Instalasi lokal (Laragon / Windows)
+
+Kebutuhan: PHP 8.3+ dengan ekstensi `gd`, Composer, Node 20+, MySQL 8.
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+```
+
+Buat database `perkemahan_lt2` (utf8mb4), lalu sesuaikan `.env`:
+
+```dotenv
+DB_DATABASE=perkemahan_lt2
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Jalankan migrasi dan seeder:
+
+```bash
+php artisan migrate --seed
+```
+
+Seeder membuat akun admin dari `ADMIN_EMAIL` / `ADMIN_PASSWORD` di `.env`. Di lingkungan `local`, kata sandi bawaannya `password` bila `ADMIN_PASSWORD` kosong. Seeder juga membuat jadwal pendaftaran contoh (khusus lokal).
+
+Data contoh opsional (6 gudep dengan berbagai status, lengkap dengan PDF dan pas foto contoh):
+
+```bash
+php artisan db:seed --class=DemoDataSeeder
+```
+
+### Menjalankan
+
+```bash
+composer dev
+```
+
+Perintah ini menjalankan server Laravel, Vite, queue worker, dan log sekaligus. Bisa juga dijalankan terpisah:
+
+```bash
+php artisan serve
+npm run dev
+php artisan queue:work
+```
+
+Buka <http://localhost:8000>.
+
+- **Pembina:** `/login`. Di lingkungan `local` tersedia tombol **Masuk sebagai pembina demo** agar bisa dicoba tanpa kredensial Google.
+- **Admin:** `/admin/login`.
+
+## Login Google untuk Pembina
+
+1. Buat OAuth Client ID (jenis _Web application_) di Google Cloud Console.
+2. Tambahkan _Authorized redirect URI_: `https://domain-anda/auth/google/callback` (lokal: `http://localhost:8000/auth/google/callback`).
+3. Isi `.env`:
+
+```dotenv
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
+```
+
+Akun pembina dibuat otomatis saat login pertama. Email yang terdaftar sebagai admin tidak bisa login lewat Google.
+
+## Akun admin
+
+Untuk produksi, buat admin lewat perintah artisan agar kata sandi tidak tersimpan di `.env`:
+
+```bash
+php artisan app:create-admin
+```
+
+Registrasi akun publik dimatikan. Admin bisa mengaktifkan autentikasi dua langkah di menu **Akun → Keamanan**.
+
+## Konfigurasi aturan
+
+`config/camp.php` berisi kuota (8 per regu), minimal pembina, batas unggah (2 MB), format file, tahun acara, dan prefiks nomor seri.
+Jadwal buka/tutup **tidak** ada di kode: admin mengaturnya di **Jadwal Pendaftaran** (tersimpan di tabel `settings`, zona waktu Asia/Jakarta).
+
+Jenis dokumen wajib ada di tabel `document_types`:
+
+| Kode               | Dokumen                | Wajib untuk      |
+| ------------------ | ---------------------- | ---------------- |
+| `kta`              | Kartu Tanda Anggota    | peserta, pembina |
+| `izin_ortu`        | Surat Izin Orang Tua   | peserta          |
+| `kesehatan`        | Surat Keterangan Sehat | peserta, pembina |
+| `kesiapan_sekolah` | Surat Kesiapan Sekolah | satu per gudep   |
+
+## Email & queue
+
+Email notifikasi perubahan status dikirim lewat queue `database`. Jalankan `php artisan queue:work` (sudah termasuk di `composer dev`). Di lokal, `MAIL_MAILER=log` menulis email ke `storage/logs/laravel.log`.
+
+## Pengujian
+
+```bash
+composer test          # Pint + Larastan + Pest
+npm run check          # format & lint frontend
+npm run types:check    # TypeScript
+```
+
+Tes Feature mencakup alur end-to-end dari login pembina sampai gudep terverifikasi (`tests/Feature/Domain/RegistrationFlowTest.php`).
+
+## Keamanan dan privasi
+
+- Pas foto dan dokumen disimpan di `storage/app/private` dengan nama acak, dan hanya disajikan lewat controller yang memeriksa otorisasi (pembina pemilik gudep atau admin).
+- Tipe file diperiksa dari isi file, bukan hanya ekstensi.
+- Pembina hanya bisa melihat dan mengubah gudepnya sendiri. Pembina yang membuka `/admin/*` mendapat 403.
+- Perubahan status, peninjauan dokumen, jadwal, dan perpanjangan dicatat di `activity_logs`.
+- Cadangkan database **dan** folder `storage/app/private` secara berkala (data tidak dihapus otomatis, BR-13).
