@@ -66,7 +66,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Tabel anggota × dokumen dengan status belum / diunggah / disetujui / ditolak.
 - [x] **T3.3 Unggah ulang dokumen ditolak** — FR-DOC-03
   File lama diarsipkan, status kembali `pending`.
-- [ ] **T3.4 Pratinjau dokumen** — FR-DOC-05
+- [x] **T3.4 Pratinjau dokumen** — FR-DOC-05
   PDF dan gambar tampil di dialog tanpa diunduh.
 
 ## Fase 4 · Kirim & verifikasi (MVP)

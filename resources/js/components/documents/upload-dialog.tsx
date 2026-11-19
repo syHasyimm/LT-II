@@ -1,11 +1,7 @@
 import { Form } from '@inertiajs/react';
-import {
-    ExternalLink,
-    FileText,
-    MessageSquareWarning,
-    Upload,
-} from 'lucide-react';
+import { FileText, MessageSquareWarning, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { DocumentPreview } from '@/components/documents/document-preview';
 import { DocumentStatusBadge } from '@/components/status-badge';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -47,7 +43,7 @@ export function UploadDialog({
                 }
             }}
         >
-            <DialogContent className="rounded-3xl border-line bg-ivory sm:max-w-md">
+            <DialogContent className="max-h-[92vh] overflow-y-auto rounded-3xl border-line bg-ivory sm:max-w-lg">
                 {slot && (
                     <>
                         <DialogTitle className="font-display text-2xl text-ink">
@@ -91,16 +87,7 @@ export function UploadDialog({
                             </div>
                         )}
 
-                        {document && (
-                            <a
-                                href={document.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="flex items-center justify-center gap-2 text-sm font-semibold text-maroon-700 hover:underline"
-                            >
-                                <ExternalLink className="size-4" /> Buka dokumen
-                            </a>
-                        )}
+                        {document && <DocumentPreview document={document} />}
 
                         {editable && (
                             <Form

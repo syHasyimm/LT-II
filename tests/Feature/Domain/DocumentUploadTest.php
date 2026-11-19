@@ -196,3 +196,17 @@ it('menyertakan kekurangan dokumen dalam kelengkapan pendaftaran', function () {
     expect(RegistrationProgress::for($gudep->refresh())->issues())
         ->toContain('Gudep: Surat Kesiapan Sekolah belum diunggah.');
 });
+
+it('menyajikan dokumen secara inline agar bisa dipratinjau tanpa diunduh', function () {
+    Storage::disk('local')->put('documents/1/b.pdf', '%PDF-1.4');
+    $gudep = Gudep::factory()->withOwner()->create();
+    $document = Document::factory()->for($gudep)->create([
+        'path' => 'documents/1/b.pdf',
+        'original_name' => 'kesiapan.pdf',
+    ]);
+
+    $response = $this->actingAs($gudep->user)->get(route('documents.file', $document));
+
+    expect($response->headers->get('content-disposition'))->toStartWith('inline')
+        ->and($response->headers->get('x-content-type-options'))->toBe('nosniff');
+});
