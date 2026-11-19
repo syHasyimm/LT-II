@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { GoogleIcon } from '@/components/brand/google-icon';
+import { SerialForm } from '@/components/serial-form';
 import type { RegistrationWindow } from '@/components/registration-pill';
 import { pad, useCountdown } from '@/hooks/use-countdown';
 import PublicLayout, { PublicNav } from '@/layouts/public-layout';
@@ -42,6 +43,7 @@ export default function Welcome({ rules, stats }: Props) {
             <Hero registration={registration} stats={stats} />
             <Requirements rules={rules} />
             <Steps rules={rules} />
+            <VerifySection />
             <Faq />
         </PublicLayout>
     );
@@ -493,6 +495,70 @@ function Steps({ rules }: { rules: Rules }) {
                         );
                     })}
                 </ol>
+            </div>
+        </section>
+    );
+}
+
+/** Verifikasi publik ID Card & Sertifikat (desain P1/P2, FR-GEN-05). */
+function VerifySection() {
+    return (
+        <section
+            id="verifikasi"
+            className="relative scroll-mt-4 overflow-hidden bg-[linear-gradient(135deg,#6e1218,#3e070b_55%,#2a0407)] px-6 py-16 text-white sm:py-24"
+        >
+            <div
+                aria-hidden
+                className="pointer-events-none absolute -bottom-40 -left-40 size-[520px] rounded-full border border-gold-300/10"
+            />
+            <div className="relative mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1fr_560px] lg:gap-20">
+                <div>
+                    <p className="text-[11px] font-semibold tracking-[0.26em] text-gold-300 uppercase sm:text-[13px]">
+                        Verifikasi publik
+                    </p>
+                    <h2 className="mt-2 font-display text-[28px] leading-tight font-bold sm:text-[44px]">
+                        Cek keaslian ID Card
+                        <br />
+                        dan sertifikat
+                    </h2>
+                    <p className="mt-4 max-w-[520px] text-[15px] leading-relaxed text-maroon-50 sm:text-base">
+                        Pindai QR pada sertifikat atau masukkan nomor seri.
+                        Halaman verifikasi hanya menampilkan nama, gudep, dan
+                        status keabsahan.
+                    </p>
+                    <SerialForm tone="dark" className="mt-8 max-w-[540px]" />
+                    <p className="mt-3 text-xs text-maroon-50/65">
+                        Format nomor seri: LT2-2026-ID-0001 untuk ID Card,
+                        LT2-2026-CERT-0001 untuk sertifikat
+                    </p>
+                </div>
+
+                <div className="hidden rounded-3xl bg-ivory p-8 text-ink shadow-[0_24px_48px_rgba(18,1,3,0.4)] lg:block">
+                    <div className="-mx-8 -mt-8 mb-6 h-1.5 rounded-t-3xl bg-[linear-gradient(90deg,#9c7a2b,#e8cf8a,#9c7a2b)]" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-bold text-success">
+                        <Check className="size-3" strokeWidth={3} /> Contoh
+                        hasil · sah
+                    </span>
+                    <p className="mt-4 text-xs font-semibold tracking-[0.16em] text-gold-700 uppercase">
+                        Sertifikat · LT2-2026-CERT-0001
+                    </p>
+                    <p className="mt-1 font-display text-[30px] font-bold">
+                        Nama Peserta
+                    </p>
+                    <div className="my-4 h-px bg-line" />
+                    <dl className="grid grid-cols-[110px_1fr] gap-y-2 text-sm">
+                        <dt className="text-ink-soft">Gudep</dt>
+                        <dd className="font-semibold">Nomor gudep · sekolah</dd>
+                        <dt className="text-ink-soft">Peran</dt>
+                        <dd className="font-semibold">Peserta Putra</dd>
+                        <dt className="text-ink-soft">Diterbitkan</dt>
+                        <dd className="font-semibold">Tanggal terbit</dd>
+                    </dl>
+                    <p className="mt-5 text-xs text-ink-soft">
+                        Tanggal lahir, dokumen, dan kontak tidak pernah
+                        ditampilkan di halaman publik.
+                    </p>
+                </div>
             </div>
         </section>
     );

@@ -15,6 +15,7 @@ const sections = [
     { href: '#ketentuan', label: 'Ketentuan' },
     { href: '#alur', label: 'Alur' },
     { href: '#jadwal', label: 'Jadwal' },
+    { href: '#verifikasi', label: 'Verifikasi' },
     { href: '#faq', label: 'FAQ' },
 ];
 
@@ -115,6 +116,7 @@ function PublicFooter() {
                     links={[
                         { href: '#ketentuan', label: 'Ketentuan' },
                         { href: '#alur', label: 'Alur pendaftaran' },
+                        { href: '#verifikasi', label: 'Verifikasi sertifikat' },
                         { href: '#faq', label: 'Pertanyaan umum' },
                     ]}
                 />
