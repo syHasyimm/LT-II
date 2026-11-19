@@ -12,7 +12,7 @@ import {
     Users,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Sheet,
     SheetContent,
@@ -98,7 +98,7 @@ function VerticalTimeline() {
 }
 
 /** Daftar timeline + nama/Keluar, dipakai kartu desktop dan panel ponsel. */
-function TimelineList({ onNavigate }: { onNavigate?: () => void }) {
+function TimelineList() {
     const { items, active } = useTimelineItems();
     const { auth } = usePage().props;
 
@@ -127,7 +127,6 @@ function TimelineList({ onNavigate }: { onNavigate?: () => void }) {
                                 <Link
                                     href={item.href}
                                     prefetch
-                                    onClick={onNavigate}
                                     aria-current={isActive ? 'step' : undefined}
                                     className={cn(
                                         'group relative flex items-start gap-3 rounded-2xl pb-5',
@@ -203,8 +202,12 @@ function TimelineList({ onNavigate }: { onNavigate?: () => void }) {
  * tombol "Semua langkah" yang membuka timeline lengkap di panel bawah.
  */
 function StripTimeline() {
-    const { pembinaSteps, pembinaStep } = usePage().props;
+    const { url, props } = usePage();
+    const { pembinaSteps, pembinaStep } = props;
     const [open, setOpen] = useState(false);
+
+    // Tutup panel pada setiap navigasi Inertia, termasuk tombol Back browser.
+    useEffect(() => setOpen(false), [url]);
     const steps = pembinaSteps ?? [];
     const activeIndex = steps.findIndex((step) => step.key === pembinaStep);
     const doneCount = steps.filter((step) => step.state === 'done').length;
@@ -248,7 +251,7 @@ function StripTimeline() {
                         <SheetTitle className="sr-only">
                             Langkah pendaftaran
                         </SheetTitle>
-                        <TimelineList onNavigate={() => setOpen(false)} />
+                        <TimelineList />
                     </SheetContent>
                 </Sheet>
             </div>
