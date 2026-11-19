@@ -91,11 +91,12 @@
                     <img class="f" src="{{ $card['qr'] }}" alt="" style="{{ $box }} {{ $radius }}">
                 @else
                     @php
+                        $text = $subject->interpolate((string) ($field['content'] ?? ''));
                         $style = $box.$radius
                             .'font-family: '.($fontFamilies[$field['font'] ?? 'sans'] ?? $fontFamilies['sans']).';'
                             .'font-weight: '.((int) ($field['weight'] ?? 400)).';'
                             .'font-style: '.(! empty($field['italic']) ? 'italic' : 'normal').';'
-                            .'font-size: '.round((float) ($field['size'] ?? 8), 2).'pt;'
+                            .'font-size: '.\App\Services\Pdf\TextFit::size($text, $field).'pt;'
                             .'color: '.($field['color'] ?? '#2A1416').';'
                             .'text-align: '.($field['align'] ?? 'center').';'
                             .(! empty($field['uppercase']) ? 'text-transform: uppercase;' : '')
@@ -103,7 +104,7 @@
                             .(! empty($field['bg']) ? $pill($field) : 'line-height: 1.2;')
                             .'white-space: pre-line;';
                     @endphp
-                    <div class="t" style="{{ $style }}">{{ $subject->interpolate((string) ($field['content'] ?? '')) }}</div>
+                    <div class="t" style="{{ $style }}">{{ $text }}</div>
                 @endif
             @endforeach
         </div>

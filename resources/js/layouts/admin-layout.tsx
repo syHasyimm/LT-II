@@ -41,13 +41,8 @@ const adminNav: AdminNavItem[] = [
         badgeKey: 'submitted',
     },
     { href: '/admin/template', label: 'Template', icon: LayoutTemplate },
-    { href: '/admin/id-card', label: 'ID Card', icon: IdCard, soon: true },
-    {
-        href: '/admin/sertifikat',
-        label: 'Sertifikat',
-        icon: FileBadge2,
-        soon: true,
-    },
+    { href: '/admin/id-card', label: 'ID Card', icon: IdCard },
+    { href: '/admin/sertifikat', label: 'Sertifikat', icon: FileBadge2 },
     { href: '/admin/jadwal', label: 'Jadwal Pendaftaran', icon: CalendarClock },
 ];
 

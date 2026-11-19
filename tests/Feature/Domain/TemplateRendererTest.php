@@ -5,6 +5,7 @@ use App\Models\Template;
 use App\Services\Pdf\QrCodeService;
 use App\Services\Pdf\RenderSubject;
 use App\Services\Pdf\TemplateRenderer;
+use App\Services\Pdf\TextFit;
 use App\Services\Templates\DefaultTemplates;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,4 +52,12 @@ it('menyusun 9 kartu per lembar A4 dengan tanda potong', function () {
     expect(substr_count($html, 'class="card"'))->toBe(10)
         ->and(substr_count($html, 'class="page'))->toBe(2)
         ->and($html)->toContain('class="cut"');
+});
+
+it('memperkecil font nama yang terlalu panjang agar muat satu baris', function () {
+    $field = DefaultTemplates::text('Nama', '{nama}', x: 2.67, y: 45.67, w: 49.67, h: 4.67, font: 'display', weight: 700, size: 9.9);
+
+    expect(TextFit::size('Lantar Mansur', $field))->toBe(9.9)
+        ->and(TextFit::size('Michelle Agnes Mayasari S.Kom', $field))->toBeLessThan(9.9)->toBeGreaterThanOrEqual(5.94)
+        ->and(TextFit::size("Baris satu\nBaris dua", $field))->toBe(9.9);
 });

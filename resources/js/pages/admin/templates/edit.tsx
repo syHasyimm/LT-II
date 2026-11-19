@@ -165,6 +165,27 @@ function textPreset(
 
 const round = (value: number) => Math.round(value * 10) / 10;
 
+/** Sama dengan App\Services\Pdf\TextFit: perkecil font teks satu baris yang terlalu panjang. */
+function fitSize(text: string, field: TemplateField): number {
+    const size = field.size ?? 8;
+    const sizeMm = size * PT_TO_MM;
+
+    if (!text || text.includes('\n') || field.h >= sizeMm * 1.2 * 1.9) {
+        return size;
+    }
+
+    let factor = { display: 0.54, sans: 0.56, mono: 0.6 }[field.font ?? 'sans'];
+    factor += field.uppercase ? 0.08 : 0;
+    factor += (field.weight ?? 400) >= 700 ? 0.03 : 0;
+    const available = field.w - (field.bg ? sizeMm * 1.2 : 0);
+    const estimated =
+        text.length * (factor + (field.letter_spacing ?? 0)) * sizeMm;
+
+    return estimated <= available
+        ? size
+        : Math.max(size * 0.6, (size * available) / estimated);
+}
+
 /** Editor visual template ID Card / Sertifikat (desain D3, FR-TPL-04). */
 export default function TemplateEditor({ template, samples, targets }: Props) {
     const form = useForm({
@@ -761,6 +782,7 @@ function Canvas({
                             </div>
                         );
                     } else {
+                        const text = interpolate(field.content ?? '');
                         content = (
                             <div
                                 className="size-full whitespace-pre-line"
@@ -772,7 +794,7 @@ function Canvas({
                                         ? 'italic'
                                         : 'normal',
                                     fontSize:
-                                        (field.size ?? 8) * PT_TO_MM * scale,
+                                        fitSize(text, field) * PT_TO_MM * scale,
                                     color: field.color ?? '#2A1416',
                                     textAlign: field.align ?? 'center',
                                     textTransform: field.uppercase
@@ -795,7 +817,7 @@ function Canvas({
                                         : undefined,
                                 }}
                             >
-                                {interpolate(field.content ?? '')}
+                                {text}
                             </div>
                         );
                     }

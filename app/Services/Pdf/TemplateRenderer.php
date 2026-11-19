@@ -35,6 +35,16 @@ class TemplateRenderer
         return $pdf->setPaper([0, 0, $template->width_mm * self::MM_TO_PT, $template->height_mm * self::MM_TO_PT]);
     }
 
+    /** PDF dari HTML gabungan beberapa template berukuran sama. */
+    public function pdfFromHtml(string $html, Template $template, string $mode = 'single'): DomPdf
+    {
+        $pdf = Pdf::loadHTML($html);
+
+        return $mode === 'sheet'
+            ? $pdf->setPaper('a4', 'portrait')
+            : $pdf->setPaper([0, 0, $template->width_mm * self::MM_TO_PT, $template->height_mm * self::MM_TO_PT]);
+    }
+
     /**
      * @param  list<RenderSubject>  $subjects
      */
