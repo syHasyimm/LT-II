@@ -104,7 +104,7 @@ function PublicFooter() {
         <footer className="bg-maroon-950 text-maroon-50/80">
             <div className="mx-auto grid max-w-[1200px] gap-10 px-6 py-14 md:grid-cols-[1.4fr_1fr_1fr] xl:px-0">
                 <div className="flex gap-3">
-                    <Emblem className="size-10" />
+                    <Emblem className="size-12" />
                     <div>
                         <p className="font-display text-lg font-bold text-white">
                             {name}

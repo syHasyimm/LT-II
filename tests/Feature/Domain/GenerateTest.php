@@ -3,6 +3,7 @@
 use App\Actions\Generate\GenerateMemberFile;
 use App\Enums\GudepStatus;
 use App\Enums\TemplateType;
+use App\Jobs\GenerateFileJob;
 use App\Models\GeneratedFile;
 use App\Models\Gudep;
 use App\Models\User;
@@ -116,4 +117,33 @@ it('menampilkan halaman generate untuk gudep yang belum punya berkas', function 
         ->get(route('admin.id-cards.index'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page->where('gudeps.0.generated', 0)->where('gudeps.0.last_at', null));
+});
+
+it('melewati job yang kartunya sudah dibuat setelah job itu diantrikan', function () {
+    $gudep = Gudep::factory()->status(GudepStatus::Verified)->withOwner()->create();
+    $member = $gudep->pembina()->sole();
+
+    $this->travelTo(now()->subMinutes(2));
+    $job = new GenerateFileJob($member->id, TemplateType::IdCard, $this->admin->id);
+    $this->travelBack();
+
+    $file = app(GenerateMemberFile::class)->handle($member, TemplateType::IdCard, $this->admin);
+    $renderedAt = $file->generated_at;
+
+    $this->travel(1)->minutes();
+    $job->handle(app(GenerateMemberFile::class));
+
+    expect($file->refresh()->generated_at->equalTo($renderedAt))->toBeTrue();
+});
+
+it('tetap membuat ulang kartu bila job diantrikan setelah kartu terakhir dibuat', function () {
+    $gudep = Gudep::factory()->status(GudepStatus::Verified)->withOwner()->create();
+    $member = $gudep->pembina()->sole();
+    $file = app(GenerateMemberFile::class)->handle($member, TemplateType::IdCard, $this->admin);
+    $renderedAt = $file->generated_at;
+
+    $this->travel(1)->minutes();
+    (new GenerateFileJob($member->id, TemplateType::IdCard, $this->admin->id))->handle(app(GenerateMemberFile::class));
+
+    expect($file->refresh()->generated_at->greaterThan($renderedAt))->toBeTrue();
 });

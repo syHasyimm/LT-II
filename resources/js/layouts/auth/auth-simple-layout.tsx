@@ -33,7 +33,7 @@ export default function AuthSimpleLayout({
                     href="/"
                     className="mx-auto mb-6 flex w-fit flex-col items-center gap-3 text-center"
                 >
-                    <Emblem className="size-16" />
+                    <Emblem className="size-20" />
                     <span className="text-[11px] font-semibold tracking-[0.26em] text-gold-300 uppercase">
                         Perkemahan LT 2 · Panel Admin
                     </span>

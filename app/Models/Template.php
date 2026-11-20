@@ -53,6 +53,16 @@ class Template extends Model
     }
 
     /** Template aktif untuk jenis dan peran anggota (sasaran spesifik didahulukan). */
+    /**
+     * Peran anggota yang punya template aktif untuk jenis ini (satu query per peran).
+     *
+     * @return list<MemberRole>
+     */
+    public static function activeRoles(TemplateType $type): array
+    {
+        return array_values(array_filter(MemberRole::cases(), fn (MemberRole $role) => self::activeFor($type, $role) !== null));
+    }
+
     public static function activeFor(TemplateType $type, MemberRole $role): ?self
     {
         $target = TemplateTarget::forRole($role);

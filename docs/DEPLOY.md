@@ -9,7 +9,7 @@ Contoh berkas konfigurasi ada di folder [`deploy/`](../deploy) dan [`.env.produc
 | Komponen | Versi / catatan |
 | --- | --- |
 | PHP | 8.3 atau lebih baru, dengan ekstensi `gd`, `mbstring`, `xml`, `dom`, `curl`, `fileinfo`, `zlib`, `pdo_mysql`, `intl`, `bcmath`. Ekstensi `zip` **tidak** wajib. |
-| php.ini | `upload_max_filesize = 8M`, `post_max_size = 12M`, `memory_limit = 512M` (render PDF) |
+| php.ini | `upload_max_filesize = 12M`, `post_max_size = 16M` (dokumen gabungan hingga 10 MB; Nginx `client_max_body_size 16M`), `memory_limit = 512M` (render PDF) |
 | MySQL | 8.x, database `utf8mb4`, plus `mysqldump` untuk backup |
 | Node.js | 20+ (untuk `npm run build` saat deploy) |
 | Lainnya | Composer 2, Git, Supervisor, sertifikat HTTPS (certbot / Let's Encrypt) |

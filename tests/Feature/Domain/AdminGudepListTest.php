@@ -47,6 +47,33 @@ it('mencari gudep berdasarkan nama atau sekolah', function () {
         ->assertInertia(fn ($page) => $page->has('rows.data', 1)->where('rows.data.0.name', 'Gudep 05.112'));
 });
 
+it('mencari gudep berdasarkan NPSN, penanggung jawab, atau alamat', function () {
+    Gudep::factory()->create([
+        'name' => 'Gudep 07.041',
+        'npsn' => '20404123',
+        'pic_name' => 'Sumarno',
+        'address' => 'Jl. Magelang KM 5',
+    ]);
+    Gudep::factory()->create([
+        'name' => 'Gudep 05.112',
+        'npsn' => '20405112',
+        'pic_name' => 'Siti Aminah',
+        'address' => 'Jl. Imogiri Barat KM 5',
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.gudeps.index', ['q' => '20404123']))
+        ->assertInertia(fn ($page) => $page->has('rows.data', 1)->where('rows.data.0.name', 'Gudep 07.041'));
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.gudeps.index', ['q' => 'Siti Aminah']))
+        ->assertInertia(fn ($page) => $page->has('rows.data', 1)->where('rows.data.0.name', 'Gudep 05.112'));
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.gudeps.index', ['q' => 'Imogiri']))
+        ->assertInertia(fn ($page) => $page->has('rows.data', 1)->where('rows.data.0.name', 'Gudep 05.112'));
+});
+
 it('menampilkan gudep berstatus dikirim paling atas dan memakai paginasi', function () {
     Gudep::factory()->count(16)->create();
     Gudep::factory()->status(GudepStatus::Submitted)->create(['name' => 'Perlu Diperiksa']);

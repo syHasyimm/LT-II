@@ -7,10 +7,11 @@ use App\Models\User;
 use App\Services\RegistrationWindow;
 
 $gudepPayload = [
-    'name' => 'Gudep 07.041',
     'gudep_number' => '07.041',
+    'npsn' => '20404123',
     'institution' => 'SMP Negeri 3 Sleman',
-    'region' => 'Kwarcab Sleman',
+    'pic_name' => 'Drs. Sumarno, M.Pd.',
+    'address' => 'Jl. Magelang KM 5, Sleman',
 ];
 
 it('menyimpan jadwal dari dashboard admin dalam zona waktu Asia/Jakarta', function () {
@@ -77,10 +78,10 @@ it('tetap mengizinkan perubahan bagi gudep dengan perpanjangan aktif', function 
     $gudep = Gudep::factory()->withOwner()->create(['deadline_extended_until' => now()->addDays(2)]);
 
     $this->actingAs($gudep->user)
-        ->put(route('pembina.gudep.update'), [...$gudepPayload, 'name' => 'Gudep Perpanjangan'])
+        ->put(route('pembina.gudep.update'), [...$gudepPayload, 'gudep_number' => '07.099'])
         ->assertSessionHasNoErrors();
 
-    expect($gudep->refresh()->name)->toBe('Gudep Perpanjangan');
+    expect($gudep->refresh()->name)->toBe('Gudep 07.099');
 });
 
 it('mengizinkan perbaikan revisi setelah tutup hanya bila ada tenggat revisi', function (?string $deadline, bool $allowed) use ($gudepPayload) {
@@ -90,7 +91,7 @@ it('mengizinkan perbaikan revisi setelah tutup hanya bila ada tenggat revisi', f
     ]);
 
     $response = $this->actingAs($gudep->user)
-        ->put(route('pembina.gudep.update'), [...$gudepPayload, 'name' => 'Gudep Revisi']);
+        ->put(route('pembina.gudep.update'), $gudepPayload);
 
     $allowed ? $response->assertSessionHasNoErrors() : $response->assertSessionHasErrors('registration');
 })->with([

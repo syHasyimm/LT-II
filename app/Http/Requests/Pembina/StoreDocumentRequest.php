@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-/** FR-DOC-01: PDF/JPG/PNG maksimal 2 MB. Tipe MIME diperiksa dari isi file. */
+/** FR-DOC-01: PDF/JPG/PNG maksimal camp.max_upload_kb (10 MB). Tipe MIME diperiksa dari isi file. */
 class StoreDocumentRequest extends FormRequest
 {
     public function authorize(): bool

@@ -15,13 +15,19 @@ beforeEach(function () {
 });
 
 it('mengisi placeholder dengan data anggota', function () {
-    $gudep = Gudep::factory()->complete()->create(['name' => 'Gudep 07.041', 'institution' => 'SMPN 3 Sleman', 'region' => 'Kwarcab Sleman']);
+    $gudep = Gudep::factory()->complete()->create([
+        'name' => 'Gudep 07.041',
+        'institution' => 'SMPN 3 Sleman',
+        'npsn' => '20404123',
+        'pic_name' => 'Drs. Sumarno, M.Pd.',
+        'address' => 'Jl. Magelang KM 5, Sleman',
+    ]);
     $member = $gudep->peserta()->first();
 
     $subject = RenderSubject::fromMember($member, 'LT2-2026-ID-0001');
 
-    expect($subject->interpolate('{nama} · {peran} · {gudep} – {sekolah}, {kwartir} · {nomor_seri}'))
-        ->toBe("{$member->name} · Peserta · Regu Putra · Gudep 07.041 – SMPN 3 Sleman, Kwarcab Sleman · LT2-2026-ID-0001")
+    expect($subject->interpolate('{nama} · {peran} · {gudep} – {sekolah}, {alamat} · {kwartir} · {npsn} · {penanggung_jawab} · {nomor_seri}'))
+        ->toBe("{$member->name} · Peserta · Regu Putra · Gudep 07.041 – SMPN 3 Sleman, Jl. Magelang KM 5, Sleman · Jl. Magelang KM 5, Sleman · 20404123 · Drs. Sumarno, M.Pd. · LT2-2026-ID-0001")
         ->and($subject->qrContent)->toBe(route('verify.show', 'LT2-2026-ID-0001'));
 });
 

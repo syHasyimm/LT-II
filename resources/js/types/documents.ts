@@ -39,7 +39,7 @@ export type DocumentRow = {
 };
 
 export type GudepDocument = {
-    type: { id: number; label: string };
+    type: { id: number; code: string; label: string };
     document: DocumentData | null;
 };
 

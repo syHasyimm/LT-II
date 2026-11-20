@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\GenerateController;
 use App\Http\Controllers\Admin\GudepController;
+use App\Http\Controllers\Admin\RegistrationFormController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\Admin\VerificationController;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('gudep', [GudepController::class, 'index'])->name('gudeps.index');
         Route::get('gudep-ekspor', ExportController::class)->name('gudeps.excel');
         Route::get('gudep/{gudep}', [VerificationController::class, 'show'])->name('gudeps.show');
+        Route::get('gudep/{gudep}/formulir', RegistrationFormController::class)->name('gudeps.form');
         Route::post('gudep/{gudep}/verifikasi', [VerificationController::class, 'approve'])->name('gudeps.approve');
         Route::post('gudep/{gudep}/revisi', [VerificationController::class, 'reject'])->name('gudeps.reject');
         Route::put('gudep/{gudep}/perpanjangan', [VerificationController::class, 'extend'])->name('gudeps.extend');

@@ -10,18 +10,15 @@ type BrandMarkProps = {
 
 /** Logo + nama acara. `tone="dark"` dipakai di atas latar marun. */
 export function BrandMark({
-    subtitle = 'Gugus Depan · 2026',
+    subtitle = 'Gerakan Pramuka Kwartir Ranting Kepenuhan',
     tone = 'dark',
     className,
     size = 'md',
 }: BrandMarkProps) {
     return (
         <span className={cn('flex items-center gap-3', className)}>
-            <Emblem
-                tone={tone}
-                className={size === 'sm' ? 'size-9' : 'size-11'}
-            />
-            <span className="grid leading-tight">
+            <Emblem className={size === 'sm' ? 'size-10' : 'size-12'} />
+            <span className="grid min-w-0 leading-tight">
                 <span
                     className={cn(
                         'font-display font-bold whitespace-nowrap',
@@ -33,7 +30,7 @@ export function BrandMark({
                 </span>
                 <span
                     className={cn(
-                        'text-[10px] font-semibold tracking-[0.24em] whitespace-nowrap uppercase',
+                        'max-w-[200px] text-[10px] leading-[1.4] font-semibold tracking-[0.16em] whitespace-normal uppercase',
                         tone === 'dark' ? 'text-gold-300' : 'text-gold-700',
                     )}
                 >

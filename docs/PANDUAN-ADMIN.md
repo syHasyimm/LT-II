@@ -17,10 +17,11 @@ Panduan singkat mengelola pendaftaran Perkemahan Lomba Tingkat 2 dari panel admi
 ## Memeriksa pendaftaran
 
 1. **Dashboard** menampilkan jumlah gudep per status, dokumen yang menunggu, dan daftar gudep. Gudep berstatus **Dikirim** tampil paling atas.
-2. Buka gudep → periksa data anggota dan setiap dokumen (pratinjau langsung di panel).
-3. Untuk setiap dokumen pilih **Setujui** atau **Tolak** (wajib dengan catatan, misalnya "Foto buram, unggah ulang").
+2. Buka gudep → tab **Berkas** berisi empat dokumen gudep (KTA, Izin Orang Tua, dan Keterangan Sehat masing-masing satu PDF gabungan untuk seluruh anggota, ditambah Kesiapan Sekolah). Tab Putra/Putri/Pembina menampilkan data dan pas foto tiap anggota.
+3. Untuk setiap dokumen pilih **Setujui** atau **Tolak** (wajib dengan catatan). Karena satu berkas berisi banyak anggota, sebutkan nama anggota yang bermasalah di catatan, misalnya "KTA Budi dan Sari buram, unggah ulang berkas gabungan".
 4. Keputusan gudep:
-   - **Verifikasi**: bila semua dokumen disetujui. Status menjadi *Terverifikasi* dan data terkunci permanen.
+   - **Verifikasi**: bila semua dokumen disetujui. Status menjadi *Terverifikasi* dan data terkunci permanen. ID Card seluruh anggota otomatis dibuat di latar belakang (butuh template ID Card aktif; tanpa template, buat nanti lewat menu **ID Card**), dan pembina bisa mengunduhnya sendiri.
+   - Setelah terverifikasi, tombol **Unduh formulir** di samping tombol verifikasi menghasilkan Formulir Pendaftaran (PDF berkop) berisi data gudep, peserta, dan pembina. Logo kop bisa diganti dengan menimpa `public/images/kop-kiri.png` dan `public/images/kop-kanan.png`; teks kop ada di `config/camp.php` (`kop`).
    - **Minta revisi**: tulis catatan untuk pembina. Bila pendaftaran sudah ditutup, isi **tenggat revisi** agar pembina masih bisa memperbaiki.
 5. Pembina menerima email otomatis pada setiap perubahan status.
 
@@ -32,8 +33,8 @@ Semua keputusan tercatat di riwayat aktivitas gudep (audit log).
 
 Menu **Gudep & Verifikasi → Ekspor Excel**. File berisi:
 
-- sheet **Gudep**: status, jumlah peserta Pa/Pi dan pembina, rekap dokumen, tanggal kirim/verifikasi;
-- sheet **Anggota**: nama, peran, regu, gudep, status tiap dokumen, nomor seri ID Card/Sertifikat.
+- sheet **Gudep**: NPSN, nama instansi, penanggung jawab, alamat, status, jumlah peserta Pa/Pi dan pembina, rekap dokumen, status tiap dokumen (KTA, Izin, Sehat, Kesiapan), tanggal kirim/verifikasi;
+- sheet **Anggota**: nama, peran, regu, gudep, NPSN, nama instansi, penanggung jawab, alamat, status gudep, nomor seri ID Card/Sertifikat.
 
 Ekspor mengikuti filter dan pencarian yang sedang aktif (misalnya hanya gudep *Terverifikasi*). File berisi data pribadi peserta: simpan dan bagikan seperlunya.
 

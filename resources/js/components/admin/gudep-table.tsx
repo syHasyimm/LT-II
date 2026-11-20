@@ -8,8 +8,11 @@ import { cn } from '@/lib/utils';
 export type GudepRow = {
     id: number;
     name: string;
+    gudep_number: string;
+    npsn: string | null;
     institution: string;
-    region: string;
+    pic_name: string | null;
+    address: string | null;
     peserta: number;
     pembina: number;
     documents: { uploaded: number; total: number; rejected: number };
@@ -112,7 +115,7 @@ export function GudepTable({
                         aria-label="Cari gudep"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
-                        placeholder="Cari nama gudep atau sekolah…"
+                        placeholder="Cari nama gudep, NPSN, instansi, atau alamat…"
                         className="h-11 w-full rounded-xl border border-line bg-white pr-4 pl-11 text-sm outline-none focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
                     />
                 </label>
@@ -149,7 +152,7 @@ export function GudepTable({
                     <thead>
                         <tr className="bg-[#f6efe3] text-[11px] font-semibold tracking-[0.14em] text-ink-muted uppercase">
                             <th className="px-6 py-3.5">Gugus depan</th>
-                            <th className="px-3 py-3.5">Kwartir</th>
+                            <th className="px-3 py-3.5">Alamat</th>
                             <th className="px-3 py-3.5">Anggota</th>
                             <th className="px-3 py-3.5">Dokumen</th>
                             <th className="px-3 py-3.5">Dikirim</th>
@@ -189,11 +192,20 @@ export function GudepTable({
                                             {row.name}
                                         </Link>
                                         <p className="text-xs text-ink-soft">
+                                            No. {row.gudep_number} · NPSN{' '}
+                                            {row.npsn ?? '—'}
+                                        </p>
+                                        <p className="text-xs text-ink-soft">
                                             {row.institution}
                                         </p>
                                     </td>
                                     <td className="px-3 py-3.5 text-ink">
-                                        {row.region}
+                                        {row.address ?? '—'}
+                                        {row.pic_name && (
+                                            <p className="text-xs text-ink-soft">
+                                                PJ: {row.pic_name}
+                                            </p>
+                                        )}
                                     </td>
                                     <td className="px-3 py-3.5 text-ink tabular-nums">
                                         {row.peserta} + {row.pembina}

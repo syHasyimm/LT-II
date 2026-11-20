@@ -24,10 +24,11 @@ class SaveGudepRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:120'],
             'gudep_number' => ['required', 'string', 'max:50', 'regex:/^[0-9A-Za-z.\-\/ ]+$/'],
+            'npsn' => ['required', 'digits:8'],
             'institution' => ['required', 'string', 'max:150'],
-            'region' => ['required', 'string', 'max:150'],
+            'pic_name' => ['required', 'string', 'max:150'],
+            'address' => ['required', 'string', 'max:255'],
         ];
     }
 
@@ -35,10 +36,11 @@ class SaveGudepRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nama gudep',
-            'gudep_number' => 'nomor gudep',
-            'institution' => 'asal sekolah/lembaga',
-            'region' => 'kwartir/wilayah',
+            'gudep_number' => 'no gudep',
+            'npsn' => 'NPSN',
+            'institution' => 'nama instansi',
+            'pic_name' => 'penanggung jawab',
+            'address' => 'alamat',
         ];
     }
 }

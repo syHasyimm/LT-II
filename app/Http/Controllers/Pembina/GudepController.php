@@ -21,7 +21,7 @@ class GudepController extends Controller
         $gudep = $user->gudep;
 
         return Inertia::render('pembina/gudep/form', [
-            'gudep' => $gudep?->only(['name', 'gudep_number', 'institution', 'region']),
+            'gudep' => $gudep?->only(['gudep_number', 'npsn', 'institution', 'pic_name', 'address']),
             'editable' => $gudep === null ? $user->can('create', Gudep::class) : $user->can('update', $gudep),
         ]);
     }
@@ -32,7 +32,7 @@ class GudepController extends Controller
         $user = $request->user();
         $isNew = $user->gudep === null;
 
-        /** @var array{name: string, gudep_number: string, institution: string, region: string} $data */
+        /** @var array{gudep_number: string, npsn: string, institution: string, pic_name: string, address: string} $data */
         $data = $request->validated();
         $saveGudep->handle($user, $data);
 

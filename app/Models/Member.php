@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\Documents\ReopenCombinedDocuments;
 use App\Enums\Accompanies;
 use App\Enums\Gender;
 use App\Enums\MemberRole;
@@ -39,6 +40,11 @@ class Member extends Model
 {
     /** @use HasFactory<MemberFactory> */
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::created(fn (Member $member) => app(ReopenCombinedDocuments::class)->handle($member));
+    }
 
     protected function casts(): array
     {

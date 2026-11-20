@@ -1,13 +1,22 @@
 <?php
 
+use App\Actions\Generate\QueueGudepIdCards;
 use App\Enums\DocumentStatus;
 use App\Enums\GudepStatus;
+use App\Enums\MemberRole;
+use App\Enums\TemplateTarget;
+use App\Enums\TemplateType;
 use App\Events\GudepStatusChanged;
+use App\Jobs\GenerateFileJob;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Gudep;
 use App\Models\Member;
+use App\Models\Template;
 use App\Models\User;
+use App\Services\Templates\DefaultTemplates;
+use Illuminate\Bus\PendingBatch;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
@@ -20,15 +29,9 @@ function submittedGudep(DocumentStatus $status = DocumentStatus::Pending): Gudep
     $gudep = Gudep::factory()->status(GudepStatus::Submitted)->complete()->create();
     Member::query()->where('gudep_id', $gudep->id)->update(['photo_path' => 'photos/x.jpg']);
 
-    foreach ($gudep->members as $member) {
-        foreach (DocumentType::query()->where('scope', 'member')->get() as $type) {
-            if ($type->requiredFor($member->role)) {
-                Document::factory()->for($gudep)->status($status)->create(['member_id' => $member->id, 'document_type_id' => $type->id]);
-            }
-        }
+    foreach (DocumentType::query()->get() as $type) {
+        Document::factory()->for($gudep)->status($status)->create(['document_type_id' => $type->id]);
     }
-
-    Document::factory()->for($gudep)->type('kesiapan_sekolah')->status($status)->create();
 
     return $gudep->refresh();
 }
@@ -41,8 +44,8 @@ it('menampilkan panel verifikasi gudep', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/gudeps/show')
-            ->where('summary.total', 51)
-            ->where('summary.pending', 51)
+            ->where('summary.total', 4)
+            ->where('summary.pending', 4)
             ->where('canReview', true)
             ->where('canVerify', false)
             ->has('rows', 17));
@@ -168,4 +171,50 @@ it('hanya meninjau dokumen gudep berstatus dikirim', function () {
     $this->actingAs($this->admin)
         ->post(route('admin.documents.review', $document), ['decision' => 'approved'])
         ->assertSessionHasErrors('document');
+});
+
+it('membuat ID Card otomatis untuk semua anggota saat gudep diverifikasi', function () {
+    Bus::fake();
+    DefaultTemplates::install();
+    $gudep = submittedGudep(DocumentStatus::Approved);
+
+    $this->actingAs($this->admin)->post(route('admin.gudeps.approve', $gudep))->assertSessionHasNoErrors();
+
+    $count = $gudep->members()->count();
+    Bus::assertBatched(fn (PendingBatch $batch) => $batch->jobs->count() === $count
+        && $batch->jobs->every(fn ($job) => $job instanceof GenerateFileJob && $job->type === TemplateType::IdCard));
+});
+
+it('hanya mengantrikan anggota yang perannya punya template ID Card aktif', function () {
+    Bus::fake();
+    DefaultTemplates::install();
+    Template::query()->where('type', TemplateType::IdCard)->where('applies_to', TemplateTarget::Pembina)->update(['is_active' => false]);
+    $gudep = submittedGudep(DocumentStatus::Approved);
+
+    $this->actingAs($this->admin)->post(route('admin.gudeps.approve', $gudep))->assertSessionHasNoErrors();
+
+    $peserta = $gudep->members()->where('role', MemberRole::Peserta)->count();
+    Bus::assertBatched(fn (PendingBatch $batch) => $batch->jobs->count() === $peserta);
+});
+
+it('tetap memverifikasi tanpa template ID Card', function () {
+    Bus::fake();
+    $gudep = submittedGudep(DocumentStatus::Approved);
+
+    $this->actingAs($this->admin)->post(route('admin.gudeps.approve', $gudep))->assertSessionHasNoErrors();
+
+    expect($gudep->refresh()->status)->toBe(GudepStatus::Verified);
+    Bus::assertNothingBatched();
+});
+
+it('verifikasi tetap berhasil walau antrean ID Card gagal dikirim', function () {
+    $gudep = submittedGudep(DocumentStatus::Approved);
+    $this->mock(QueueGudepIdCards::class)->shouldReceive('handle')->andThrow(new RuntimeException('antrean mati'));
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.gudeps.approve', $gudep))
+        ->assertRedirect(route('admin.gudeps.show', $gudep))
+        ->assertSessionHasNoErrors();
+
+    expect($gudep->refresh()->status)->toBe(GudepStatus::Verified);
 });

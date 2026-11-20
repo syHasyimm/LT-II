@@ -8,10 +8,11 @@ import { Spinner } from '@/components/ui/spinner';
 import { update } from '@/routes/pembina/gudep';
 
 type GudepData = {
-    name: string;
     gudep_number: string;
+    npsn: string | null;
     institution: string;
-    region: string;
+    pic_name: string | null;
+    address: string | null;
 };
 
 type Props = {
@@ -32,7 +33,7 @@ export default function GudepForm({ gudep, editable }: Props) {
                 subtitle={
                     isNew
                         ? 'Langkah 1 · isi identitas gugus depan'
-                        : 'Nama, nomor, sekolah, kwartir'
+                        : 'NPSN, instansi, penanggung jawab, alamat, nomor gudep'
                 }
             />
 
@@ -48,16 +49,15 @@ export default function GudepForm({ gudep, editable }: Props) {
                                 </InfoNote>
                             )}
 
-                            <Field
-                                id="name"
-                                label="Nama gudep"
-                                error={errors.name}
-                            >
+                            <Field id="npsn" label="NPSN" error={errors.npsn}>
                                 <Input
-                                    id="name"
-                                    name="name"
-                                    defaultValue={gudep?.name}
-                                    placeholder="Contoh: Gudep 07.041"
+                                    id="npsn"
+                                    name="npsn"
+                                    defaultValue={gudep?.npsn ?? ''}
+                                    placeholder="Contoh: 20404123"
+                                    inputMode="numeric"
+                                    maxLength={8}
+                                    pattern="[0-9]{8}"
                                     required
                                     readOnly={!editable}
                                     autoFocus={isNew}
@@ -65,24 +65,8 @@ export default function GudepForm({ gudep, editable }: Props) {
                             </Field>
 
                             <Field
-                                id="gudep_number"
-                                label="Nomor gudep"
-                                error={errors.gudep_number}
-                            >
-                                <Input
-                                    id="gudep_number"
-                                    name="gudep_number"
-                                    defaultValue={gudep?.gudep_number}
-                                    placeholder="Contoh: 07.041"
-                                    inputMode="decimal"
-                                    required
-                                    readOnly={!editable}
-                                />
-                            </Field>
-
-                            <Field
                                 id="institution"
-                                label="Asal sekolah / lembaga"
+                                label="Nama instansi"
                                 error={errors.institution}
                             >
                                 <Input
@@ -96,15 +80,47 @@ export default function GudepForm({ gudep, editable }: Props) {
                             </Field>
 
                             <Field
-                                id="region"
-                                label="Kwartir / wilayah"
-                                error={errors.region}
+                                id="pic_name"
+                                label="Penanggung jawab"
+                                error={errors.pic_name}
                             >
                                 <Input
-                                    id="region"
-                                    name="region"
-                                    defaultValue={gudep?.region}
-                                    placeholder="Contoh: Kwarcab Sleman"
+                                    id="pic_name"
+                                    name="pic_name"
+                                    defaultValue={gudep?.pic_name ?? ''}
+                                    placeholder="Contoh: Drs. Sumarno, M.Pd."
+                                    required
+                                    readOnly={!editable}
+                                />
+                            </Field>
+
+                            <Field
+                                id="address"
+                                label="Alamat"
+                                error={errors.address}
+                            >
+                                <Input
+                                    id="address"
+                                    name="address"
+                                    defaultValue={gudep?.address ?? ''}
+                                    placeholder="Contoh: Jl. Magelang KM 5, Sleman"
+                                    maxLength={255}
+                                    required
+                                    readOnly={!editable}
+                                />
+                            </Field>
+
+                            <Field
+                                id="gudep_number"
+                                label="No gudep"
+                                error={errors.gudep_number}
+                            >
+                                <Input
+                                    id="gudep_number"
+                                    name="gudep_number"
+                                    defaultValue={gudep?.gudep_number}
+                                    placeholder="Contoh: 07.041"
+                                    inputMode="decimal"
                                     required
                                     readOnly={!editable}
                                 />

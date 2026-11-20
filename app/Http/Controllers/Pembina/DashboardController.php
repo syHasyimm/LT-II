@@ -21,8 +21,9 @@ class DashboardController extends Controller
 
         return Inertia::render('pembina/dashboard', [
             'gudep' => $gudep ? [
-                'name' => $gudep->displayName(),
-                'region' => $gudep->region,
+                'name' => $gudep->name,
+                'institution' => $gudep->institution,
+                'address' => $gudep->address,
                 'status' => $gudep->status->value,
                 'admin_note' => $gudep->admin_note,
             ] : null,

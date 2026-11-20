@@ -21,6 +21,7 @@ type Rules = {
     pesertaPerRegu: number;
     pembinaMin: number;
     maxUploadMb: number;
+    maxPhotoMb: number;
 };
 
 type Stats = { gudep: number; peserta: number; pembina: number };
@@ -366,7 +367,7 @@ function Requirements({ rules }: { rules: Rules }) {
         {
             icon: FileText,
             title: 'Dokumen digital',
-            text: 'KTA, izin orang tua, dan surat kesehatan per anggota, plus surat kesiapan sekolah.',
+            text: 'KTA, izin orang tua, dan surat sehat seluruh anggota, masing-masing digabung satu PDF per gudep, plus surat kesiapan sekolah.',
         },
         {
             icon: Camera,
@@ -411,8 +412,9 @@ function Requirements({ rules }: { rules: Rules }) {
             </div>
 
             <p className="mt-6 text-xs font-semibold text-gold-700 sm:text-[13px]">
-                Format file PDF, JPG, atau PNG · maksimal {rules.maxUploadMb} MB
-                per file · izin orang tua hanya untuk peserta
+                Dokumen PDF, JPG, atau PNG maksimal {rules.maxUploadMb} MB · pas
+                foto JPG/PNG maksimal {rules.maxPhotoMb} MB · izin orang tua
+                hanya untuk peserta
             </p>
         </section>
     );
@@ -426,7 +428,7 @@ function Steps({ rules }: { rules: Rules }) {
         },
         {
             title: 'Isi data gudep',
-            text: 'Nomor gudep, nama pangkalan atau sekolah, dan kwartir.',
+            text: 'NPSN, nama instansi, penanggung jawab, alamat, dan no gudep.',
         },
         {
             title: 'Peserta & pembina',
@@ -434,7 +436,7 @@ function Steps({ rules }: { rules: Rules }) {
         },
         {
             title: 'Unggah dokumen',
-            text: 'Pantau kelengkapan lewat matriks dokumen per anggota dan per gudep.',
+            text: 'Unggah empat berkas gudep sekali saja dan pantau statusnya dalam satu halaman.',
         },
         {
             title: 'Kirim & verifikasi',
@@ -548,7 +550,7 @@ function VerifySection() {
                     <div className="my-4 h-px bg-line" />
                     <dl className="grid grid-cols-[110px_1fr] gap-y-2 text-sm">
                         <dt className="text-ink-soft">Gudep</dt>
-                        <dd className="font-semibold">Nomor gudep · sekolah</dd>
+                        <dd className="font-semibold">No gudep · NPSN</dd>
                         <dt className="text-ink-soft">Peran</dt>
                         <dd className="font-semibold">Peserta Putra</dd>
                         <dt className="text-ink-soft">Diterbitkan</dt>

@@ -99,7 +99,7 @@ export function UploadDialog({
                                 }}
                                 className="grid gap-3"
                             >
-                                {({ processing, errors }) => (
+                                {({ processing, progress, errors }) => (
                                     <>
                                         <input
                                             type="hidden"
@@ -148,6 +148,31 @@ export function UploadDialog({
                                                 errors.document_type_id
                                             }
                                         />
+                                        {processing && progress && (
+                                            <div
+                                                role="progressbar"
+                                                aria-label="Kemajuan unggah"
+                                                aria-valuemin={0}
+                                                aria-valuemax={100}
+                                                aria-valuenow={
+                                                    progress.percentage ?? 0
+                                                }
+                                                className="grid gap-1"
+                                            >
+                                                <div className="h-2 overflow-hidden rounded-full bg-sand">
+                                                    <div
+                                                        className="h-full rounded-full bg-gold-500 transition-[width]"
+                                                        style={{
+                                                            width: `${progress.percentage ?? 0}%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <p className="text-center text-xs text-ink-soft">
+                                                    Mengunggah{' '}
+                                                    {progress.percentage ?? 0}%
+                                                </p>
+                                            </div>
+                                        )}
                                         <Button
                                             type="submit"
                                             size="xl"

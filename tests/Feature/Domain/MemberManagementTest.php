@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\DocumentStatus;
 use App\Enums\Gender;
 use App\Enums\GudepStatus;
 use App\Enums\MemberRole;
 use App\Enums\TeamGroup;
+use App\Models\Document;
 use App\Models\Gudep;
 use App\Models\Member;
 use App\Models\User;
@@ -70,6 +72,16 @@ it('menambah peserta dengan jenis kelamin mengikuti regu', function () {
 
     expect($member->gender)->toBe(Gender::P)
         ->and($member->role)->toBe(MemberRole::Peserta);
+});
+
+it('menerima tanggal lahir dengan format hari/bulan/tahun', function () {
+    $gudep = Gudep::factory()->withOwner()->create();
+
+    $this->actingAs($gudep->user)
+        ->post(route('pembina.members.store'), pesertaPayload('pa', ['birth_date' => '12/03/2013']))
+        ->assertSessionHasNoErrors();
+
+    expect($gudep->peserta()->sole()->birth_date->format('Y-m-d'))->toBe('2013-03-12');
 });
 
 it('menolak peserta ke-9 dalam satu regu', function () {
@@ -174,4 +186,37 @@ it('mengunci perubahan anggota setelah pendaftaran dikirim', function () {
     $this->actingAs($gudep->user)
         ->post(route('pembina.members.store'), pesertaPayload())
         ->assertForbidden();
+});
+
+it('membuka ulang berkas gabungan yang sudah disetujui saat anggota baru ditambahkan', function () {
+    $gudep = Gudep::factory()->status(GudepStatus::Revision)->withOwner()->create();
+    $documents = collect(['kta', 'izin_ortu', 'kesehatan', 'kesiapan_sekolah'])
+        ->mapWithKeys(fn (string $code) => [$code => Document::factory()->for($gudep)->type($code)->status(DocumentStatus::Approved)->create()]);
+    $rejected = Document::factory()->for($gudep)->type('kta')->status(DocumentStatus::Rejected)->create(['archived_at' => now()]);
+
+    $this->actingAs($gudep->user)
+        ->post(route('pembina.members.store'), pesertaPayload('pa'))
+        ->assertSessionHasNoErrors();
+
+    foreach (['kta', 'izin_ortu', 'kesehatan'] as $code) {
+        expect($documents[$code]->refresh())
+            ->status->toBe(DocumentStatus::Pending)
+            ->note->toContain('Raka Aditya');
+    }
+
+    expect($documents['kesiapan_sekolah']->refresh()->status)->toBe(DocumentStatus::Approved)
+        ->and($rejected->refresh()->status)->toBe(DocumentStatus::Rejected);
+});
+
+it('tidak membuka ulang izin orang tua saat pembina pendamping ditambahkan', function () {
+    $gudep = Gudep::factory()->status(GudepStatus::Revision)->withOwner()->create();
+    $izin = Document::factory()->for($gudep)->type('izin_ortu')->status(DocumentStatus::Approved)->create();
+    $kta = Document::factory()->for($gudep)->type('kta')->status(DocumentStatus::Approved)->create();
+
+    $this->actingAs($gudep->user)
+        ->post(route('pembina.members.store'), pembinaPayload())
+        ->assertSessionHasNoErrors();
+
+    expect($izin->refresh()->status)->toBe(DocumentStatus::Approved)
+        ->and($kta->refresh()->status)->toBe(DocumentStatus::Pending);
 });

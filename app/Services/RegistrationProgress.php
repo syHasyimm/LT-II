@@ -151,17 +151,6 @@ class RegistrationProgress
             'href' => $noPhoto->isEmpty() ? null : route('pembina.documents.index'),
         ];
 
-        $memberSlots = collect($this->checklist()->requiredSlots())->filter(fn ($slot) => $slot['member'] !== null);
-        $pending = $memberSlots->filter(fn ($slot) => $slot['document'] === null || $slot['document']->status === DocumentStatus::Rejected);
-        $items[] = [
-            'key' => 'dokumen',
-            'label' => $pending->isEmpty() ? 'Semua dokumen anggota diunggah' : "{$pending->count()} dokumen belum diunggah atau ditolak",
-            'detail' => $pending->isEmpty() ? null : $pending->map(fn ($slot) => mb_strtolower($slot['type']->short_label))->unique()->implode(', '),
-            'ok' => $pending->isEmpty(),
-            'action' => $pending->isEmpty() ? null : 'Lengkapi',
-            'href' => $pending->isEmpty() ? null : route('pembina.documents.index'),
-        ];
-
         foreach ($this->checklist()->gudepTypes() as $type) {
             $document = $this->checklist()->documentFor(null, $type);
             $ok = $document !== null && $document->status !== DocumentStatus::Rejected;
@@ -239,7 +228,7 @@ class RegistrationProgress
             [
                 'key' => 'gudep',
                 'title' => 'Data gudep',
-                'subtitle' => 'Nama, nomor, sekolah, kwartir',
+                'subtitle' => 'NPSN, instansi, penanggung jawab, alamat',
                 'value' => $hasGudep ? 'Lengkap' : 'Belum',
                 'done' => $hasGudep,
                 'href' => route('pembina.gudep.edit'),

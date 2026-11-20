@@ -41,7 +41,7 @@ class MemberController extends Controller
                 'pi' => MemberResource::collection($members->where('group', TeamGroup::Pi)->values())->resolve(),
                 'pembina' => MemberResource::collection($members->filter->isPembina()->values())->resolve(),
             ],
-            'maxUploadMb' => (int) round(config('camp.max_upload_kb') / 1024),
+            'maxUploadMb' => (int) round(config('camp.max_photo_kb') / 1024),
         ]);
     }
 
@@ -71,7 +71,7 @@ class MemberController extends Controller
             'member' => null,
             'regu' => $regu,
             'slot' => ['number' => $count + 1, 'max' => $max],
-            'maxUploadMb' => (int) round(config('camp.max_upload_kb') / 1024),
+            'maxUploadMb' => (int) round(config('camp.max_photo_kb') / 1024),
         ]);
     }
 
@@ -95,7 +95,7 @@ class MemberController extends Controller
             'regu' => $member->isPembina() ? 'pembina' : $member->group?->value,
             'slot' => null,
             'editable' => request()->user()?->can('update', $member) ?? false,
-            'maxUploadMb' => (int) round(config('camp.max_upload_kb') / 1024),
+            'maxUploadMb' => (int) round(config('camp.max_photo_kb') / 1024),
         ]);
     }
 

@@ -17,6 +17,7 @@ class WelcomeController extends Controller
                 'pesertaPerRegu' => (int) config('camp.peserta_per_regu'),
                 'pembinaMin' => (int) config('camp.pembina_min'),
                 'maxUploadMb' => (int) round(config('camp.max_upload_kb') / 1024),
+                'maxPhotoMb' => (int) round(config('camp.max_photo_kb') / 1024),
             ],
             'stats' => $stats->toArray(),
         ]);

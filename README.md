@@ -105,22 +105,24 @@ Registrasi akun publik dimatikan. Admin bisa mengaktifkan autentikasi dua langka
 
 ## Konfigurasi aturan
 
-`config/camp.php` berisi kuota (8 per regu), minimal pembina, batas unggah (2 MB), format file, tahun acara, dan prefiks nomor seri.
+`config/camp.php` berisi kuota (8 per regu), minimal pembina, batas unggah (dokumen 10 MB, pas foto 2 MB), format file, tahun acara, dan prefiks nomor seri.
 Jadwal buka/tutup **tidak** ada di kode: admin mengaturnya di **Jadwal Pendaftaran** (tersimpan di tabel `settings`, zona waktu Asia/Jakarta).
 
-Jenis dokumen wajib ada di tabel `document_types`:
+Jenis dokumen wajib ada di tabel `document_types`. Semuanya diunggah **satu berkas per gudep**:
 
-| Kode               | Dokumen                | Wajib untuk      |
-| ------------------ | ---------------------- | ---------------- |
-| `kta`              | Kartu Tanda Anggota    | peserta, pembina |
-| `izin_ortu`        | Surat Izin Orang Tua   | peserta          |
-| `kesehatan`        | Surat Keterangan Sehat | peserta, pembina |
-| `kesiapan_sekolah` | Surat Kesiapan Sekolah | satu per gudep   |
+| Kode               | Dokumen                | Isi berkas                                         |
+| ------------------ | ---------------------- | -------------------------------------------------- |
+| `kta`              | Kartu Tanda Anggota    | KTA semua peserta dan pembina, digabung 1 PDF      |
+| `izin_ortu`        | Surat Izin Orang Tua   | izin setiap peserta, digabung 1 PDF                |
+| `kesehatan`        | Surat Keterangan Sehat | surat sehat semua peserta dan pembina, digabung 1 PDF |
+| `kesiapan_sekolah` | Surat Kesiapan Sekolah | satu surat dari sekolah/instansi                   |
+
+Menambah anggota setelah berkas gabungan disetujui mengembalikan berkas itu ke status *menunggu* agar diperiksa ulang.
 
 ## Template, ID Card, dan Sertifikat
 
 - **Template bawaan** (dipasang `TemplateSeeder`): ID Card Peserta, ID Card Pembina (55 × 85 mm), dan Sertifikat (A4 lanskap). Gambar latarnya diekspor dari desain FigCraft (`resources/templates/`).
-- **Editor template** di **Admin → Template**: unggah gambar latar, aktifkan atau nonaktifkan field, geser dan ubah ukuran di kanvas berskala mm, atur font/ukuran/warna, lalu **Pratinjau PDF**. Placeholder yang tersedia: `{nama}`, `{peran}`, `{peran_lengkap}`, `{gudep}`, `{sekolah}`, `{kwartir}`, `{nomor_seri}`, `{tahun}`.
+- **Editor template** di **Admin → Template**: unggah gambar latar, aktifkan atau nonaktifkan field, geser dan ubah ukuran di kanvas berskala mm, atur font/ukuran/warna, lalu **Pratinjau PDF**. Placeholder yang tersedia: `{nama}`, `{peran}`, `{peran_lengkap}`, `{gudep}`, `{sekolah}`, `{npsn}`, `{penanggung_jawab}`, `{alamat}`, `{kwartir}` (alias lama untuk `{alamat}`), `{nomor_seri}`, `{tahun}`.
 - **Generate** di **Admin → ID Card / Sertifikat**: pilih satu orang, satu gudep, atau semua gudep terverifikasi. Proses berjalan di queue dengan indikator progres, jadi **queue worker harus berjalan**.
 - **Unduh**: PDF satuan, PDF per gudep (satu kartu per halaman, atau lembar A4 berisi 9 kartu dengan tanda potong untuk ID Card), serta ZIP per gudep atau seluruhnya.
 - **Nomor seri** diberikan saat pertama kali dibuat dan tidak berubah saat generate ulang; file lama ditimpa. QR pada kartu/sertifikat mengarah ke `/verify/{nomor-seri}`.

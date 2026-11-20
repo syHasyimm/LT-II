@@ -20,8 +20,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $user_id
  * @property string $name
  * @property string $gudep_number
+ * @property string|null $npsn
  * @property string $institution
- * @property string $region
+ * @property string|null $pic_name
+ * @property string|null $address
  * @property GudepStatus $status
  * @property string|null $admin_note
  * @property CarbonImmutable|null $deadline_extended_until
@@ -32,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
-#[Fillable(['name', 'gudep_number', 'institution', 'region'])]
+#[Fillable(['name', 'gudep_number', 'npsn', 'institution', 'pic_name', 'address'])]
 class Gudep extends Model
 {
     /** @use HasFactory<GudepFactory> */

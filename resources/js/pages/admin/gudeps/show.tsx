@@ -3,6 +3,7 @@ import {
     Check,
     ChevronLeft,
     ChevronRight,
+    FileDown,
     ImageOff,
     MessageSquareWarning,
     X,
@@ -20,6 +21,7 @@ import type { GudepStatus } from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { review } from '@/routes/admin/documents';
+import { form as registrationForm } from '@/routes/admin/gudeps';
 import type {
     DocumentColumn,
     DocumentData,
@@ -32,7 +34,11 @@ type Props = {
         id: number;
         name: string;
         short_name: string;
-        region: string;
+        npsn: string | null;
+        institution: string;
+        pic_name: string | null;
+        address: string | null;
+        gudep_number: string;
         status: GudepStatus;
         owner_name: string;
         owner_email: string;
@@ -80,7 +86,7 @@ const tabLabel: Record<Tab, string> = {
     pa: 'Putra',
     pi: 'Putri',
     pembina: 'Pembina',
-    gudep: 'Gudep',
+    gudep: 'Berkas',
 };
 
 /** Panel verifikasi gudep (desain D2). */
@@ -138,8 +144,11 @@ export default function GudepVerification({
     const goNext = useCallback(() => {
         const index = slots.findIndex((slot) => slot.key === selected?.key);
         const after = [...slots.slice(index + 1), ...slots.slice(0, index + 1)];
+        // Dokumen menunggu lebih dulu, lalu dokumen lain; pas foto tanpa
+        // dokumen untuk ditinjau hanya dilewati bila tak ada pilihan lain.
         select(
             after.find((slot) => slot.document?.status === 'pending') ??
+                after.find((slot) => slot.document !== null) ??
                 slots[(index + 1) % slots.length],
         );
     }, [slots, selected, select]);
@@ -228,7 +237,7 @@ export default function GudepVerification({
                         <GudepStatusBadge status={gudep.status} />
                     </div>
                     <p className="mt-1 text-[15px] text-ink-muted">
-                        {gudep.region} · Pembina: {gudep.owner_name} (
+                        {gudep.institution} · Pembina: {gudep.owner_name} (
                         {gudep.owner_email})
                         {gudep.submitted_at &&
                             ` · Dikirim ${gudep.submitted_at}`}
@@ -243,6 +252,23 @@ export default function GudepVerification({
                             registrationOpen={registrationOpen}
                         />
                         <VerifyButton gudepId={gudep.id} enabled={canVerify} />
+                        {gudep.status === 'verified' && (
+                            <Button
+                                asChild
+                                variant="outline"
+                                size="xl"
+                                className="rounded-[14px]"
+                            >
+                                <a
+                                    href={registrationForm(gudep.id).url}
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    <FileDown className="size-4" />
+                                    Unduh formulir
+                                </a>
+                            </Button>
+                        )}
                     </div>
                     {gudep.status === 'submitted' && (
                         <p className="text-xs text-ink-soft">
@@ -264,6 +290,25 @@ export default function GudepVerification({
                     </p>
                 </div>
             )}
+
+            <div className="mb-6 grid gap-x-8 gap-y-3 rounded-3xl border border-line bg-white px-5 py-4 sm:grid-cols-2 xl:grid-cols-5">
+                {[
+                    { label: 'No gudep', value: gudep.gudep_number },
+                    { label: 'NPSN', value: gudep.npsn ?? '—' },
+                    { label: 'Nama instansi', value: gudep.institution },
+                    { label: 'Penanggung jawab', value: gudep.pic_name ?? '—' },
+                    { label: 'Alamat', value: gudep.address ?? '—' },
+                ].map((item) => (
+                    <div key={item.label}>
+                        <p className="text-[11px] font-semibold tracking-[0.14em] text-ink-muted uppercase">
+                            {item.label}
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-ink">
+                            {item.value}
+                        </p>
+                    </div>
+                ))}
+            </div>
 
             <div className="grid gap-6 xl:grid-cols-[380px_minmax(0,1fr)]">
                 <aside className="rounded-3xl border border-line bg-white p-5">
@@ -287,7 +332,7 @@ export default function GudepVerification({
                     </p>
 
                     <div className="mt-5 grid grid-cols-4 gap-1 rounded-2xl bg-sand p-1">
-                        {(['pa', 'pi', 'pembina', 'gudep'] as Tab[]).map(
+                        {(['gudep', 'pa', 'pi', 'pembina'] as Tab[]).map(
                             (key) => (
                                 <button
                                     key={key}
@@ -315,8 +360,7 @@ export default function GudepVerification({
                                       (candidate) =>
                                           candidate.key === `g:${item.type.id}`,
                                   );
-                                  const active =
-                                      selected?.subjectKey === 'gudep';
+                                  const active = selected?.key === slot?.key;
 
                                   return (
                                       <li key={item.type.id}>
@@ -350,17 +394,22 @@ export default function GudepVerification({
                                       <li key={row.member.id}>
                                           <button
                                               type="button"
-                                              onClick={() =>
+                                              onClick={() => {
+                                                  const own = slots.filter(
+                                                      (slot) =>
+                                                          slot.subjectKey ===
+                                                          `m${row.member.id}`,
+                                                  );
+
+                                                  // Dokumen anggota (bila ada) lebih dulu, lalu pas foto.
                                                   select(
-                                                      slots.find(
+                                                      own.find(
                                                           (slot) =>
-                                                              slot.subjectKey ===
-                                                                  `m${row.member.id}` &&
                                                               slot.typeId !==
-                                                                  'photo',
-                                                      ),
-                                                  )
-                                              }
+                                                              'photo',
+                                                      ) ?? own[0],
+                                                  );
+                                              }}
                                               className={cn(
                                                   'flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-left transition',
                                                   active
@@ -381,6 +430,19 @@ export default function GudepVerification({
                                                       {row.member.name}
                                                   </span>
                                                   <span className="mt-1 flex flex-wrap gap-1">
+                                                      <span
+                                                          className={cn(
+                                                              'inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-semibold',
+                                                              row.member
+                                                                  .has_photo
+                                                                  ? 'bg-gold-100 text-gold-800'
+                                                                  : 'border border-dashed border-line text-ink-soft',
+                                                          )}
+                                                      >
+                                                          {row.member.has_photo
+                                                              ? 'Pas foto'
+                                                              : 'Pas foto belum'}
+                                                      </span>
                                                       {columns
                                                           .filter(
                                                               (column) =>
@@ -651,6 +713,18 @@ function buildSlots(
 ): Slot[] {
     const slots: Slot[] = [];
 
+    // Urutan slot mengikuti urutan tab: Berkas, Putra, Putri, Pembina.
+    for (const item of gudepDocuments) {
+        slots.push({
+            key: `g:${item.type.id}`,
+            tab: 'gudep',
+            subjectKey: 'gudep',
+            typeId: item.type.id,
+            label: item.type.label,
+            document: item.document,
+        });
+    }
+
     for (const key of ['pa', 'pi', 'pembina'] as const) {
         for (const row of rows.filter(
             (candidate) => candidate.member.group === key,
@@ -679,17 +753,6 @@ function buildSlots(
                 }
             }
         }
-    }
-
-    for (const item of gudepDocuments) {
-        slots.push({
-            key: `g:${item.type.id}`,
-            tab: 'gudep',
-            subjectKey: 'gudep',
-            typeId: item.type.id,
-            label: item.type.label,
-            document: item.document,
-        });
     }
 
     return slots;

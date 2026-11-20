@@ -1,4 +1,5 @@
 import { Lock, Phone } from 'lucide-react';
+import { DateInput } from '@/components/form/date-input';
 import { Field } from '@/components/form/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -84,12 +85,10 @@ export function MemberFields({
                     label="Tanggal lahir"
                     error={errors.birth_date}
                 >
-                    <Input
+                    <DateInput
                         id={id('birth_date')}
-                        type="date"
                         name="birth_date"
                         defaultValue={member?.birth_date ?? undefined}
-                        max={new Date().toISOString().slice(0, 10)}
                         required
                         readOnly={disabled}
                     />

@@ -45,7 +45,7 @@ Legenda: `[ ]` belum · `[x]` selesai
   Migrasi `gudeps`, `members`, model, factory, `GudepPolicy`.
   *Tes:* akses lintas gudep ditolak.
 - [x] **T2.2 Form data gudep** — FR-GDP-01
-  Nama, nomor gudep, asal sekolah/lembaga, kwartir/wilayah. Tersimpan sebagai draft.
+  NPSN (8 digit), nama instansi, penanggung jawab, alamat, nomor gudep. Tersimpan sebagai draft.
 - [x] **T2.3 Peserta Putra & Putri** — FR-GDP-02, BR-02 (desain M3, M3b)
   Tab Pa/Pi, indikator `x/8`, form peserta dalam sheet.
   *Tes:* peserta ke-9 per regu ditolak.
@@ -151,3 +151,14 @@ Legenda: `[ ]` belum · `[x]` selesai
   - Strip ikon di ponsel diganti bilah "Langkah n/6 · Judul" dengan 6 garis progres (emas = selesai, putih = sedang dibuka); di Beranda: "Ringkasan · x dari 6 selesai".
   - Tombol **Semua langkah** membuka panel bawah berisi timeline lengkap (sama dengan desktop) dan tombol Keluar; panel tertutup setelah memilih langkah.
   - Timeline desktop tidak berubah (daftar dipakai bersama lewat `TimelineList`).
+
+- [x] **T9.3 Dokumen gabungan per gudep**: spec [`superpowers/specs/2026-11-20-dokumen-gabungan-design.md`](superpowers/specs/2026-11-20-dokumen-gabungan-design.md)
+  - KTA, Surat Izin Orang Tua, dan Surat Keterangan Sehat diunggah sekali per gudep sebagai satu PDF gabungan (jenis dokumen `scope = gudep`); dokumen per anggota lama dihapus oleh migrasi.
+  - Halaman Foto & dokumen: empat kartu berkas dengan petunjuk isi, lalu daftar pas foto anggota.
+  - Batas unggah dokumen 10 MB (`max_upload_kb`); pas foto tetap 2 MB (`max_photo_kb`).
+  - Panel verifikasi admin: tab **Berkas** di depan. Ekspor: status tiap dokumen di sheet Gudep.
+
+- [x] **T9.4 Formulir Pendaftaran dan ID Card untuk pembina**: spec [`superpowers/specs/2026-11-20-formulir-dan-idcard-pembina-design.md`](superpowers/specs/2026-11-20-formulir-dan-idcard-pembina-design.md)
+  - Verifikasi gudep otomatis mengantrikan ID Card seluruh anggota (anggota tanpa template aktif dilewati).
+  - Pembina mengunduh ID Card gudepnya (lembar A4, 9 kartu) dari halaman Terverifikasi.
+  - Admin mengunduh Formulir Pendaftaran berkop Kwartir Ranting Kepenuhan dari panel verifikasi.

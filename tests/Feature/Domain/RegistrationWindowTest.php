@@ -44,5 +44,7 @@ it('membagikan jadwal ke beranda publik', function () {
         ->assertInertia(fn ($page) => $page
             ->component('welcome')
             ->where('rules.pesertaPerRegu', 8)
+            ->where('rules.maxUploadMb', 10)
+            ->where('rules.maxPhotoMb', 2)
             ->where('registration.closes_label', '15 Des 2026, 23.59 WIB'));
 });

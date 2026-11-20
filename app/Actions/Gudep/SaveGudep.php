@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\DB;
 class SaveGudep
 {
     /**
-     * @param  array{name: string, gudep_number: string, institution: string, region: string}  $data
+     * @param  array{gudep_number: string, npsn: string, institution: string, pic_name: string, address: string}  $data
      */
     public function handle(User $user, array $data): Gudep
     {
         return DB::transaction(function () use ($user, $data) {
             $gudep = $user->gudep()->firstOrNew();
-            $gudep->fill($data);
+            $gudep->fill([...$data, 'name' => 'Gudep '.trim($data['gudep_number'])]);
             $isNew = ! $gudep->exists;
             $gudep->save();
 

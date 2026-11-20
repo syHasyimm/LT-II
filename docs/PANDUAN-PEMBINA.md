@@ -7,16 +7,16 @@ Panduan singkat mendaftarkan gugus depan (gudep) ke **Perkemahan Lomba Tingkat 2
 - Akun Google (Gmail) milik pembina. **Satu akun untuk satu gudep.**
 - Data **8 peserta Putra** dan **8 peserta Putri**: nama lengkap, tanggal lahir, nomor KTA, pas foto.
 - Data pembina pendamping (minimal 1): nama, jenis kelamin, tanggal lahir, nomor KTA, nomor HP, pas foto.
-- Dokumen dalam format **PDF, JPG, atau PNG, maksimal 2 MB** per file:
+- Empat dokumen untuk satu gudep. Setiap jenis diunggah **satu kali saja**, dalam format **PDF, JPG, atau PNG, maksimal 10 MB**:
 
-| Dokumen | Untuk siapa |
+| Dokumen | Isi berkas |
 | --- | --- |
-| Kartu Tanda Anggota (KTA) | Setiap peserta dan pembina |
-| Surat Izin Orang Tua | Setiap peserta |
-| Surat Keterangan Sehat | Setiap peserta dan pembina |
-| Surat Kesiapan Sekolah | Satu per gudep |
+| KTA seluruh anggota | KTA semua peserta dan pembina pendamping, digabung jadi satu PDF |
+| Surat Izin Orang Tua seluruh peserta | Surat izin setiap peserta, digabung jadi satu PDF |
+| Surat Keterangan Sehat seluruh anggota | Surat sehat semua peserta dan pembina pendamping, digabung jadi satu PDF |
+| Surat Kesiapan Sekolah | Satu surat dari sekolah atau instansi |
 
-Foto dokumen langsung dari kamera ponsel juga bisa, asal tulisannya terbaca jelas.
+Cara mudah menggabungkan dari ponsel: pindai semua lembar dengan aplikasi pemindai (misalnya fitur *Pindai dokumen* di Google Drive atau aplikasi pemindai PDF lain) dalam satu sesi, lalu simpan sebagai satu PDF. Pastikan tulisan setiap lembar terbaca jelas.
 
 ## Langkah pendaftaran
 
@@ -32,7 +32,7 @@ Buka alamat pendaftaran, ketuk **Daftarkan Gudep**, lalu **Masuk dengan Google**
 
 ### 2. Data gudep
 
-Isi nama gudep, nomor gudep, sekolah/pangkalan, dan kwartir ranting, lalu **Simpan & lanjut**. Data tersimpan sebagai *Draft* dan bisa diubah kapan saja sebelum dikirim.
+Isi NPSN (8 digit), nama instansi, penanggung jawab, alamat, dan no gudep, lalu **Simpan & lanjut**. Data tersimpan sebagai *Draft* dan bisa diubah kapan saja sebelum dikirim.
 
 ### 3. Peserta Putra dan Putri
 
@@ -67,7 +67,7 @@ Langkah **Kirim pendaftaran** memeriksa kelengkapan. Bila masih ada yang kurang,
 | --- | --- | --- |
 | **Dikirim** | Menunggu pemeriksaan panitia | Tunggu. Anda mendapat email saat status berubah. |
 | **Perlu revisi** | Ada data atau dokumen yang harus diperbaiki | Baca catatan panitia di Beranda. Dokumen yang ditolak bertanda merah; unggah ulang, lalu **Kirim** lagi. Perhatikan tenggat revisi bila ada. |
-| **Terverifikasi** | Pendaftaran diterima | Selesai. ID Card dan sertifikat dibuat oleh panitia. |
+| **Terverifikasi** | Pendaftaran diterima | Selesai. Buka **Kirim pendaftaran** lalu tekan **Unduh ID Card (A4)** untuk mencetak ID Card peserta dan pembina. Bila tertulis "ID Card sedang disiapkan panitia", tunggu sebentar lalu buka lagi. Sertifikat diterbitkan panitia. |
 
 ## Jadwal
 
@@ -82,7 +82,7 @@ Tidak. Gunakan akun Google lain untuk gudep lain.
 Hubungi panitia agar pendaftaran dikembalikan dengan status *Perlu revisi*, lalu perbaiki dan kirim ulang.
 
 **Unggah gagal karena file terlalu besar.**
-Perkecil foto (misalnya kirim lewat aplikasi pesan lalu simpan ulang) atau ubah PDF dengan aplikasi kompres PDF. Batasnya 2 MB.
+Dokumen gabungan maksimal 10 MB: pindai dengan resolusi lebih rendah atau perkecil dengan aplikasi kompres PDF. Pas foto maksimal 2 MB: perkecil foto (misalnya kirim lewat aplikasi pesan lalu simpan ulang).
 
 **Bagaimana memeriksa keaslian ID Card atau sertifikat?**
 Pindai QR pada kartu/sertifikat, atau masukkan nomor seri (contoh `LT2-2026-CERT-0001`) di bagian **Verifikasi** pada halaman depan.

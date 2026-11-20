@@ -1,10 +1,12 @@
 import { Head, Link } from '@inertiajs/react';
-import { Check } from 'lucide-react';
+import { Check, Download } from 'lucide-react';
 import { GudepStatusBadge } from '@/components/status-badge';
+import { idCard } from '@/routes/pembina';
 
 type Props = {
     status: 'submitted' | 'verified';
     submitted_at: string | null;
+    idCardReady: boolean;
     stats: {
         peserta: number;
         pembina: number;
@@ -14,7 +16,12 @@ type Props = {
 };
 
 /** Layar setelah pendaftaran terkirim atau terverifikasi (desain M6). */
-export default function Submitted({ status, submitted_at, stats }: Props) {
+export default function Submitted({
+    status,
+    submitted_at,
+    idCardReady,
+    stats,
+}: Props) {
     const verified = status === 'verified';
 
     return (
@@ -49,7 +56,7 @@ export default function Submitted({ status, submitted_at, stats }: Props) {
                 />
                 <p className="relative mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-maroon-50">
                     {verified
-                        ? 'Selamat! Semua dokumen sudah disetujui panitia. ID Card dan sertifikat akan diterbitkan panitia.'
+                        ? 'Selamat! Semua dokumen sudah disetujui panitia. Unduh ID Card peserta dan pembina di bawah ini.'
                         : 'Data gudep kini terkunci sampai admin memverifikasi. Anda akan menerima email saat status berubah.'}
                 </p>
                 {submitted_at && (
@@ -78,6 +85,23 @@ export default function Submitted({ status, submitted_at, stats }: Props) {
                         <dt className="text-sm text-maroon-50">Dokumen</dt>
                     </div>
                 </dl>
+
+                {verified &&
+                    (idCardReady ? (
+                        <a
+                            href={idCard().url}
+                            target="_blank"
+                            rel="noopener"
+                            className="relative mx-auto mt-8 flex h-14 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-gold-300/60 bg-white/10 text-base font-bold text-gold-300 transition hover:bg-white/15"
+                        >
+                            <Download className="size-5" />
+                            Unduh ID Card (A4)
+                        </a>
+                    ) : (
+                        <p className="relative mx-auto mt-8 max-w-sm rounded-2xl border border-gold-300/30 bg-white/5 px-4 py-3 text-sm text-maroon-50">
+                            ID Card sedang disiapkan panitia.
+                        </p>
+                    ))}
 
                 <Link
                     href="/pembina"

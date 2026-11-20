@@ -6,9 +6,11 @@ use App\Actions\Gudep\SubmitRegistration;
 use App\Enums\DocumentStatus;
 use App\Enums\GudepStatus;
 use App\Enums\MemberRole;
+use App\Enums\TemplateType;
 use App\Http\Controllers\Controller;
 use App\Models\Gudep;
 use App\Models\User;
+use App\Services\Pdf\GudepCardPrinter;
 use App\Services\RegistrationProgress;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ use Inertia\Response;
 /** Kirim pendaftaran (desain M5) dan status setelah terkirim (desain M6). */
 class SubmissionController extends Controller
 {
-    public function show(Request $request): Response|RedirectResponse
+    public function show(Request $request, GudepCardPrinter $printer): Response|RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -35,6 +37,8 @@ class SubmissionController extends Controller
             return Inertia::render('pembina/submitted', [
                 'status' => $gudep->status->value,
                 'submitted_at' => $gudep->submitted_at?->translatedFormat('j F Y, H.i').' WIB',
+                'idCardReady' => $gudep->status === GudepStatus::Verified
+                    && $printer->isReady($gudep, TemplateType::IdCard),
                 'stats' => [
                     'peserta' => $gudep->members()->where('role', MemberRole::Peserta)->count(),
                     'pembina' => $gudep->members()->where('role', MemberRole::Pembina)->count(),

@@ -43,7 +43,7 @@ it('mengirim email lewat queue', function () {
 
 it('mencatat peninjauan dokumen beserta peninjaunya', function () {
     $gudep = Gudep::factory()->status(GudepStatus::Submitted)->withOwner()->create();
-    $document = Document::factory()->for($gudep)->type('kta')->create(['member_id' => $gudep->pembina()->sole()->id]);
+    $document = Document::factory()->for($gudep)->type('kta')->create();
 
     $this->actingAs($this->admin)
         ->post(route('admin.documents.review', $document), ['decision' => 'rejected', 'note' => 'KTA kedaluwarsa'])

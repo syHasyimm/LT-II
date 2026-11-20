@@ -2,7 +2,6 @@
 
 use App\Enums\DocumentStatus;
 use App\Enums\GudepStatus;
-use App\Enums\TeamGroup;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Gudep;
@@ -30,10 +29,13 @@ function pdf(string $name = 'kta.pdf', int $kb = 120): UploadedFile
 it('memiliki jenis dokumen bawaan sesuai PRD', function () {
     expect(DocumentType::query()->orderBy('sort')->pluck('code')->all())
         ->toBe(['kta', 'izin_ortu', 'kesehatan', 'kesiapan_sekolah'])
-        ->and(docType('izin_ortu')->required_for)->toBe(['peserta']);
+        ->and(DocumentType::query()->pluck('scope')->unique()->values()->all())->toBe(['gudep'])
+        ->and(docType('kta')->label)->toBe('KTA seluruh anggota (digabung 1 PDF)')
+        ->and(docType('izin_ortu')->label)->toBe('Surat Izin Orang Tua seluruh peserta (digabung 1 PDF)')
+        ->and(docType('kesehatan')->label)->toBe('Surat Keterangan Sehat seluruh anggota (digabung 1 PDF)');
 });
 
-it('menampilkan matriks kelengkapan dokumen', function () {
+it('menampilkan empat dokumen gudep dan daftar anggota', function () {
     $gudep = Gudep::factory()->complete()->create();
 
     $this->actingAs($gudep->user)
@@ -42,21 +44,19 @@ it('menampilkan matriks kelengkapan dokumen', function () {
         ->assertInertia(fn ($page) => $page
             ->component('pembina/documents/index')
             ->has('rows', 17)
-            ->has('columns', 3)
-            ->has('gudepDocuments', 1)
-            // 16 peserta × 3 dokumen + 1 pembina × 2 dokumen + 1 dokumen gudep
-            ->where('counts.total', 51)
-            ->where('counts.missing', 51));
+            ->has('columns', 0)
+            ->has('gudepDocuments', 4)
+            ->where('gudepDocuments.0.type.code', 'kta')
+            ->where('counts.total', 4)
+            ->where('counts.missing', 4));
 });
 
-it('mengunggah dokumen anggota ke disk privat sebagai pending', function () {
+it('mengunggah KTA gabungan ke disk privat sebagai pending', function () {
     $gudep = Gudep::factory()->complete()->create();
-    $member = $gudep->peserta(TeamGroup::Pa)->first();
 
     $this->actingAs($gudep->user)
         ->post(route('pembina.documents.store'), [
             'document_type_id' => docType('kta')->id,
-            'member_id' => $member->id,
             'file' => pdf(),
         ])
         ->assertSessionHasNoErrors();
@@ -64,7 +64,7 @@ it('mengunggah dokumen anggota ke disk privat sebagai pending', function () {
     $document = Document::query()->sole();
 
     expect($document->status)->toBe(DocumentStatus::Pending)
-        ->and($document->member_id)->toBe($member->id)
+        ->and($document->member_id)->toBeNull()
         ->and($document->original_name)->toBe('kta.pdf')
         ->and($document->path)->toStartWith("documents/{$gudep->id}/")
         ->not->toContain('kta.pdf');
@@ -84,7 +84,7 @@ it('mengunggah dokumen gudep tanpa anggota', function () {
     expect(Document::query()->sole()->member_id)->toBeNull();
 });
 
-it('menolak format selain PDF/JPG/PNG dan file di atas 2 MB', function (UploadedFile $file) {
+it('menolak format selain PDF/JPG/PNG dan file di atas 10 MB', function (UploadedFile $file) {
     $gudep = Gudep::factory()->withOwner()->create();
 
     $this->actingAs($gudep->user)
@@ -104,22 +104,37 @@ it('menolak format selain PDF/JPG/PNG dan file di atas 2 MB', function (Uploaded
 
         return new UploadedFile($path, 'kta.pdf', null, null, true);
     },
-    'terlalu besar' => fn () => pdf('besar.pdf', 2049),
+    'terlalu besar' => fn () => pdf('besar.pdf', 10241),
 ]);
 
-it('menolak izin orang tua untuk pembina', function () {
+it('menerima file 9 MB', function () {
     $gudep = Gudep::factory()->withOwner()->create();
 
     $this->actingAs($gudep->user)
         ->post(route('pembina.documents.store'), [
-            'document_type_id' => docType('izin_ortu')->id,
+            'document_type_id' => docType('kta')->id,
+            'file' => pdf('kta.pdf', 9000),
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect(Document::query()->count())->toBe(1);
+});
+
+it('menolak dokumen gabungan yang dikirim dengan member_id', function (string $code) {
+    $gudep = Gudep::factory()->withOwner()->create();
+
+    $this->actingAs($gudep->user)
+        ->post(route('pembina.documents.store'), [
+            'document_type_id' => docType($code)->id,
             'member_id' => $gudep->pembina()->sole()->id,
             'file' => pdf(),
         ])
-        ->assertSessionHasErrors('document_type_id');
-});
+        ->assertSessionHasErrors('member_id');
 
-it('menolak unggah untuk anggota gudep lain', function () {
+    expect(Document::query()->count())->toBe(0);
+})->with(['kta', 'izin_ortu', 'kesehatan']);
+
+it('menolak unggah dengan member_id anggota gudep lain', function () {
     $other = Gudep::factory()->complete()->create();
     $me = Gudep::factory()->withOwner()->create();
 
@@ -130,19 +145,18 @@ it('menolak unggah untuk anggota gudep lain', function () {
             'file' => pdf(),
         ])
         ->assertNotFound();
+
+    expect(Document::query()->count())->toBe(0);
 });
 
 it('mengarsipkan dokumen lama saat diganti dan mengembalikan status ke pending', function () {
     $gudep = Gudep::factory()->withOwner()->create();
-    $member = $gudep->pembina()->sole();
     $old = Document::factory()->for($gudep)->type('kta')->status(DocumentStatus::Rejected)->create([
-        'member_id' => $member->id,
         'note' => 'Foto KTA buram',
     ]);
 
     $this->actingAs($gudep->user)->post(route('pembina.documents.store'), [
         'document_type_id' => docType('kta')->id,
-        'member_id' => $member->id,
         'file' => pdf('kta-baru.pdf'),
     ]);
 
@@ -177,16 +191,31 @@ it('mengunci unggahan setelah pendaftaran dikirim', function () {
 
 it('menghitung dokumen diunggah, belum, dan ditolak', function () {
     $gudep = Gudep::factory()->withOwner()->create();
-    $pembina = $gudep->pembina()->sole();
-    Document::factory()->for($gudep)->type('kta')->create(['member_id' => $pembina->id]);
-    Document::factory()->for($gudep)->type('kesehatan')->status(DocumentStatus::Rejected)->create(['member_id' => $pembina->id]);
+    Document::factory()->for($gudep)->type('kta')->create();
+    Document::factory()->for($gudep)->type('kesehatan')->status(DocumentStatus::Rejected)->create();
 
     expect(DocumentChecklist::for($gudep)->counts())->toMatchArray([
-        'total' => 3,
+        'total' => 4,
         'uploaded' => 1,
         'rejected' => 1,
-        'missing' => 1,
+        'missing' => 2,
     ]);
+});
+
+it('migrasi menghapus dokumen per anggota beserta filenya kecuali file yang masih dirujuk', function () {
+    $gudep = Gudep::factory()->withOwner()->create();
+    $member = $gudep->pembina()->sole();
+    Storage::disk('local')->put('documents/x/lama.pdf', '%PDF');
+    Storage::disk('local')->put('documents/x/bersama.pdf', '%PDF');
+    Document::factory()->for($gudep)->type('kta')->create(['member_id' => $member->id, 'path' => 'documents/x/lama.pdf']);
+    Document::factory()->for($gudep)->type('kesehatan')->create(['member_id' => $member->id, 'path' => 'documents/x/bersama.pdf', 'archived_at' => now()]);
+    $kept = Document::factory()->for($gudep)->type('kesiapan_sekolah')->create(['path' => 'documents/x/bersama.pdf']);
+
+    (require database_path('migrations/2026_11_20_000001_merge_member_documents_into_gudep.php'))->up();
+
+    expect(Document::query()->pluck('id')->all())->toBe([$kept->id]);
+    Storage::disk('local')->assertMissing('documents/x/lama.pdf');
+    Storage::disk('local')->assertExists('documents/x/bersama.pdf');
 });
 
 it('menyertakan kekurangan dokumen dalam kelengkapan pendaftaran', function () {

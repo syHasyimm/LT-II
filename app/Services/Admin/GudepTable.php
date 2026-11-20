@@ -60,7 +60,10 @@ class GudepTable
             ->when($search, fn (Builder $query) => $query->where(fn (Builder $inner) => $inner
                 ->where('name', 'like', "%{$search}%")
                 ->orWhere('institution', 'like', "%{$search}%")
-                ->orWhere('gudep_number', 'like', "%{$search}%")))
+                ->orWhere('gudep_number', 'like', "%{$search}%")
+                ->orWhere('npsn', 'like', "%{$search}%")
+                ->orWhere('pic_name', 'like', "%{$search}%")
+                ->orWhere('address', 'like', "%{$search}%")))
             ->orderByRaw("case status when 'submitted' then 0 when 'revision' then 1 when 'draft' then 2 else 3 end")
             ->orderByDesc('submitted_at')
             ->orderByDesc('id');
@@ -82,8 +85,11 @@ class GudepTable
                 return [
                     'id' => $gudep->id,
                     'name' => $gudep->name,
+                    'gudep_number' => $gudep->gudep_number,
+                    'npsn' => $gudep->npsn,
                     'institution' => $gudep->institution,
-                    'region' => $gudep->region,
+                    'pic_name' => $gudep->pic_name,
+                    'address' => $gudep->address,
                     'peserta' => (int) $gudep->getAttribute('peserta_count'),
                     'pembina' => (int) $gudep->getAttribute('pembina_count'),
                     'documents' => ['uploaded' => $counts['uploaded'], 'total' => $counts['total'], 'rejected' => $counts['rejected']],

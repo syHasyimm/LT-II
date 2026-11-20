@@ -22,8 +22,10 @@ class GudepFactory extends Factory
             'user_id' => User::factory()->pembina(),
             'name' => "Gudep {$number}",
             'gudep_number' => $number,
+            'npsn' => fake()->numerify('########'),
             'institution' => 'SMP Negeri '.fake()->numberBetween(1, 20).' '.fake()->city(),
-            'region' => 'Kwarcab '.fake()->city(),
+            'pic_name' => fake()->name(),
+            'address' => fake()->streetAddress().', '.fake()->city(),
             'status' => GudepStatus::Draft,
         ];
     }

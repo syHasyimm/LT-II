@@ -86,7 +86,7 @@ class DocumentController extends Controller
                 'short' => $type->short_label,
             ])->values(),
             'gudepDocuments' => $checklist->gudepTypes()->map(fn (DocumentType $type) => [
-                'type' => ['id' => $type->id, 'label' => $type->label],
+                'type' => ['id' => $type->id, 'code' => $type->code, 'label' => $type->label],
                 'document' => $document($checklist->documentFor(null, $type)),
             ])->values(),
             'rows' => $members->map(fn (Member $member) => [
@@ -98,7 +98,7 @@ class DocumentController extends Controller
                     'is_pembina' => $member->isPembina(),
                     'group' => $member->isPembina() ? 'pembina' : $member->group?->value,
                     'kta_number' => $member->kta_number,
-                    'birth_label' => $member->birth_date?->translatedFormat('j M Y'),
+                    'birth_label' => $member->birth_date?->format('d/m/Y'),
                     'is_owner' => $member->is_owner,
                     'has_photo' => filled($member->photo_path),
                     'photo_url' => $member->photo_path ? route('members.photo', $member->id) : null,

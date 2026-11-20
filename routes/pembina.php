@@ -3,6 +3,7 @@
 use App\Http\Controllers\Pembina\DashboardController;
 use App\Http\Controllers\Pembina\DocumentController;
 use App\Http\Controllers\Pembina\GudepController;
+use App\Http\Controllers\Pembina\IdCardController;
 use App\Http\Controllers\Pembina\MemberController;
 use App\Http\Controllers\Pembina\MemberImportController;
 use App\Http\Controllers\Pembina\SubmissionController;
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'verified', 'role:pembina'])
         Route::get('anggota/{member}', [MemberController::class, 'edit'])->name('members.edit');
         Route::get('dokumen', [DocumentController::class, 'index'])->name('documents.index');
         Route::get('kirim', [SubmissionController::class, 'show'])->name('submission.show');
+        Route::get('id-card', IdCardController::class)->name('id-card');
 
         // Aksi tulis hanya dalam jadwal pendaftaran (FR-PRD-02).
         Route::middleware('registration.open')->group(function () {

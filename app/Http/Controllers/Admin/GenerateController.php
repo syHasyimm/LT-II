@@ -14,8 +14,7 @@ use App\Models\Member;
 use App\Models\Template;
 use App\Models\User;
 use App\Services\Files\PrivateFileService;
-use App\Services\Pdf\RenderSubject;
-use App\Services\Pdf\TemplateRenderer;
+use App\Services\Pdf\GudepCardPrinter;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Batch;
 use Illuminate\Http\RedirectResponse;
@@ -149,45 +148,16 @@ class GenerateController extends Controller
      * PDF cetak satu gudep: satu kartu per halaman atau lembar A4 3 × 3
      * (FR-GEN-04, FR-GEN-06). Memakai nomor seri yang sudah diberikan.
      */
-    public function print(Request $request, string $jenis, Gudep $gudep, TemplateRenderer $renderer): HttpResponse
+    public function print(Request $request, string $jenis, Gudep $gudep, GudepCardPrinter $printer): HttpResponse
     {
         $type = self::type($jenis);
         $mode = $request->query('mode') === 'sheet' && $type === TemplateType::IdCard ? 'sheet' : 'single';
 
-        $files = GeneratedFile::query()
-            ->where('type', $type)
-            ->whereHas('member', fn ($query) => $query->where('gudep_id', $gudep->id))
-            ->with('member.gudep')
-            ->orderBy('sequence')
-            ->get();
+        abort_unless($printer->hasFiles($gudep, $type), 404, 'Belum ada berkas yang dibuat untuk gudep ini.');
 
-        abort_if($files->isEmpty(), 404, 'Belum ada berkas yang dibuat untuk gudep ini.');
+        $pdf = $printer->pdf($gudep, $type, $mode);
 
-        // Template bisa berbeda untuk peserta dan pembina: kelompokkan per template.
-        /** @var array<int, array{template: Template, subjects: list<RenderSubject>}> $groups */
-        $groups = [];
-
-        foreach ($files as $file) {
-            $template = Template::activeFor($type, $file->member->role);
-
-            if ($template !== null) {
-                $groups[$template->id]['template'] = $template;
-                $groups[$template->id]['subjects'][] = RenderSubject::fromMember($file->member, $file->serial_number);
-            }
-        }
-
-        abort_if($groups === [], 404, 'Belum ada template aktif.');
-
-        $first = reset($groups);
-
-        // dompdf merender satu dokumen: gabungkan halaman dari tiap template.
-        $pdf = count($groups) === 1
-            ? $renderer->pdf($first['template'], $first['subjects'], $mode)
-            : $renderer->pdfFromHtml(
-                self::mergeHtml(array_values(array_map(fn (array $group) => $renderer->html($group['template'], $group['subjects'], $mode), $groups))),
-                $first['template'],
-                $mode,
-            );
+        abort_if($pdf === null, 404, 'Belum ada template aktif.');
 
         return $pdf->stream(Str::slug("{$type->label()} {$gudep->name}").($mode === 'sheet' ? '-a4' : '').'.pdf');
     }
@@ -248,23 +218,6 @@ class GenerateController extends Controller
     private function fileName(GeneratedFile $file): string
     {
         return $file->serial_number.'-'.Str::slug($file->member->name).'.pdf';
-    }
-
-    /** @param  list<string>  $documents */
-    private static function mergeHtml(array $documents): string
-    {
-        $head = (string) Str::before($documents[0], '<body>');
-        $last = count($documents) - 1;
-        $bodies = array_map(
-            // Hanya halaman terakhir dokumen terakhir yang tanpa pemisah halaman.
-            fn (string $html, int $index) => $index === $last
-                ? Str::between($html, '<body>', '</body>')
-                : str_replace('page last', 'page', Str::between($html, '<body>', '</body>')),
-            $documents,
-            array_keys($documents),
-        );
-
-        return $head.'<body>'.implode('', $bodies).'</body></html>';
     }
 
     public static function type(string $jenis): TemplateType

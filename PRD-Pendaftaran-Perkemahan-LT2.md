@@ -47,12 +47,12 @@ Peserta bukan peran. Tidak ada halaman, login, atau akses apa pun untuk peserta.
 | BR-02 | Satu gudep wajib terdiri dari **tepat 8 peserta Pa dan 8 peserta Pi** (nilai di `config/camp.php`, mudah diubah). |
 | BR-03 | Pembina pendamping **minimal 1, tanpa batas maksimal**. Pembina menambah sebanyak yang berpartisipasi. Pemilik akun otomatis menjadi pembina pertama dan tidak dapat dihapus. |
 | BR-04 | **Semua dokumen diunggah oleh Pembina**, baik dokumen peserta maupun dokumen pembina. |
-| BR-05 | Dokumen per orang: KTA, Surat Izin Orang Tua (hanya peserta), Surat Kesehatan. Dokumen per gudep: Surat Kesiapan Sekolah. Aturan wajib per peran diatur di tabel `document_types`. |
+| BR-05 | Semua dokumen persyaratan diunggah **per gudep, satu berkas per jenis**: KTA seluruh anggota (peserta dan pembina pendamping), Surat Izin Orang Tua seluruh peserta, dan Surat Keterangan Sehat seluruh anggota, masing-masing digabung menjadi satu PDF, ditambah Surat Kesiapan Sekolah. Jenis dokumen diatur di tabel `document_types`. |
 | BR-06 | Tiap anggota wajib memiliki pas foto, dipakai untuk ID Card. |
 | BR-07 | Pendaftaran hanya dapat dikirim jika kuota, pembina, foto, dan semua dokumen wajib sudah lengkap. |
 | BR-08 | Setelah dikirim, data **terkunci** sampai admin memverifikasi atau meminta revisi. |
 | BR-09 | ID Card dan Sertifikat **hanya dapat dibuat untuk anggota gudep berstatus terverifikasi**. |
-| BR-10 | ID Card dan Sertifikat **hanya dapat diakses admin**. Pembina tidak mengunduhnya. |
+| BR-10 | ID Card gudep terverifikasi dapat diunduh admin dan **pembina gudep itu** (lembar A4). Sertifikat **hanya dapat diakses admin**. |
 | BR-11 | Setiap ID Card dan Sertifikat memiliki nomor seri unik. Sertifikat memuat QR menuju halaman verifikasi publik. |
 | BR-12 | Pendaftaran dibuka dan ditutup sesuai jadwal yang diatur admin. Di luar jadwal, pembina hanya dapat melihat data (read-only), kecuali gudep yang mendapat perpanjangan dari admin. **Tidak ada batas jumlah gudep.** |
 | BR-13 | Data dan dokumen **tetap disimpan tanpa batas waktu** setelah acara selesai dan tidak dihapus otomatis. |
@@ -77,7 +77,7 @@ Prioritas: **P0** wajib untuk rilis, **P1** penting, **P2** bisa menyusul.
 
 | ID | Kebutuhan | Prioritas | Kriteria penerimaan |
 |---|---|---|---|
-| FR-GDP-01 | Pembina mengisi data gudep (nama, nomor gudep, asal sekolah/lembaga, kwartir/wilayah). | P0 | Tersimpan sebagai draft, bisa dilanjutkan di sesi berikutnya. |
+| FR-GDP-01 | Pembina mengisi data gudep (NPSN, nama instansi, penanggung jawab, alamat, nomor gudep). | P0 | Tersimpan sebagai draft, bisa dilanjutkan di sesi berikutnya. |
 | FR-GDP-02 | Input peserta Pa (8 orang) dan Pi (8 orang) dalam dua bagian terpisah. | P0 | Indikator kuota "x/8" per regu. Peserta ke-9 per regu ditolak. |
 | FR-GDP-03 | Input pembina pendamping secara **dinamis**: tombol "Tambah pembina" menambah baris baru tanpa batas, tombol hapus per baris. | P0 | Minimal 1 baris. Baris pertama (pemilik akun) tidak bisa dihapus. Jumlah tidak dibatasi (`pembina_max = null`). |
 | FR-GDP-04 | Data per anggota: nama lengkap, jenis kelamin, tanggal lahir, nomor KTA, pas foto. Pembina juga memiliki nomor HP dan keterangan mendampingi Pa, Pi, atau keduanya. | P0 | Validasi wajib dan format di backend (FormRequest) dan UI. |
@@ -88,8 +88,8 @@ Prioritas: **P0** wajib untuk rilis, **P1** penting, **P2** bisa menyusul.
 
 | ID | Kebutuhan | Prioritas | Kriteria penerimaan |
 |---|---|---|---|
-| FR-DOC-01 | Pembina mengunggah dokumen per anggota (KTA, Izin Orang Tua, Kesehatan) dan per gudep (Kesiapan Sekolah). | P0 | Format PDF/JPG/PNG, maksimal 2 MB (di `config/camp.php`). Pelanggaran ditolak dengan pesan jelas. |
-| FR-DOC-02 | Matriks kelengkapan: tabel anggota × dokumen dengan status (belum, diunggah, disetujui, ditolak). | P0 | Terlihat sekilas dokumen mana yang kurang. |
+| FR-DOC-01 | Pembina mengunggah empat dokumen per gudep: KTA gabungan, Izin Orang Tua gabungan, Keterangan Sehat gabungan, dan Kesiapan Sekolah. | P0 | Satu berkas per jenis. Format PDF/JPG/PNG, maksimal 10 MB (`max_upload_kb` di `config/camp.php`; pas foto tetap 2 MB lewat `max_photo_kb`). Pelanggaran ditolak dengan pesan jelas. |
+| FR-DOC-02 | Kelengkapan: empat kartu dokumen gudep dengan status (belum, diunggah, disetujui, ditolak) dan daftar pas foto per anggota. | P0 | Terlihat sekilas dokumen atau pas foto mana yang kurang. |
 | FR-DOC-03 | Ganti (unggah ulang) dokumen yang ditolak. | P0 | File lama diarsipkan, status kembali `pending`. |
 | FR-DOC-04 | Penyimpanan dokumen privat. | P0 | File di disk privat, diakses lewat controller dengan otorisasi. URL file tidak bisa ditebak atau dibagikan. |
 | FR-DOC-05 | Pratinjau dokumen di browser. | P1 | PDF dan gambar tampil di dialog tanpa unduh. |
@@ -104,6 +104,7 @@ Prioritas: **P0** wajib untuk rilis, **P1** penting, **P2** bisa menyusul.
 | FR-VER-04 | Tolak pendaftaran dengan catatan, status menjadi `revision`. | P0 | Pembina melihat catatan di dashboard, bisa memperbaiki dan mengirim ulang. |
 | FR-VER-05 | Notifikasi email ke pembina saat status berubah. | P1 | Email terkirim via queue. |
 | FR-VER-06 | Riwayat aktivitas (audit log) verifikasi. | P1 | Siapa, kapan, apa perubahannya. |
+| FR-VER-07 | Formulir Pendaftaran (PDF berkop Kwartir Ranting Kepenuhan) berisi data gudep, peserta, dan pembina. | P1 | Hanya admin, tombol **Unduh formulir** di samping tombol verifikasi setelah gudep terverifikasi. |
 
 ### 5.5 Template ID Card dan Sertifikat
 
@@ -113,7 +114,7 @@ Prioritas: **P0** wajib untuk rilis, **P1** penting, **P2** bisa menyusul.
 | FR-TPL-02 | Template menyimpan gambar background, ukuran kertas (mm), dan daftar field beserta posisi, font, ukuran, rata teks. Ukuran bawaan ID Card **55 × 85 mm**. | P0 | Disimpan sebagai data (kolom JSON), bukan kode. Editor dan PDF memakai ukuran yang sama persis. |
 | FR-TPL-03 | Sasaran template: peserta, pembina, atau keduanya. | P0 | Pembina dan peserta bisa memakai desain berbeda. |
 | FR-TPL-04 | Editor visual: admin menggeser field di atas gambar background dan melihat pratinjau dengan data contoh. | P1 | Perubahan posisi tersimpan dan terlihat di PDF hasil. |
-| FR-TPL-05 | Field yang tersedia: nama, peran, nama gudep, asal sekolah, foto, nomor seri, QR. | P0 | Field bisa ditambah/dihilangkan per template. |
+| FR-TPL-05 | Field yang tersedia: nama, peran, nama gudep, nama instansi, NPSN, penanggung jawab, alamat, foto, nomor seri, QR. | P0 | Field bisa ditambah/dihilangkan per template. |
 
 ### 5.6 Pembuatan ID Card dan Sertifikat
 
@@ -122,7 +123,7 @@ Prioritas: **P0** wajib untuk rilis, **P1** penting, **P2** bisa menyusul.
 | FR-GEN-01 | Admin memilih penerima: satu orang, satu gudep, atau semua gudep terverifikasi. | P0 | Anggota gudep non-verified tidak bisa dipilih. |
 | FR-GEN-02 | Proses pembuatan berjalan di background (queue) dengan indikator progres. | P0 | Generate ratusan file tidak membuat halaman menggantung. |
 | FR-GEN-03 | Setiap hasil memiliki nomor seri unik (format di BR-14) dan tercatat di `generated_files`. | P0 | Generate ulang **mempertahankan nomor seri** dan menimpa file. Penomoran aman dari duplikasi saat beberapa job berjalan bersamaan. |
-| FR-GEN-04 | Unduh PDF satuan dan ZIP massal per gudep atau seluruhnya. | P0 | Hanya admin. ID Card dalam satu PDF multi-halaman siap cetak. |
+| FR-GEN-04 | Unduh PDF satuan dan ZIP massal per gudep atau seluruhnya. | P0 | Admin; pembina hanya ID Card gudepnya sendiri setelah terverifikasi (lembar A4 9 kartu). ID Card dalam satu PDF multi-halaman siap cetak. ID Card dibuat otomatis saat gudep diverifikasi bila template aktif tersedia. |
 | FR-GEN-05 | Halaman verifikasi publik `/verify/{serial}`. | P1 | Menampilkan nama, gudep, dan status keabsahan. Tanpa data sensitif. |
 | FR-GEN-06 | Mode cetak ID Card: satu kartu per halaman 55 × 85 mm, atau lembar A4 berisi 9 kartu (3 × 3) dengan garis potong. | P1 | PDF A4 muat tepat 9 kartu tanpa terpotong. Pilihan mode ada di halaman generate. |
 
@@ -211,7 +212,7 @@ erDiagram
 | Tabel | Kolom penting |
 |---|---|
 | `users` | `id`, `google_id` (nullable, unik), `name`, `email` (unik), `avatar`, `role` (`admin`/`pembina`), `password` (hanya admin) |
-| `gudeps` | `id`, `user_id` (unik), `name`, `gudep_number`, `institution`, `region`, `status` (`draft`/`submitted`/`revision`/`verified`), `admin_note`, `deadline_extended_until` (nullable), `submitted_at`, `verified_at` |
+| `gudeps` | `id`, `user_id` (unik), `name`, `gudep_number`, `npsn`, `institution`, `pic_name`, `address`, `status` (`draft`/`submitted`/`revision`/`verified`), `admin_note`, `deadline_extended_until` (nullable), `submitted_at`, `verified_at` |
 | `members` | `id`, `gudep_id`, `role` (`peserta`/`pembina_pendamping`), `group` (`pa`/`pi`, nullable untuk pembina), `name`, `gender`, `birth_date`, `kta_number`, `phone` (pembina), `photo_path`, `is_owner` (pembina pemilik akun) |
 | `document_types` | `id`, `code` (`kta`/`izin_ortu`/`kesehatan`/`kesiapan_sekolah`), `label`, `scope` (`member`/`gudep`), `required_for` (JSON: peserta/pembina) |
 | `documents` | `id`, `gudep_id`, `member_id` (nullable), `document_type_id`, `path`, `status` (`pending`/`approved`/`rejected`), `note`, `uploaded_by`, `reviewed_by`, `reviewed_at` |

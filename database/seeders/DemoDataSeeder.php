@@ -50,18 +50,20 @@ class DemoDataSeeder extends Seeder
         $this->writeSampleFiles();
 
         $plan = [
-            [GudepStatus::Submitted, 'SMPN 3 Sleman', 'Kwarcab Sleman'],
-            [GudepStatus::Submitted, 'SMAN 1 Bantul', 'Kwarcab Bantul'],
-            [GudepStatus::Revision, 'MTsN 2 Kulon Progo', 'Kwarcab Kulon Progo'],
-            [GudepStatus::Verified, 'SMP Muhammadiyah 1 Yogyakarta', 'Kwarcab Kota Yogyakarta'],
-            [GudepStatus::Verified, 'SMPN 1 Wonosari', 'Kwarcab Gunungkidul'],
-            [GudepStatus::Draft, 'SMPN 4 Depok', 'Kwarcab Sleman'],
+            [GudepStatus::Submitted, 'SMPN 3 Sleman', 'Jl. Magelang KM 5, Sinduadi, Mlati, Sleman', '20404123', 'Drs. H. Sumarno, M.Pd.'],
+            [GudepStatus::Submitted, 'SMAN 1 Bantul', 'Jl. Imogiri Barat KM 5, Bantul', '20404124', 'Siti Aminah, S.Pd.'],
+            [GudepStatus::Revision, 'MTsN 2 Kulon Progo', 'Jl. Wates KM 12, Kulon Progo', '20404125', 'Ahmad Fauzi, S.Ag.'],
+            [GudepStatus::Verified, 'SMP Muhammadiyah 1 Yogyakarta', 'Jl. Kapas No. 5, Semaki, Umbulharjo, Yogyakarta', '20404126', 'Drs. Bambang Sutrisno'],
+            [GudepStatus::Verified, 'SMPN 1 Wonosari', 'Jl. Karangmojo, Wonosari, Gunungkidul', '20404127', 'Sri Lestari, S.Pd.'],
+            [GudepStatus::Draft, 'SMPN 4 Depok', 'Jl. Kalasan No. 1, Depok, Sleman', '20404128', 'Rina Wulandari, S.Pd.'],
         ];
 
-        foreach ($plan as [$status, $institution, $region]) {
+        foreach ($plan as [$status, $institution, $address, $npsn, $picName]) {
             $gudep = Gudep::factory()->complete()->create([
                 'institution' => $institution,
-                'region' => $region,
+                'address' => $address,
+                'npsn' => $npsn,
+                'pic_name' => $picName,
                 'status' => $status,
                 'submitted_at' => $status === GudepStatus::Draft ? null : now()->subDays(random_int(0, 5)),
                 'verified_at' => $status === GudepStatus::Verified ? now() : null,
@@ -79,29 +81,18 @@ class DemoDataSeeder extends Seeder
 
             Member::query()->where('gudep_id', $gudep->id)->update(['photo_path' => self::PHOTO]);
 
-            foreach ($gudep->members as $member) {
-                foreach (DocumentType::query()->where('scope', 'member')->get() as $type) {
-                    if ($type->requiredFor($member->role)) {
-                        Document::factory()->for($gudep)->create([
-                            'member_id' => $member->id,
-                            'document_type_id' => $type->id,
-                            'status' => $documentStatus,
-                            'path' => self::PDF,
-                            'original_name' => "{$type->code}-".str($member->name)->slug().'.pdf',
-                        ]);
-                    }
-                }
+            foreach (DocumentType::query()->orderBy('sort')->get() as $type) {
+                Document::factory()->for($gudep)->create([
+                    'document_type_id' => $type->id,
+                    'status' => $documentStatus,
+                    'path' => self::PDF,
+                    'original_name' => "{$type->code}.pdf",
+                ]);
             }
-
-            Document::factory()->for($gudep)->type('kesiapan_sekolah')->create([
-                'status' => $documentStatus,
-                'path' => self::PDF,
-                'original_name' => 'surat-kesiapan-sekolah.pdf',
-            ]);
 
             if ($status === GudepStatus::Revision) {
                 $gudep->documents()->where('document_type_id', DocumentType::query()->where('code', 'kesehatan')->value('id'))
-                    ->limit(2)->update(['status' => DocumentStatus::Rejected, 'note' => 'Tulisan tidak terbaca, mohon unggah ulang.']);
+                    ->update(['status' => DocumentStatus::Rejected, 'note' => 'Tulisan tidak terbaca, mohon unggah ulang.']);
             }
         }
     }

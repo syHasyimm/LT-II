@@ -23,7 +23,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'max_upload_kb' => 2048,
+    // Dokumen gabungan (KTA, izin, sehat seluruh anggota dalam 1 PDF) butuh batas lebih besar.
+    'max_upload_kb' => 10240,
+    'max_photo_kb' => 2048,
     'allowed_mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
     'photo_mimes' => ['jpg', 'jpeg', 'png'],
     'private_disk' => 'local',
@@ -44,6 +46,21 @@ return [
         'name' => env('ADMIN_NAME', 'Admin Panitia'),
         'email' => env('ADMIN_EMAIL', 'admin@perkemahan-lt2.test'),
         'password' => env('ADMIN_PASSWORD'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kop Formulir Pendaftaran (PDF admin). Logo: timpa file di public/images.
+    |--------------------------------------------------------------------------
+    */
+
+    'kop' => [
+        'title' => 'GERAKAN PRAMUKA',
+        'subtitle' => 'KWARTIR RANTING KEPENUHAN',
+        'address' => 'Jalan Syech Abdul Wahab Rokan-Kota Tengah No. Tlp.- Kodepos: 28559',
+        'email' => 'Email : kwartirranting03kepenuhan@gmail.com',
+        'logo_left' => 'images/kop-kiri.png',
+        'logo_right' => 'images/kop-kanan.png',
     ],
 
     'event_year' => 2026,

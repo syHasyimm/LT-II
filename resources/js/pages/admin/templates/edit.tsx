@@ -77,7 +77,7 @@ const presets: { label: string; build: () => Omit<TemplateField, 'id'> }[] = [
     {
         label: 'Asal sekolah',
         build: () =>
-            textPreset('Asal sekolah', '{sekolah} · {kwartir}', {
+            textPreset('Asal sekolah', '{sekolah} · {alamat}', {
                 size: 5.2,
                 color: '#7A6A65',
             }),
@@ -97,7 +97,7 @@ const presets: { label: string; build: () => Omit<TemplateField, 'id'> }[] = [
         build: () =>
             textPreset(
                 'Keterangan',
-                'atas partisipasinya sebagai {peran_lengkap}, {gudep} – {sekolah}.',
+                'atas partisipasinya sebagai {peran_lengkap}, {gudep} – {sekolah}, {alamat}.',
                 { size: 12 },
             ),
     },
@@ -882,6 +882,9 @@ function PropertyPanel({
             '{peran_lengkap}',
             '{gudep}',
             '{sekolah}',
+            '{npsn}',
+            '{penanggung_jawab}',
+            '{alamat}',
             '{kwartir}',
             '{nomor_seri}',
             '{tahun}',

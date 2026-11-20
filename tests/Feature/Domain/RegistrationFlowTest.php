@@ -37,10 +37,11 @@ it('menjalankan alur dari login pembina sampai sertifikat terverifikasi publik',
 
     // 2. Data gudep.
     $this->put(route('pembina.gudep.update'), [
-        'name' => 'Gudep 07.041',
         'gudep_number' => '07.041',
+        'npsn' => '20404123',
         'institution' => 'SMP Negeri 3 Sleman',
-        'region' => 'Kwarcab Sleman',
+        'pic_name' => 'Drs. Sumarno, M.Pd.',
+        'address' => 'Jl. Magelang KM 5, Sleman',
     ])->assertSessionHasNoErrors();
     $gudep = $pembina->refresh()->gudep;
 
@@ -80,21 +81,12 @@ it('menjalankan alur dari login pembina sampai sertifikat terverifikasi publik',
     $this->post(route('pembina.submission.store'), ['agreement' => '1'])->assertSessionHasErrors('submit');
 
     // 5. Unggah semua dokumen wajib.
-    foreach ($gudep->members()->get() as $member) {
-        foreach (DocumentType::query()->where('scope', 'member')->get() as $type) {
-            if ($type->requiredFor($member->role)) {
-                $this->post(route('pembina.documents.store'), [
-                    'document_type_id' => $type->id,
-                    'member_id' => $member->id,
-                    'file' => UploadedFile::fake()->create("{$type->code}.pdf", 100, 'application/pdf'),
-                ])->assertSessionHasNoErrors();
-            }
-        }
+    foreach (DocumentType::query()->get() as $type) {
+        $this->post(route('pembina.documents.store'), [
+            'document_type_id' => $type->id,
+            'file' => UploadedFile::fake()->create("{$type->code}.pdf", 100, 'application/pdf'),
+        ])->assertSessionHasNoErrors();
     }
-    $this->post(route('pembina.documents.store'), [
-        'document_type_id' => DocumentType::query()->where('code', 'kesiapan_sekolah')->value('id'),
-        'file' => UploadedFile::fake()->create('kesiapan.pdf', 100, 'application/pdf'),
-    ])->assertSessionHasNoErrors();
 
     // 6. Kirim pendaftaran.
     $this->get(route('pembina.submission.show'))->assertInertia(fn ($page) => $page->where('canSubmit', true));
@@ -113,7 +105,6 @@ it('menjalankan alur dari login pembina sampai sertifikat terverifikasi publik',
     $this->actingAs($pembina);
     $this->post(route('pembina.documents.store'), [
         'document_type_id' => $rejected->document_type_id,
-        'member_id' => $rejected->member_id,
         'file' => UploadedFile::fake()->create('ulang.pdf', 100, 'application/pdf'),
     ])->assertSessionHasNoErrors();
     $this->post(route('pembina.submission.store'), ['agreement' => '1'])->assertSessionHasNoErrors();
@@ -130,7 +121,7 @@ it('menjalankan alur dari login pembina sampai sertifikat terverifikasi publik',
     $this->post(route('admin.gudeps.approve', $gudep))->assertSessionHasNoErrors();
 
     expect($gudep->refresh()->status)->toBe(GudepStatus::Verified)
-        ->and(Document::query()->where('gudep_id', $gudep->id)->active()->count())->toBe(16 * 3 + 2 * 2 + 1);
+        ->and(Document::query()->where('gudep_id', $gudep->id)->active()->count())->toBe(4);
 
     // Pembina menerima email untuk setiap perubahan status: kirim, revisi, kirim ulang, terverifikasi.
     Notification::assertSentToTimes($pembina, RegistrationStatusChanged::class, 4);

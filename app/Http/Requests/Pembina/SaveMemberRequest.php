@@ -26,6 +26,15 @@ class SaveMemberRequest extends FormRequest
         return $user->gudep !== null && $user->can('update', $user->gudep);
     }
 
+    protected function prepareForValidation(): void
+    {
+        $value = $this->input('birth_date');
+
+        if (is_string($value) && preg_match('/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/', trim($value), $match) === 1) {
+            $this->merge(['birth_date' => sprintf('%04d-%02d-%02d', $match[3], $match[2], $match[1])]);
+        }
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -40,7 +49,7 @@ class SaveMemberRequest extends FormRequest
                 'nullable',
                 'image',
                 'mimes:'.implode(',', (array) config('camp.photo_mimes')),
-                'max:'.config('camp.max_upload_kb'),
+                'max:'.config('camp.max_photo_kb'),
             ],
             'gender' => [Rule::requiredIf($isPembina), 'nullable', Rule::enum(Gender::class)],
             'phone' => [Rule::requiredIf($isPembina), 'nullable', 'string', 'max:20', 'regex:/^(\+62|62|0)8[0-9\- ]{7,14}$/'],
@@ -88,7 +97,7 @@ class SaveMemberRequest extends FormRequest
     {
         return [
             'phone.regex' => 'Nomor HP harus nomor ponsel Indonesia, misalnya 0812-3456-7890.',
-            'photo.max' => 'Ukuran pas foto maksimal '.round(config('camp.max_upload_kb') / 1024).' MB.',
+            'photo.max' => 'Ukuran pas foto maksimal '.round(config('camp.max_photo_kb') / 1024).' MB.',
         ];
     }
 

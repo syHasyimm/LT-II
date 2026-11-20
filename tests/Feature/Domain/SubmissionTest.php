@@ -14,15 +14,9 @@ function readyGudep(GudepStatus $status = GudepStatus::Draft): Gudep
     $gudep = Gudep::factory()->status($status)->complete()->create();
     Member::query()->where('gudep_id', $gudep->id)->update(['photo_path' => 'photos/x.jpg']);
 
-    foreach ($gudep->members as $member) {
-        foreach (DocumentType::query()->where('scope', 'member')->get() as $type) {
-            if ($type->requiredFor($member->role)) {
-                Document::factory()->for($gudep)->create(['member_id' => $member->id, 'document_type_id' => $type->id]);
-            }
-        }
+    foreach (DocumentType::query()->get() as $type) {
+        Document::factory()->for($gudep)->create(['document_type_id' => $type->id]);
     }
-
-    Document::factory()->for($gudep)->type('kesiapan_sekolah')->create();
 
     return $gudep->refresh();
 }
@@ -39,6 +33,21 @@ it('menampilkan daftar periksa dengan kekurangan', function () {
             ->where('items.1.label', 'Regu Putra 0/8')
             ->where('items.1.ok', false)
             ->where('items.1.detail', 'Tambah 8 peserta lagi'));
+});
+
+it('daftar periksa menampilkan tiap dokumen gabungan', function () {
+    $gudep = Gudep::factory()->withOwner()->create();
+
+    $this->actingAs($gudep->user)
+        ->get(route('pembina.submission.show'))
+        ->assertInertia(function ($page) {
+            $items = collect($page->toArray()['props']['items'])->keyBy('key');
+
+            expect($items->keys()->all())
+                ->toContain('gudep_kta', 'gudep_izin_ortu', 'gudep_kesehatan', 'gudep_kesiapan_sekolah')
+                ->not->toContain('dokumen')
+                ->and($items['gudep_kta'])->toMatchArray(['ok' => false, 'action' => 'Unggah', 'detail' => 'Belum diunggah']);
+        });
 });
 
 it('menolak kirim saat belum lengkap dan status tetap draft', function () {

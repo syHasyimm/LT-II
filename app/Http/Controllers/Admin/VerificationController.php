@@ -35,9 +35,13 @@ class VerificationController extends Controller
         return Inertia::render('admin/gudeps/show', [
             'gudep' => [
                 'id' => $gudep->id,
-                'name' => $gudep->displayName(),
+                'name' => $gudep->name,
                 'short_name' => $gudep->name,
-                'region' => $gudep->region,
+                'npsn' => $gudep->npsn,
+                'institution' => $gudep->institution,
+                'pic_name' => $gudep->pic_name,
+                'address' => $gudep->address,
+                'gudep_number' => $gudep->gudep_number,
                 'status' => $gudep->status->value,
                 'owner_name' => $owner->name ?? $gudep->user->name,
                 'owner_email' => $gudep->user->email,
@@ -97,9 +101,12 @@ class VerificationController extends Controller
     {
         /** @var User $admin */
         $admin = $request->user();
-        $approve->handle($gudep, $admin);
+        $queued = $approve->handle($gudep, $admin);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => "{$gudep->name} terverifikasi."]);
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => "{$gudep->name} terverifikasi.".($queued > 0 ? ' ID Card sedang dibuat.' : ''),
+        ]);
 
         return to_route('admin.gudeps.show', $gudep);
     }

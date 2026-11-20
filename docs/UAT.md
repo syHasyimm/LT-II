@@ -35,7 +35,7 @@ Template yang sudah disesuaikan saat UAT ikut terhapus oleh `migrate:fresh`. Cat
 | P3 | Tambah 8 peserta Putra satu per satu, termasuk pas foto dari kamera | Indikator 8/8, peserta ke-9 tidak bisa ditambah |
 | P4 | Impor 8 peserta Putri dari template Excel (sengaja buat 1 baris salah) | 7 masuk, 1 baris dilaporkan dengan alasannya; perbaiki lalu impor ulang |
 | P5 | Lengkapi data diri dan tambah 1 pembina lain | Pemilik akun tidak bisa dihapus, pembina lain bisa |
-| P6 | Unggah semua dokumen (sebagian foto kamera, sebagian PDF) | Matriks dokumen penuh; file > 2 MB atau format lain ditolak dengan pesan jelas |
+| P6 | Unggah empat dokumen gudep (KTA, izin, dan sehat masing-masing satu PDF gabungan, plus Kesiapan Sekolah) | Keempat kartu berstatus diunggah; file > 10 MB atau format lain ditolak dengan pesan jelas |
 | P7 | Coba **Kirim** saat masih ada yang kurang | Daftar kekurangan tampil dengan tautan perbaikan |
 | P8 | Kirim pendaftaran lengkap | Status *Dikirim*, data terkunci, email diterima |
 | P9 | Setelah admin minta revisi: buka catatan, unggah ulang dokumen yang ditolak, kirim lagi | Status kembali *Dikirim*, email diterima |

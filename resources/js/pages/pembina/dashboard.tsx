@@ -19,7 +19,8 @@ type Step = PembinaStepData;
 type Props = {
     gudep: {
         name: string;
-        region: string;
+        institution: string;
+        address: string | null;
         status: GudepStatus;
         admin_note: string | null;
     } | null;
@@ -85,8 +86,13 @@ export default function PembinaDashboard({ gudep, percent, steps }: Props) {
                                 {gudep.name}
                             </h1>
                             <p className="mt-1 text-sm text-ink-soft">
-                                {gudep.region}
+                                {gudep.institution}
                             </p>
+                            {gudep.address && (
+                                <p className="text-xs text-ink-soft">
+                                    {gudep.address}
+                                </p>
+                            )}
                             <div className="mt-5 flex items-baseline justify-between">
                                 <p className="text-sm font-semibold text-ink">
                                     Kelengkapan pendaftaran
