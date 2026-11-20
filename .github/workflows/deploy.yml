@@ -1,0 +1,149 @@
+name: deploy
+
+# Deploy ke hosting bersama (Hostinger) setiap push ke main, atau manual dari
+# tab Actions. Aset Vite di-build di runner GitHub karena hosting tidak punya
+# Node.js, lalu dikirim lewat rsync. Server memperbarui kode ke commit yang
+# sama persis dengan yang di-build.
+#
+# Secret repository yang dibutuhkan (Settings → Secrets and variables → Actions):
+#   SSH_HOST         IP / hostname SSH dari hPanel
+#   SSH_PORT         port SSH (Hostinger: 65002)
+#   SSH_USER         username SSH (mis. u110430832)
+#   SSH_PRIVATE_KEY  private key yang public key-nya terdaftar di hPanel → SSH Access
+#   SSH_KNOWN_HOSTS  keluaran `ssh-keyscan -p <port> <host>` (sidik jari server)
+#   DEPLOY_PATH      folder aplikasi di server (berisi artisan)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Jangan jalankan dua deploy bersamaan; deploy yang sedang jalan diselesaikan.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      # Plugin Wayfinder memanggil `php artisan` saat build untuk membuat
+      # helper route TypeScript, jadi vendor dan .env dibutuhkan di runner.
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Prepare environment for build
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
+      - name: Build frontend assets
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          test -f public/build/manifest.json
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # Unggah ke folder sementara dulu; folder build aktif baru ditukar
+      # setelah kode di server diperbarui, supaya halaman tidak pernah
+      # memakai manifest yang tidak cocok dengan kodenya terlalu lama.
+      - name: Upload built assets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o IdentitiesOnly=yes" \
+            public/build/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/public/build-next/"
+
+      - name: Update application on server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" -o IdentitiesOnly=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "bash -s -- '$DEPLOY_PATH' '$DEPLOY_SHA'" <<'REMOTE'
+          set -euo pipefail
+          cd "$1"
+          sha="$2"
+
+          if command -v composer >/dev/null 2>&1; then
+            composer_cmd=(composer)
+          else
+            composer_cmd=(php composer.phar)
+          fi
+
+          echo "→ Mode pemeliharaan"
+          php artisan down --retry=15 || true
+          trap 'php artisan up' EXIT
+
+          echo "→ Perbarui kode ke $sha"
+          git fetch --quiet origin main
+          git merge --ff-only "$sha"
+
+          echo "→ Dependensi PHP (tanpa paket dev)"
+          "${composer_cmd[@]}" install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
+
+          echo "→ Pasang aset frontend baru"
+          rm -f public/hot
+          rm -rf public/build-prev
+          if [ -d public/build ]; then mv public/build public/build-prev; fi
+          mv public/build-next public/build
+          rm -rf public/build-prev
+
+          echo "→ Migrasi database"
+          php artisan migrate --force
+
+          echo "→ Cache konfigurasi, route, view, event"
+          php artisan optimize:clear
+          php artisan optimize
+
+          echo "→ Worker queue memakai kode baru pada putaran cron berikutnya"
+          php artisan queue:restart
+
+          echo "✓ Deploy $sha selesai"
+          REMOTE
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
