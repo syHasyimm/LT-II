@@ -147,3 +147,19 @@ it('tetap membuat ulang kartu bila job diantrikan setelah kartu terakhir dibuat'
 
     expect($file->refresh()->generated_at->greaterThan($renderedAt))->toBeTrue();
 });
+
+it('tidak menumpuk memori saat worker membuat banyak sertifikat berturut-turut', function () {
+    // queue:work berjalan terus: sisa siklus objek dompdf per render membuat
+    // worker berhenti "Memory limit exceeded" setelah ±20 sertifikat.
+    $gudep = Gudep::factory()->status(GudepStatus::Verified)->complete()->create();
+    $members = $gudep->members()->orderBy('id')->take(7)->get();
+    $usage = [];
+
+    foreach ($members as $member) {
+        GenerateFileJob::dispatchSync($member->id, TemplateType::Certificate, $this->admin->id);
+        $usage[] = memory_get_usage();
+    }
+
+    $growthMb = ($usage[6] - $usage[1]) / 1048576;
+    expect($growthMb)->toBeLessThan(3.0);
+});

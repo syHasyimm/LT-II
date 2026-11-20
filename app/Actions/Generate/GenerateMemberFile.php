@@ -41,6 +41,12 @@ class GenerateMemberFile
         $pdf = $this->renderer->pdf($template, [RenderSubject::fromMember($member, $file->serial_number)]);
         $this->files->put($path, $pdf->output());
 
+        // Dompdf meninggalkan siklus referensi (pohon frame) yang tidak segera
+        // dibersihkan PHP. Di queue:work yang berjalan terus, sisa ini menumpuk
+        // 2–4 MB per kartu sampai worker berhenti "Memory limit exceeded".
+        unset($pdf);
+        gc_collect_cycles();
+
         $file->forceFill([
             'template_id' => $template->id,
             'path' => $path,
